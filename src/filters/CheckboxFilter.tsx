@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { FilterItem } from '../FiltersInteract';
 import styled  from 'styled-components';
 import _ from "lodash"
-import {FiltersContext} from "../ServerSideTable"
+import FiltersContext from "../context/filterscontext"
 
 type Props = {
     filter: FilterItem

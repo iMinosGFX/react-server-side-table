@@ -1,9 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSlidersH, faEye, faChevronRight, faChevronLeft, faTextWidth, faFileExport } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import {CSSTransition} from "react-transition-group"
 import ColumnsSelector from './ColumnsSelector';
+import { saveLineSpacing, getLineSpacing } from './helpers/SSTlocalStorageManagement';
 
 const Container = styled.div`
     position: relative;
@@ -28,20 +29,21 @@ const Container = styled.div`
 
 type Props = {
     columns: any[]
+    hiddenColumns:string[]
     onHiddenColumnsChange(e:string[]): void
-    onLineSpacingChange(e: 'high' | 'medium' | 'small'): void
+    onLineSpacingChange(e: string): void
 }
 
 const SettingsInteractor = (props: Props) => { 
 
     const [open, setOpen] = useState<boolean>(false)
-    const node = useRef()
 
     return(
         <Container>
             <span onClick={() => setOpen(!open)}><FontAwesomeIcon icon={faSlidersH} style={{fontSize: 18, color: "#828282", cursor: "pointer"}} /></span>
             {open && <DropdownMenu 
                 columns={props.columns} 
+                hiddenColumns={props.hiddenColumns}
                 onHiddenColumnsChange={(e) => props.onHiddenColumnsChange(e)} 
                 onLineSpacingChange={e => props.onLineSpacingChange(e)}/>}
         </Container>
@@ -50,19 +52,21 @@ const SettingsInteractor = (props: Props) => {
 
 type PropsDropdown = {
     ref?: any
-    columns: any[]
+    columns: string[]
+    hiddenColumns: string[]
     onHiddenColumnsChange(e:string[]): void
-    onLineSpacingChange(e: 'high' | 'medium' | 'small'): void
+    onLineSpacingChange(e: string): void
 }
 
 const DropdownMenu = (props: PropsDropdown) => {
 
     const [activeMenu, setActiveMenu] = useState<string>('main')
     const [menuHeight, setMenuHeight] = useState<any>(null)
-    const [lineSpacing, setLineSpacing] = useState<'high' | 'medium' | 'small'>('medium')
+    const [lineSpacing, setLineSpacing] = useState<string>(getLineSpacing())
     
     useEffect(() => {
         props.onLineSpacingChange(lineSpacing)
+        saveLineSpacing(lineSpacing)
     }, [lineSpacing])
 
     function calcHeight(el){
@@ -109,7 +113,7 @@ const DropdownMenu = (props: PropsDropdown) => {
                         goToMenu="main">
                             Retour
                     </DropdownItem>
-                    <ColumnsSelector columns={props.columns} onChange={(e: string[]) => props.onHiddenColumnsChange(e)}/>
+                    <ColumnsSelector columns={props.columns} onChange={(e: string[]) => props.onHiddenColumnsChange(e)} hiddenColumns={props.hiddenColumns}/>
                 </div>
             </CSSTransition>
             <CSSTransition in={activeMenu === "lineSpacing"} unmountOnExit timeout={200} classNames="menu-secondary" onEnter={calcHeight}>

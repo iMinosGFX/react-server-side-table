@@ -36,5 +36,5 @@ export default {
       }
     })
   ],
-  external: ['react', 'react-dom']
+  external: ['react', 'react-dom', '@optalp/react-server-side-table']
 }

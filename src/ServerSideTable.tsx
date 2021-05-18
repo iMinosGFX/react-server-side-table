@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useRef, createContext, useImperativeHandle, forwardRef } from 'react'
+import React, {useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
 import Table from './Table'
 import ReactPaginate from 'react-paginate';
 import { TableStyles } from './assets/styled-components';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp, faTimes, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faChevronLeft, faChevronRight, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import Select, {components} from 'react-select';
 import _ from 'lodash';
 import FiltersInteract, { FilterItem } from './FiltersInteract';
@@ -12,6 +12,8 @@ import SettingsInteractor from './SettingsInteractor';
 import FiltersViewers from './FiltersViewers';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
+import FiltersContext from './context/filterscontext';
+import { getLineSpacing } from './helpers/SSTlocalStorageManagement';
 
 const PerPageContainer = styled.div`
 	float: right;
@@ -61,7 +63,8 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
         .ServerSideTableFilterSelect__input{
             input{
                 height: 1rem !important;
-            }                
+            }
+
         }   
     } 
     .btnActionsContainer{
@@ -90,9 +93,41 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
 
 export type filtersType = "rsql" | "fuzzy"
 
+export type Sort = {
+    sorted: boolean,
+    unsorted: boolean,
+    empty: boolean
+}
+
+export type Pageable = {
+    sort: Sort
+    pageNumber: number,
+    pageSize: number,
+    offset: number,
+    unpaged: boolean,
+    paged: boolean
+}
+
+export type PaginationObject = {
+    pageable: Pageable
+    last: boolean,
+    totalPages: number,
+    totalElements: number,
+    sort: Sort
+    numberOfElements: number,
+    first: boolean,
+    size: number,
+    number: number,
+    empty: boolean
+}
+
+export interface Data extends PaginationObject {
+    content: any[]
+}
+
 type Props = {
     columns: any[]
-    data: any[]
+    data: Data
     isFilter?: boolean
     filtersList?: FilterItem[]
     isSorter?:boolean
@@ -101,7 +136,6 @@ type Props = {
     perPageItems?: 5 | 10 | 20 | 50
     isRenderSubComponent?:boolean
     renderSubComponent?: any
-    pageCount:number
     onDataChange({offset, perPage, filters}: {offset: number, perPage: number, filters: string | object}):void
     showAddBtn?: boolean
     onAddClick?(): void
@@ -127,16 +161,9 @@ function getOptionsByType(type: string): string{
     }
 }
 
-export const FiltersContext = createContext({
-    filtersState: null,
-    submitFiltersState: null,
-    changeMainFilter: (name: string, content: {option:string, value:string | any}) => {},
-    changeOptionalsFilters: (name: string, content: {option:string, value:string}[]) => {},
-    onClearAll:() => {},
-    onClickApply:() => {},
-})
+FiltersContext.displayName = "ServerSideTableContext";
 
-const ServerSideTable = forwardRef((props: Props, ref) => {
+const ServerSideTable = forwardRef((props: Props, ref: any) => {
 
     useEffect(() => {
         let _initialFilters = {}
@@ -164,7 +191,7 @@ const ServerSideTable = forwardRef((props: Props, ref) => {
     const [perPage, setPerPage] = useState<number>(props.perPageItems ? props.perPageItems : 10);
     const [sorterOptions, setSorterOptions] = useState<{value:string, label:string, icon:any}[]>([])
     const [sorterValue, setSorterValue] = useState<{value:string, label:string, icon:any}>(null)
-    const [lineSpacing, setLineSpacing] = useState<'high' | 'medium' | 'small'>('medium')
+    const [lineSpacing, setLineSpacing] = useState<string>(getLineSpacing())
     const [hiddenColumns, setHiddenColumns] = useState<string[]>([])
     const { Option } = components
 
@@ -213,7 +240,7 @@ const ServerSideTable = forwardRef((props: Props, ref) => {
 
     useEffect(() => {
         try{
-            if(props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0)
+            if(props.isSorter && !!props.sorterSelect)
                 setSorterOptions(props.sorterSelect.flatMap(filter => {
                     return ([
                         {
@@ -233,7 +260,7 @@ const ServerSideTable = forwardRef((props: Props, ref) => {
     }, [props.sorterSelect]) 
 
     useEffect(() => {
-        if(!!props.sorterSelect){
+        if(props.isSorter && !!props.sorterSelect){
             if(props.defaultSorter)
                 setSorterValue(sorterOptions.find(el => el.value === props.defaultSorter))
         } else {
@@ -307,12 +334,12 @@ const ServerSideTable = forwardRef((props: Props, ref) => {
 
     return(
         <FiltersContext.Provider value={{
-            filtersState,
-            submitFiltersState,
-            changeMainFilter,
-            changeOptionalsFilters,
-            onClearAll,
-            onClickApply
+            filtersState: filtersState,
+            submitFiltersState: submitFiltersState,
+            changeMainFilter: changeMainFilter,
+            changeOptionalsFilters: changeOptionalsFilters,
+            onClearAll: onClearAll,
+            onClickApply: onClickApply
         }}>
             <TableContainer darkMode={props.darkMode}>
                 <div className="row">
@@ -322,30 +349,30 @@ const ServerSideTable = forwardRef((props: Props, ref) => {
                                 <div className="btnActionsContainer">
                                     {props.showAddBtn ? <button className="btn bg-primary light" onClick={props.onAddClick}>+ Ajouter</button> : <div></div>}
                                     <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
-                                    {props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0 &&
-                                            <div className="selectContainer">
-                                                <Select 
-                                                    options={sorterOptions}
-                                                    components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
-                                                    isClearable
-                                                    onChange={(e, triggeredAction) => {
-                                                        if(triggeredAction.action === "clear") {
-                                                            setFilters({...filters, sort: null})                                        
-                                                            setSorterValue(null)
-                                                        }
-                                                        else {
-                                                            setFilters({...filters, sort:e.value})
-                                                            setSorterValue(e)
-                                                        }
-                                                    }}
-                                                    value={sorterValue}
-                                                    classNamePrefix="ServerSideTableFilterSelect"
-                                                    placeholder="Trier par..."/>
-                                            </div>
+                                    {props.isSorter &&
+                                        <div className="selectContainer">
+                                            <Select 
+                                                options={sorterOptions}
+                                                components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
+                                                isClearable
+                                                onChange={(e, triggeredAction) => {
+                                                    if(triggeredAction.action === "clear") {
+                                                        props.onDataChange({offset,perPage,filters})
+                                                        setSorterValue(null)
+                                                    }
+                                                    else {
+                                                        setSorterValue(e)
+                                                    }
+                                                }}
+                                                value={sorterValue}
+                                                classNamePrefix="ServerSideTableFilterSelect"
+                                                placeholder="Trier par..."/>
+                                        </div>
                                     }
                                     <div className="icons">
                                         <SettingsInteractor 
-                                            columns={props.columns} 
+                                            columns={props.columns}
+                                            hiddenColumns={hiddenColumns}
                                             onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
                                             onLineSpacingChange={e => setLineSpacing(e)}/>
                                     </div>
@@ -374,10 +401,9 @@ const ServerSideTable = forwardRef((props: Props, ref) => {
                                             <FiltersInteract filters={props.filtersList} onSubmit={e => handleFilterSubmit(e)} filterParsedType={props.filterParsedType}/>
                                         }
                                         <Table 
-                                            data={props.data} 
+                                            data={props.data.content} 
                                             columns={props.columns} 
                                             renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
-                                            // filters={props.filtersList}
                                             hiddenColumns={hiddenColumns}/>
                                     </>
                                 }
@@ -387,7 +413,7 @@ const ServerSideTable = forwardRef((props: Props, ref) => {
                                         nextLabel={<FontAwesomeIcon icon={faChevronRight}/>}
                                         breakLabel={"..."}
                                         breakClassName={"break-me"}
-                                        pageCount={props.pageCount}
+                                        pageCount={props.data?.totalPages}
                                         marginPagesDisplayed={2}
                                         pageRangeDisplayed={2}
                                         onPageChange={handlePageClick}

@@ -3,13 +3,14 @@ import _ from "lodash"
 
 type Props = {
     columns: any[]
+    hiddenColumns:string[]
     onChange(e: string[]): void
 }
 
 const ColumnsSelector = (props: Props) => {
 
-    const [checkedColumns, setCheckedColumns] = useState<string[]>(props.columns.filter(column => !!column.Header && column.Header.length > 0).map(column => column.accessor))
-    const [uncheckedColumns, setUncheckedColumns] = useState<string[]>([])
+    const [checkedColumns, setCheckedColumns] = useState<string[]>(props.columns.filter(column => !!column.Header && column.Header.length > 0).map(column => column.accessor).filter(column => !props.hiddenColumns.includes(column)))
+    const [uncheckedColumns, setUncheckedColumns] = useState<string[]>(props.hiddenColumns)
 
     useEffect(() => {
         props.onChange(uncheckedColumns)

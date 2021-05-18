@@ -101,4 +101,3 @@ export function parseFilterRSQL(filters: any):string {
     })
     return parsedString.slice(0,-1)
 }
-

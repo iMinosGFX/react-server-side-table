@@ -6,9 +6,9 @@ import NumberFilter from './filters/NumberFilter';
 import CheckboxFilter from './filters/CheckboxFilter';
 import DateFilter from './filters/DateFilter';
 import _ from "lodash"
-import {FiltersContext, filtersType} from "./ServerSideTable";
+import {filtersType} from "./ServerSideTable";
 import BooleanRadioFilter from './filters/BooleanRadioFilter';
-import GeolocFilter from './filters/GeolocFilter';
+import FiltersContext from "./context/filterscontext"
 
 type Props = {
     filter: FilterItem
@@ -122,7 +122,6 @@ const ItemFilter = (props: Props) => {
     };
     
     useEffect(() => {
-        console.log(filtersState)
         document.addEventListener("mousedown", handleClick);
         return () => document.removeEventListener("mousedown", handleClick);
     }, []);
@@ -199,10 +198,6 @@ const ItemFilter = (props: Props) => {
             case 'booleanRadio':
                 return(
                     <BooleanRadioFilter filter={filter}/>
-                )
-            case 'geoloc':
-                return(
-                    <GeolocFilter filter={filter}/>
                 )
         }
     }

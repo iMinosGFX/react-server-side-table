@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useExpanded} from 'react-table'
 import { useTable } from 'react-table'
 import _ from "lodash"
@@ -60,7 +60,7 @@ const Table = ({ columns, data, renderRowSubComponent, hiddenColumns}: Props) =>
         ))}
       </thead>
         <tbody {...getTableBodyProps()} className="no-border">
-          {rows.map(row => {
+          {rows.map((row, i) => {
             prepareRow(row)
             return (
               <React.Fragment key={row.getRowProps().key}>

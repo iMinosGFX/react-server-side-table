@@ -1,9 +1,37 @@
 import React from 'react';
 import { FilterItem } from './FiltersInteract';
 export declare type filtersType = "rsql" | "fuzzy";
+export declare type Sort = {
+    sorted: boolean;
+    unsorted: boolean;
+    empty: boolean;
+};
+export declare type Pageable = {
+    sort: Sort;
+    pageNumber: number;
+    pageSize: number;
+    offset: number;
+    unpaged: boolean;
+    paged: boolean;
+};
+export declare type PaginationObject = {
+    pageable: Pageable;
+    last: boolean;
+    totalPages: number;
+    totalElements: number;
+    sort: Sort;
+    numberOfElements: number;
+    first: boolean;
+    size: number;
+    number: number;
+    empty: boolean;
+};
+export interface Data extends PaginationObject {
+    content: any[];
+}
 declare type Props = {
     columns: any[];
-    data: any[];
+    data: Data;
     isFilter?: boolean;
     filtersList?: FilterItem[];
     isSorter?: boolean;
@@ -15,7 +43,6 @@ declare type Props = {
     perPageItems?: 5 | 10 | 20 | 50;
     isRenderSubComponent?: boolean;
     renderSubComponent?: any;
-    pageCount: number;
     onDataChange({ offset, perPage, filters }: {
         offset: number;
         perPage: number;
@@ -29,19 +56,5 @@ declare type Props = {
     filterParsedType?: filtersType;
     darkMode?: boolean;
 };
-export declare const FiltersContext: React.Context<{
-    filtersState: any;
-    submitFiltersState: any;
-    changeMainFilter: (name: string, content: {
-        option: string;
-        value: any;
-    }) => void;
-    changeOptionalsFilters: (name: string, content: {
-        option: string;
-        value: string;
-    }[]) => void;
-    onClearAll: () => void;
-    onClickApply: () => void;
-}>;
-declare const ServerSideTable: React.ForwardRefExoticComponent<Props & React.RefAttributes<{}>>;
+declare const ServerSideTable: React.ForwardRefExoticComponent<Props & React.RefAttributes<unknown>>;
 export default ServerSideTable;

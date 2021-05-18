@@ -1,4 +1,4 @@
-import { filtersType } from "./ServerSideTable";
+import { filtersType } from './ServerSideTable';
 export declare type FilterItem = {
     name: string;
     label: string;

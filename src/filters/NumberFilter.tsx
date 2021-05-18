@@ -3,7 +3,8 @@ import { FilterItem } from '../FiltersInteract';
 import styled  from 'styled-components';
 import Select from 'react-select';
 import _ from "lodash"
-import {FiltersContext, filtersType} from "../ServerSideTable"
+import {filtersType} from "../ServerSideTable"
+import FiltersContext from "../context/filterscontext"
 
 type Props = {
     filter: FilterItem
