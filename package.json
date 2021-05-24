@@ -1,6 +1,6 @@
 {
   "name": "@optalp/react-server-side-table",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "ServerSideTable React Component",
   "author": "ovieokeh",
   "license": "Apache-2.0",
@@ -22,7 +22,7 @@
     "react-paginate": "^7.1.2",
     "react-places-autocomplete": "^7.3.0",
     "react-redux": "^7.2.3",
-    "react-select": "^4.3.0",
+    "react-select": "^4.3.1",
     "react-table": "^7.6.1",
     "react-transition-group": "^4.4.1",
     "rollup-plugin-commonjs": "^10.1.0",

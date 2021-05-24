@@ -35,13 +35,15 @@ function translateOption(opt: string): string{
 const Container = styled.div`
     height: 60px;
     width: 100%;
-    /* background: #F6F6F6; */
     border-radius: 3px 3px 0 0;
     display: flex;
     padding: 0 10px;
     box-sizing: border-box;
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
     span{
         line-height: 60px;
+        color: #435F71;
     }
     .filters-label{
         background: rgba(33, 106, 154, .2);

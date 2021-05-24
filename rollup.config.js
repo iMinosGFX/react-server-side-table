@@ -26,7 +26,7 @@ export default {
           'useExpanded'
         ],
         'react-select': [
-          'components'
+          'components',
         ],
         'node_modules/react-is/index.js': [
           'isElement',
@@ -36,5 +36,5 @@ export default {
       }
     })
   ],
-  external: ['react', 'react-dom', '@optalp/react-server-side-table']
+  external: ['react', 'react-dom', '@optalp/react-server-side-table', 'react-select']
 }

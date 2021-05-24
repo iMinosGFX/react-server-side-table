@@ -47,6 +47,7 @@ declare type Props = {
         offset: number;
         perPage: number;
         filters: string | object;
+        sorter?: string;
     }): void;
     showAddBtn?: boolean;
     onAddClick?(): void;
@@ -55,6 +56,7 @@ declare type Props = {
     onOptionalBtnClick?(): void;
     filterParsedType?: filtersType;
     darkMode?: boolean;
+    withoutHeader?: boolean;
 };
 declare const ServerSideTable: React.ForwardRefExoticComponent<Props & React.RefAttributes<unknown>>;
 export default ServerSideTable;

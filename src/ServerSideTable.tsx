@@ -136,7 +136,7 @@ type Props = {
     perPageItems?: 5 | 10 | 20 | 50
     isRenderSubComponent?:boolean
     renderSubComponent?: any
-    onDataChange({offset, perPage, filters}: {offset: number, perPage: number, filters: string | object}):void
+    onDataChange({offset, perPage, filters}: {offset: number, perPage: number, filters: string | object, sorter?:string}):void
     showAddBtn?: boolean
     onAddClick?(): void
     showOptionalBtn?:boolean
@@ -144,6 +144,7 @@ type Props = {
     onOptionalBtnClick?():void
     filterParsedType?: filtersType
     darkMode?: boolean
+    withoutHeader?:boolean
 }
 
 function getOptionsByType(type: string): string{
@@ -206,15 +207,15 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         if(isInitialMount.current)
             isInitialMount.current = false
         else 
-		    props.onDataChange({offset,perPage,filters})
-    }, [offset, perPage])
+		    props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+    }, [offset, perPage, sorterValue])
     
     useEffect(() => {
         if(isInitialMount.current)
             isInitialMount.current = false
         else {
             setOffset(0)
-            props.onDataChange({offset,perPage,filters})
+            props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
         }
     }, [filters])
 
@@ -346,38 +347,40 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                     <div className={`md-12  arrayCard`}>
                         <div className="">
                             <TableStyles lineSpacing={lineSpacing}>
-                                <div className="btnActionsContainer">
-                                    {props.showAddBtn ? <button className="btn bg-primary light" onClick={props.onAddClick}>+ Ajouter</button> : <div></div>}
-                                    <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
-                                    {props.isSorter &&
-                                        <div className="selectContainer">
-                                            <Select 
-                                                options={sorterOptions}
-                                                components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
-                                                isClearable
-                                                onChange={(e, triggeredAction) => {
-                                                    if(triggeredAction.action === "clear") {
-                                                        props.onDataChange({offset,perPage,filters})
-                                                        setSorterValue(null)
-                                                    }
-                                                    else {
-                                                        setSorterValue(e)
-                                                    }
-                                                }}
-                                                value={sorterValue}
-                                                classNamePrefix="ServerSideTableFilterSelect"
-                                                placeholder="Trier par..."/>
+                                {!props.withoutHeader && 
+                                    <div className="btnActionsContainer">
+                                        {props.showAddBtn ? <button className="btn bg-primary light" onClick={props.onAddClick}>+ Ajouter</button> : <div></div>}
+                                        <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
+                                        {props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0 && 
+                                            <div className="selectContainer">
+                                                <Select 
+                                                    options={sorterOptions}
+                                                    components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
+                                                    isClearable
+                                                    onChange={(e, triggeredAction) => {
+                                                        if(triggeredAction.action === "clear") {
+                                                            props.onDataChange({offset,perPage,filters})
+                                                            setSorterValue(null)
+                                                        }
+                                                        else {
+                                                            setSorterValue(e)
+                                                        }
+                                                    }}
+                                                    value={sorterValue}
+                                                    classNamePrefix="ServerSideTableFilterSelect"
+                                                    placeholder="Trier par..."/>
+                                            </div>
+                                        }
+                                        <div className="icons">
+                                            <SettingsInteractor 
+                                                columns={props.columns}
+                                                hiddenColumns={hiddenColumns}
+                                                onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
+                                                onLineSpacingChange={e => setLineSpacing(e)}/>
+                                            </div>
                                         </div>
-                                    }
-                                    <div className="icons">
-                                        <SettingsInteractor 
-                                            columns={props.columns}
-                                            hiddenColumns={hiddenColumns}
-                                            onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
-                                            onLineSpacingChange={e => setLineSpacing(e)}/>
                                     </div>
-                                    </div>
-                                </div>
+                                }
                                 {props.data &&
                                     <>
                                         <FiltersViewers />
