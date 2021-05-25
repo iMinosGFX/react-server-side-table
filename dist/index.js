@@ -22256,7 +22256,7 @@ function translateOption(opt) {
             return opt;
     }
 }
-var Container$2 = styled.div(templateObject_1$9 || (templateObject_1$9 = __makeTemplateObject(["\n    height: 60px;\n    width: 100%;\n    /* background: #F6F6F6; */\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    padding: 0 10px;\n    box-sizing: border-box;\n    span{\n        line-height: 60px;\n    }\n    .filters-label{\n        background: rgba(33, 106, 154, .2);\n        color: #216A9A;\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 20px;\n        height: 25px;\n        font-size: 12px;\n        span{\n            line-height: 25px;\n        }\n        svg{\n            color: #216A9A;\n        }\n    }\n"], ["\n    height: 60px;\n    width: 100%;\n    /* background: #F6F6F6; */\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    padding: 0 10px;\n    box-sizing: border-box;\n    span{\n        line-height: 60px;\n    }\n    .filters-label{\n        background: rgba(33, 106, 154, .2);\n        color: #216A9A;\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 20px;\n        height: 25px;\n        font-size: 12px;\n        span{\n            line-height: 25px;\n        }\n        svg{\n            color: #216A9A;\n        }\n    }\n"])));
+var Container$2 = styled.div(templateObject_1$9 || (templateObject_1$9 = __makeTemplateObject(["\n    height: 60px;\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    padding: 0 10px;\n    box-sizing: border-box;\n    border-top: 1px solid #e8e8e8;\n    border-bottom: 1px solid #e8e8e8;\n    span{\n        line-height: 60px;\n        color: #435F71;\n    }\n    .filters-label{\n        background: rgba(33, 106, 154, .2);\n        color: #216A9A;\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 20px;\n        height: 25px;\n        font-size: 12px;\n        span{\n            line-height: 25px;\n        }\n        svg{\n            color: #216A9A;\n        }\n    }\n"], ["\n    height: 60px;\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    padding: 0 10px;\n    box-sizing: border-box;\n    border-top: 1px solid #e8e8e8;\n    border-bottom: 1px solid #e8e8e8;\n    span{\n        line-height: 60px;\n        color: #435F71;\n    }\n    .filters-label{\n        background: rgba(33, 106, 154, .2);\n        color: #216A9A;\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 20px;\n        height: 25px;\n        font-size: 12px;\n        span{\n            line-height: 25px;\n        }\n        svg{\n            color: #216A9A;\n        }\n    }\n"])));
 var FiltersViewers = function () {
     var filtersState = React.useContext(FiltersContext);
     var clearMain = function (name) {
@@ -22534,7 +22534,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             isInitialMount.current = false;
         else {
             setOffset(0);
-            props.onDataChange({ offset: offset, perPage: perPage, filters: filters });
+            props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
         }
     }, [filters]);
     var CustomSelectOption = function (props) { return (React__default.createElement(Option, __assign({}, props),

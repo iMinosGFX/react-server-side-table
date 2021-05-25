@@ -206,9 +206,20 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
 	useEffect(() => {
         if(isInitialMount.current)
             isInitialMount.current = false
-        else 
+        else {
 		    props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
-    }, [offset, perPage, sorterValue])
+        }
+    }, [offset, perPage])
+
+    useEffect(() => {
+        if(isInitialMount.current)
+            isInitialMount.current = false
+        else {
+            if(!!sorterValue){
+                props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+            }
+        }
+    }, [sorterValue])
     
     useEffect(() => {
         if(isInitialMount.current)
@@ -235,7 +246,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
 
     useImperativeHandle(ref, () => ({
         reloadData() {
-          props.onDataChange({offset,perPage,filters})
+            props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
         }
     }))
 
@@ -270,14 +281,18 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
     }, [sorterOptions])
 
     useEffect(() => {
-        //Filter can be a string query or object with mulitple properties inside
-        let filters = props.filterParsedType === "rsql" 
-        ? parseFilterRSQL(submitFiltersState)
-        : parseFilterFuzzy(submitFiltersState)
-        if((props.filterParsedType === "rsql" && !!filters && !_.isEmpty(filters)) || props.filterParsedType === "fuzzy"){
-            setOffset(0)
-            props.onDataChange({offset,perPage,filters})
-        }  
+        if(isInitialMount.current)
+            isInitialMount.current = false
+        else if(!!submitFiltersState){
+            //Filter can be a string query or object with mulitple properties inside
+            let filters = props.filterParsedType === "rsql" 
+            ? parseFilterRSQL(submitFiltersState)
+            : parseFilterFuzzy(submitFiltersState)
+            if((props.filterParsedType === "rsql" && !!filters && !_.isEmpty(filters)) || props.filterParsedType === "fuzzy"){
+                setOffset(0)
+                props.onDataChange({offset,perPage,filters})
+            }  
+        }
     }, [submitFiltersState])
 
     const handleFilterSubmit = (filters: any) => {
