@@ -25,7 +25,7 @@ table {
     justify-content: space-between;
     align-items: center;
     height: 55px;
-    color: #216A9A;
+    color: #435F71;
     select{
       background: none !important;
       min-width: fit-content;

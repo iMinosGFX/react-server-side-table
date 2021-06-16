@@ -22526,17 +22526,19 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
     React.useEffect(function () {
         if (isInitialMount.current)
             isInitialMount.current = false;
-        else
+        else {
             props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
-    }, [offset, perPage, sorterValue]);
+        }
+    }, [offset, perPage]);
     React.useEffect(function () {
         if (isInitialMount.current)
             isInitialMount.current = false;
         else {
-            setOffset(0);
-            props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
+            if (!!sorterValue) {
+                props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
+            }
         }
-    }, [filters]);
+    }, [sorterValue]);
     var CustomSelectOption = function (props) { return (React__default.createElement(Option, __assign({}, props),
         props.data.label,
         props.data.icon)); };
@@ -22545,12 +22547,12 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         props.data.icon)); };
     React.useImperativeHandle(ref, function () { return ({
         reloadData: function () {
-            props.onDataChange({ offset: offset, perPage: perPage, filters: filters });
+            props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
         }
     }); });
     React.useEffect(function () {
         try {
-            if (props.isSorter && !!props.sorterSelect)
+            if (props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0)
                 setSorterOptions(props.sorterSelect.flatMap(function (filter) {
                     return ([
                         {
@@ -22580,21 +22582,23 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         }
     }, [sorterOptions]);
     React.useEffect(function () {
-        var filters = props.filterParsedType === "rsql"
-            ? parseFilterRSQL(submitFiltersState)
-            : parseFilterFuzzy(submitFiltersState);
-        if ((props.filterParsedType === "rsql" && !!filters && !lodash.isEmpty(filters)) || props.filterParsedType === "fuzzy") {
-            setOffset(0);
-            props.onDataChange({ offset: offset, perPage: perPage, filters: filters });
+        if (isInitialMount.current)
+            isInitialMount.current = false;
+        else if (!!submitFiltersState) {
+            var filters_1 = props.filterParsedType === "rsql"
+                ? parseFilterRSQL(submitFiltersState)
+                : parseFilterFuzzy(submitFiltersState);
+            if ((props.filterParsedType === "rsql" && !!filters_1 && !lodash.isEmpty(filters_1)) || (props.filterParsedType === "fuzzy")) {
+                setOffset(0);
+                setFilters(filters_1);
+                props.onDataChange({ offset: offset, perPage: perPage, filters: filters_1, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
+            }
         }
     }, [submitFiltersState]);
     var handleFilterSubmit = function (filters) {
         setOffset(0);
         setFilters(filters);
-        props.onDataChange({ offset: offset, perPage: perPage, filters: filters });
-    };
-    var handleRemoveFilter = function (propertyName) {
-        setFilters(lodash.omit(filters, propertyName));
+        props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
     };
     var changeMainFilter = function (name, content) {
         var _a;
@@ -22664,20 +22668,6 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                             props.data &&
                                 React__default.createElement(React__default.Fragment, null,
                                     React__default.createElement(FiltersViewers, null),
-                                    Object.keys(filters).length > 0 &&
-                                        React__default.createElement("p", { style: { paddingTop: 20 } },
-                                            "Filtres appliqu\u00E9s :",
-                                            Object.entries(props.filtersList).map(function (_a) {
-                                                var key = _a[0], value = _a[1];
-                                                if (lodash.has(filters, value["name"]) && filters[value["name"]].length > 0) {
-                                                    return (React__default.createElement("span", { key: value["name"], style: { padding: '5px 8px', background: "#e9e9e9", borderRadius: 5, margin: '0 5px' } },
-                                                        React__default.createElement("span", { className: 'font-heavy' },
-                                                            value['label'],
-                                                            " : "),
-                                                        React__default.createElement("span", null, filters[value["name"]]),
-                                                        React__default.createElement(reactFontawesome.FontAwesomeIcon, { icon: freeSolidSvgIcons.faTimes, size: "sm", style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return handleRemoveFilter(value["name"]); } })));
-                                                }
-                                            })),
                                     props.isFilter &&
                                         React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType }),
                                     React__default.createElement(Table, { data: props.data.content, columns: props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns })),
