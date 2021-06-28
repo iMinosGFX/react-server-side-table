@@ -145,6 +145,7 @@ type Props = {
     filterParsedType?: filtersType
     darkMode?: boolean
     withoutHeader?:boolean
+    enabledExport?: boolean
 }
 
 function getOptionsByType(type: string): string{
@@ -394,11 +395,13 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                         {props.isFilter && 
                                             <FiltersInteract filters={props.filtersList} onSubmit={e => handleFilterSubmit(e)} filterParsedType={props.filterParsedType}/>
                                         }
-                                        <Table 
-                                            data={props.data.content} 
-                                            columns={props.columns} 
-                                            renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
-                                            hiddenColumns={hiddenColumns}/>
+                                        {!!props.data.content && props.data.content.length > 0 && 
+                                            <Table 
+                                                data={props.data.content} 
+                                                columns={props.columns} 
+                                                renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
+                                                hiddenColumns={hiddenColumns}/>
+                                        }
                                     </>
                                 }
                                 <div className="footerTable">
