@@ -32,12 +32,17 @@ table {
     }
   }
   @media only screen and (max-width: 540px){
-    th{
+    table{
+      display: block;
+      overflow-x: auto;
       white-space: nowrap;
-    }
-    tbody{
-      td{
+      th{
         white-space: nowrap;
+      }
+      tbody{
+        td{
+          white-space: nowrap;
+        }
       }
     }
   }
