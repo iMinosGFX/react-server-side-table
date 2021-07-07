@@ -280,7 +280,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             let filters = props.filterParsedType === "rsql" 
             ? parseFilterRSQL(submitFiltersState)
             : parseFilterFuzzy(submitFiltersState)
-            if((props.filterParsedType === "rsql" && !!filters && !_.isEmpty(filters)) || (props.filterParsedType === "fuzzy")){
+            if(props.filterParsedType === "rsql" || (props.filterParsedType === "fuzzy")){
                 setOffset(0)
                 setFilters(filters)
                 props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})

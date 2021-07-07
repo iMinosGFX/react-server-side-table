@@ -22380,11 +22380,11 @@ function translateOptionsToOperator(opt, val) {
         case 'between':
             return "=bw=(" + val.split('-')[0] + "," + val.split('-')[1] + ")";
         case 'atDay':
-            return "==" + moment(val).format('YYYY-MM-DDTHH:mm:ss.SSS');
+            return "=bw=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ssZ') + "-" + moment(val).add(1, 'day').startOf('day').format('YYYY-MM-DDTHH:mm:ssZ');
         case 'minDay':
-            return ">=" + moment(val).format('YYYY-MM-DDTHH:mm:ss.SSS');
+            return ">=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ssZ');
         case 'maxDay':
-            return "<=" + moment(val).format('YYYY-MM-DDTHH:mm:ss.SSS');
+            return "<=" + moment(val).endOf('day').format('YYYY-MM-DDTHH:mm:ssZ');
         default:
             return opt;
     }
@@ -22589,7 +22589,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             var filters_1 = props.filterParsedType === "rsql"
                 ? parseFilterRSQL(submitFiltersState)
                 : parseFilterFuzzy(submitFiltersState);
-            if ((props.filterParsedType === "rsql" && !!filters_1 && !lodash.isEmpty(filters_1)) || (props.filterParsedType === "fuzzy")) {
+            if (props.filterParsedType === "rsql" || (props.filterParsedType === "fuzzy")) {
                 setOffset(0);
                 setFilters(filters_1);
                 props.onDataChange({ offset: offset, perPage: perPage, filters: filters_1, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
