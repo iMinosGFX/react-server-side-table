@@ -44,9 +44,6 @@ const Container = styled.div`
         height: 200px;
         background: red;
     }
-    @media(max-width: 600px){
-        overflow-x: scroll;
-    }
 `
 
 
@@ -67,7 +64,7 @@ const FiltersInteract = (props: Props) => {
                         filterParsedType={props.filterParsedType}/>
                 ))}
                 <div style={{display: "flex", justifyContent: 'center', alignItems: 'center'}}>
-                    <span className="primary" onClick={() => filterContext.onClearAll()} style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer', whiteSpace: "nowrap"}}>Effacer tout</span>
+                    <span className="primary" onClick={() => filterContext.onClearAll()} style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>Effacer tout</span>
                 </div>
             </Container>
             )}
