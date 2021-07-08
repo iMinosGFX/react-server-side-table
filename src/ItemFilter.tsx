@@ -88,18 +88,6 @@ const Item = styled("div")<any>`
             left: -130px;
         }
     }
-    @media(max-width: 540px){
-        .filterPopup{
-            position: fixed !important;
-            left: 5% !important;
-            top: 20% !important;
-            box-shadow:
-                0 0.5px 4.7px -8px rgba(0, 0, 0, 0.125),
-                0 1.5px 12.9px -8px rgba(0, 0, 0, 0.18),
-                0 3.6px 31.1px -8px rgba(0, 0, 0, 0.235),
-                0 12px 103px -8px rgba(0, 0, 0, 0.36) !important;
-        }
-    }
 `
 
 

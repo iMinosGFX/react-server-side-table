@@ -25,24 +25,19 @@ table {
     justify-content: space-between;
     align-items: center;
     height: 55px;
-    color: #435F71;
+    color: #216A9A;
     select{
       background: none !important;
       min-width: fit-content;
     }
   }
   @media only screen and (max-width: 540px){
-    table{
-      display: block;
-      overflow-x: auto;
+    th{
       white-space: nowrap;
-      th{
+    }
+    tbody{
+      td{
         white-space: nowrap;
-      }
-      tbody{
-        td{
-          white-space: nowrap;
-        }
       }
     }
   }
