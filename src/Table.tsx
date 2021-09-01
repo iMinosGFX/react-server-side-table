@@ -14,8 +14,10 @@ type Props = {
     headerId?:string
   }[]
   hiddenColumns: string[]
+  // onFiltersChange(filters: any): void
 }
 
+// const Table = ({ columns, data, renderRowSubComponent, filters, onFiltersChange}: Props) => {
 const Table = ({ columns, data, renderRowSubComponent, hiddenColumns}: Props) => {
 
   const {

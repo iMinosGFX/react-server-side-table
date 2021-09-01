@@ -4648,7 +4648,7 @@ var reactPaginate = createCommonjsModule(function (module, exports) {
 var ReactPaginate = unwrapExports(reactPaginate);
 var reactPaginate_1 = reactPaginate.ReactPaginate;
 
-var TableStyles = styled("div")(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\ntable {\n  border-spacing: 0;\n  width:100%;\n    thead{\n      text-align:left;\n      padding:0 40px;\n    }\n  }\n  tbody{\n    color:#57606F;\n    tr{\n        height: ", ";\n        border-bottom: 1px solid #F0F0F0;\n        &:hover{\n          background-color: \"#F5F5F5\";\n        }\n    }\n  }\n  .footerTable{\n    border-top: 1px solid rgba(22,125,255,0.15);\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    height: 55px;\n    color: #435F71;\n    select{\n      background: none !important;\n      min-width: fit-content;\n    }\n  }\n  @media only screen and (max-width: 540px){\n    table{\n      display: block;\n      overflow-x: auto;\n      white-space: nowrap;\n      th{\n        white-space: nowrap;\n      }\n      tbody{\n        td{\n          white-space: nowrap;\n        }\n      }\n    }\n  }\n"], ["\ntable {\n  border-spacing: 0;\n  width:100%;\n    thead{\n      text-align:left;\n      padding:0 40px;\n    }\n  }\n  tbody{\n    color:#57606F;\n    tr{\n        height: ", ";\n        border-bottom: 1px solid #F0F0F0;\n        &:hover{\n          background-color: \"#F5F5F5\";\n        }\n    }\n  }\n  .footerTable{\n    border-top: 1px solid rgba(22,125,255,0.15);\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    height: 55px;\n    color: #435F71;\n    select{\n      background: none !important;\n      min-width: fit-content;\n    }\n  }\n  @media only screen and (max-width: 540px){\n    table{\n      display: block;\n      overflow-x: auto;\n      white-space: nowrap;\n      th{\n        white-space: nowrap;\n      }\n      tbody{\n        td{\n          white-space: nowrap;\n        }\n      }\n    }\n  }\n"])), function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; });
+var TableStyles = styled("div")(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\ntable {\n  border-spacing: 0;\n  width:100%;\n    thead{\n      text-align:left;\n      padding:0 40px;\n    }\n  }\n  tbody{\n    color:#57606F;\n    tr{\n        height: ", ";\n        border-bottom: 1px solid #F0F0F0;\n        &:hover{\n          background-color: \"#F5F5F5\";\n        }\n    }\n  }\n  .footerTable{\n    border-top: 1px solid rgba(22,125,255,0.15);\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    height: 55px;\n    color: #216A9A;\n    select{\n      background: none !important;\n      min-width: fit-content;\n    }\n  }\n  @media only screen and (max-width: 540px){\n    th{\n      white-space: nowrap;\n    }\n    tbody{\n      td{\n        white-space: nowrap;\n      }\n    }\n  }\n"], ["\ntable {\n  border-spacing: 0;\n  width:100%;\n    thead{\n      text-align:left;\n      padding:0 40px;\n    }\n  }\n  tbody{\n    color:#57606F;\n    tr{\n        height: ", ";\n        border-bottom: 1px solid #F0F0F0;\n        &:hover{\n          background-color: \"#F5F5F5\";\n        }\n    }\n  }\n  .footerTable{\n    border-top: 1px solid rgba(22,125,255,0.15);\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    height: 55px;\n    color: #216A9A;\n    select{\n      background: none !important;\n      min-width: fit-content;\n    }\n  }\n  @media only screen and (max-width: 540px){\n    th{\n      white-space: nowrap;\n    }\n    tbody{\n      td{\n        white-space: nowrap;\n      }\n    }\n  }\n"])), function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; });
 var templateObject_1;
 
 var lodash = createCommonjsModule(function (module, exports) {
@@ -22043,7 +22043,7 @@ var BooleanRadioFilter = function (props) {
 };
 var templateObject_1$5;
 
-var Item = styled("div")(templateObject_1$6 || (templateObject_1$6 = __makeTemplateObject(["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .filterPopup{\n        width: 300px;\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n    @media(max-width: 540px){\n        .filterPopup{\n            position: fixed !important;\n            left: 5% !important;\n            top: 20% !important;\n            box-shadow:\n                0 0.5px 4.7px -8px rgba(0, 0, 0, 0.125),\n                0 1.5px 12.9px -8px rgba(0, 0, 0, 0.18),\n                0 3.6px 31.1px -8px rgba(0, 0, 0, 0.235),\n                0 12px 103px -8px rgba(0, 0, 0, 0.36) !important;\n        }\n    }\n"], ["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .filterPopup{\n        width: 300px;\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n    @media(max-width: 540px){\n        .filterPopup{\n            position: fixed !important;\n            left: 5% !important;\n            top: 20% !important;\n            box-shadow:\n                0 0.5px 4.7px -8px rgba(0, 0, 0, 0.125),\n                0 1.5px 12.9px -8px rgba(0, 0, 0, 0.18),\n                0 3.6px 31.1px -8px rgba(0, 0, 0, 0.235),\n                0 12px 103px -8px rgba(0, 0, 0, 0.36) !important;\n        }\n    }\n"])), function (props) { return props.type === "top" && "1px solid #E1E1E1"; }, function (props) { return props.type === "top" && "#FFF"; }, function (props) { return props.type === "left" && "rgba(33, 106, 154,.1)"; }, function (props) { return props.type === "top" && "1px solid #216A9A"; }, function (props) { return props.type === "left" ? "0px" : "110%"; }, function (props) { return props.type === "left" ? "105%" : "0"; });
+var Item = styled("div")(templateObject_1$6 || (templateObject_1$6 = __makeTemplateObject(["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .filterPopup{\n        width: 300px;\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"], ["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .filterPopup{\n        width: 300px;\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"])), function (props) { return props.type === "top" && "1px solid #E1E1E1"; }, function (props) { return props.type === "top" && "#FFF"; }, function (props) { return props.type === "left" && "rgba(33, 106, 154,.1)"; }, function (props) { return props.type === "top" && "1px solid #216A9A"; }, function (props) { return props.type === "left" ? "0px" : "110%"; }, function (props) { return props.type === "left" ? "105%" : "0"; });
 function getOptionsByType(type) {
     switch (type) {
         case 'text':
@@ -22135,13 +22135,13 @@ var ItemFilter = function (props) {
 };
 var templateObject_1$6;
 
-var Container = styled.div(templateObject_1$7 || (templateObject_1$7 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n    @media(max-width: 600px){\n        overflow-x: scroll;\n    }\n"], ["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n    @media(max-width: 600px){\n        overflow-x: scroll;\n    }\n"])));
+var Container = styled.div(templateObject_1$7 || (templateObject_1$7 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n"], ["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n"])));
 var FiltersInteract = function (props) {
     var filters = props.filters;
     return (React__default.createElement(FiltersContext.Consumer, null, function (filterContext) { return (React__default.createElement(Container, null,
         filters.map(function (filter) { return (React__default.createElement(ItemFilter, { key: filter.name, filter: filter, filterParsedType: props.filterParsedType })); }),
         React__default.createElement("div", { style: { display: "flex", justifyContent: 'center', alignItems: 'center' } },
-            React__default.createElement("span", { className: "primary", onClick: function () { return filterContext.onClearAll(); }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer', whiteSpace: "nowrap" } }, "Effacer tout")))); }));
+            React__default.createElement("span", { className: "primary", onClick: function () { return filterContext.onClearAll(); }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer' } }, "Effacer tout")))); }));
 };
 var templateObject_1$7;
 
@@ -22179,7 +22179,7 @@ var SettingsInteractor = function (props) {
     return (React__default.createElement(Container$1, null,
         React__default.createElement("span", { onClick: function () { return setOpen(!open); } },
             React__default.createElement(reactFontawesome.FontAwesomeIcon, { icon: freeSolidSvgIcons.faSlidersH, style: { fontSize: 18, color: "#828282", cursor: "pointer" } })),
-        open && React__default.createElement(DropdownMenu, { columns: props.columns, hiddenColumns: props.hiddenColumns, onHiddenColumnsChange: function (e) { return props.onHiddenColumnsChange(e); }, onLineSpacingChange: function (e) { return props.onLineSpacingChange(e); }, enabledExport: props.enabledExport })));
+        open && React__default.createElement(DropdownMenu, { columns: props.columns, hiddenColumns: props.hiddenColumns, onHiddenColumnsChange: function (e) { return props.onHiddenColumnsChange(e); }, onLineSpacingChange: function (e) { return props.onLineSpacingChange(e); } })));
 };
 var DropdownMenu = function (props) {
     var _a = React.useState('main'), activeMenu = _a[0], setActiveMenu = _a[1];
@@ -22206,8 +22206,7 @@ var DropdownMenu = function (props) {
             React__default.createElement("div", { className: "menu" },
                 React__default.createElement(DropdownItem, { leftIcon: freeSolidSvgIcons.faEye, rightIcon: freeSolidSvgIcons.faChevronRight, goToMenu: "columns" }, "Afficher / Masquer colonnes"),
                 React__default.createElement(DropdownItem, { leftIcon: freeSolidSvgIcons.faTextWidth, rightIcon: freeSolidSvgIcons.faChevronRight, goToMenu: "lineSpacing" }, "Comfort d'affichage"),
-                !!props.enabledExport &&
-                    React__default.createElement(DropdownItem, { leftIcon: freeSolidSvgIcons.faFileExport }, "Export"))),
+                React__default.createElement(DropdownItem, { leftIcon: freeSolidSvgIcons.faFileExport }, "Export"))),
         React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "columns", unmountOnExit: true, timeout: 200, classNames: "menu-secondary", onEnter: calcHeight },
             React__default.createElement("div", { className: "menu" },
                 React__default.createElement(DropdownItem, { leftIcon: freeSolidSvgIcons.faChevronLeft, goToMenu: "main" }, "Retour"),
@@ -22527,19 +22526,17 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
     React.useEffect(function () {
         if (isInitialMount.current)
             isInitialMount.current = false;
-        else {
+        else
             props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
-        }
-    }, [offset, perPage]);
+    }, [offset, perPage, sorterValue]);
     React.useEffect(function () {
         if (isInitialMount.current)
             isInitialMount.current = false;
         else {
-            if (!!sorterValue) {
-                props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
-            }
+            setOffset(0);
+            props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
         }
-    }, [sorterValue]);
+    }, [filters]);
     var CustomSelectOption = function (props) { return (React__default.createElement(Option, __assign({}, props),
         props.data.label,
         props.data.icon)); };
@@ -22548,12 +22545,12 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         props.data.icon)); };
     React.useImperativeHandle(ref, function () { return ({
         reloadData: function () {
-            props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
+            props.onDataChange({ offset: offset, perPage: perPage, filters: filters });
         }
     }); });
     React.useEffect(function () {
         try {
-            if (props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0)
+            if (props.isSorter && !!props.sorterSelect)
                 setSorterOptions(props.sorterSelect.flatMap(function (filter) {
                     return ([
                         {
@@ -22583,7 +22580,6 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         }
     }, [sorterOptions]);
     React.useEffect(function () {
-        if (isInitialMount.current)
             isInitialMount.current = false;
         else if (!!submitFiltersState) {
             var filters_1 = props.filterParsedType === "rsql"
@@ -22595,11 +22591,6 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                 props.onDataChange({ offset: offset, perPage: perPage, filters: filters_1, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
             }
         }
-    }, [submitFiltersState]);
-    var handleFilterSubmit = function (filters) {
-        setOffset(0);
-        setFilters(filters);
-        props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
     };
     var changeMainFilter = function (name, content) {
         var _a;
@@ -22669,10 +22660,23 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                             props.data &&
                                 React__default.createElement(React__default.Fragment, null,
                                     React__default.createElement(FiltersViewers, null),
+                                    Object.keys(filters).length > 0 &&
+                                        React__default.createElement("p", { style: { paddingTop: 20 } },
+                                            "Filtres appliqu\u00E9s :",
+                                            Object.entries(props.filtersList).map(function (_a) {
+                                                var key = _a[0], value = _a[1];
+                                                if (lodash.has(filters, value["name"]) && filters[value["name"]].length > 0) {
+                                                    return (React__default.createElement("span", { key: value["name"], style: { padding: '5px 8px', background: "#e9e9e9", borderRadius: 5, margin: '0 5px' } },
+                                                        React__default.createElement("span", { className: 'font-heavy' },
+                                                            value['label'],
+                                                            " : "),
+                                                        React__default.createElement("span", null, filters[value["name"]]),
+                                                        React__default.createElement(reactFontawesome.FontAwesomeIcon, { icon: freeSolidSvgIcons.faTimes, size: "sm", style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return handleRemoveFilter(value["name"]); } })));
+                                                }
+                                            })),
                                     props.isFilter &&
                                         React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType }),
-                                    !!props.data.content && props.data.content.length > 0 &&
-                                        React__default.createElement(Table, { data: props.data.content, columns: props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns })),
+                                    React__default.createElement(Table, { data: props.data.content, columns: props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns })),
                             React__default.createElement("div", { className: "footerTable" },
                                 React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement(reactFontawesome.FontAwesomeIcon, { icon: freeSolidSvgIcons.faChevronLeft }), nextLabel: React__default.createElement(reactFontawesome.FontAwesomeIcon, { icon: freeSolidSvgIcons.faChevronRight }), breakLabel: "...", breakClassName: "break-me", pageCount: (_a = props.data) === null || _a === void 0 ? void 0 : _a.totalPages, marginPagesDisplayed: 2, pageRangeDisplayed: 2, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
                                 React__default.createElement(PerPageContainer, null,

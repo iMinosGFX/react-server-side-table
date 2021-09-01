@@ -32,7 +32,6 @@ type Props = {
     hiddenColumns:string[]
     onHiddenColumnsChange(e:string[]): void
     onLineSpacingChange(e: string): void
-    enabledExport?:boolean
 }
 
 const SettingsInteractor = (props: Props) => { 
@@ -46,8 +45,7 @@ const SettingsInteractor = (props: Props) => {
                 columns={props.columns} 
                 hiddenColumns={props.hiddenColumns}
                 onHiddenColumnsChange={(e) => props.onHiddenColumnsChange(e)} 
-                onLineSpacingChange={e => props.onLineSpacingChange(e)}
-                enabledExport={props.enabledExport}/>}
+                onLineSpacingChange={e => props.onLineSpacingChange(e)}/>}
         </Container>
     )
 }
@@ -58,7 +56,6 @@ type PropsDropdown = {
     hiddenColumns: string[]
     onHiddenColumnsChange(e:string[]): void
     onLineSpacingChange(e: string): void
-    enabledExport?:boolean
 }
 
 const DropdownMenu = (props: PropsDropdown) => {
@@ -103,12 +100,10 @@ const DropdownMenu = (props: PropsDropdown) => {
                         goToMenu="lineSpacing">
                             Comfort d'affichage
                     </DropdownItem>
-                    {!!props.enabledExport && 
-                        <DropdownItem 
-                            leftIcon={faFileExport}>
-                                Export
-                        </DropdownItem>
-                    }
+                    <DropdownItem 
+                        leftIcon={faFileExport}>
+                            Export
+                    </DropdownItem>
                 </div>
             </CSSTransition>
             <CSSTransition in={activeMenu === "columns"} unmountOnExit timeout={200} classNames="menu-secondary" onEnter={calcHeight}>

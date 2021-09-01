@@ -145,7 +145,6 @@ type Props = {
     filterParsedType?: filtersType
     darkMode?: boolean
     withoutHeader?:boolean
-    enabledExport?: boolean
 }
 
 function getOptionsByType(type: string): string{
@@ -222,6 +221,15 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         }
     }, [sorterValue])
     
+    useEffect(() => {
+        if(isInitialMount.current)
+            isInitialMount.current = false
+        else {
+            setOffset(0)
+            props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+        }
+    }, [filters])
+
     const CustomSelectOption = props => (
         <Option {...props}>
           {props.data.label}
@@ -244,7 +252,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
 
     useEffect(() => {
         try{
-            if(props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0)
+            if(props.isSorter && !!props.sorterSelect)
                 setSorterOptions(props.sorterSelect.flatMap(filter => {
                     return ([
                         {
@@ -282,8 +290,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             : parseFilterFuzzy(submitFiltersState)
             if(props.filterParsedType === "rsql" || (props.filterParsedType === "fuzzy")){
                 setOffset(0)
-                setFilters(filters)
-                props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+                props.onDataChange({offset,perPage,filters})
             }  
         }
     }, [submitFiltersState])
@@ -291,7 +298,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
     const handleFilterSubmit = (filters: any) => {
         setOffset(0)
         setFilters(filters)
-        props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+        props.onDataChange({offset,perPage,filters})
     }
     
     const changeMainFilter = (name: string, content: {option:string, value:string}) => {
@@ -310,6 +317,10 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             ...filtersState,
             [name]: _filter
         })
+    }
+
+    const handleRemoveFilter = (propertyName: string) => {
+        setFilters(_.omit(filters, propertyName))
     }
 
     const onClickApply = () => {
@@ -388,16 +399,30 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                 {props.data &&
                                     <>
                                         <FiltersViewers />
+                                        {Object.keys(filters).length > 0 && 
+                                            <p style={{paddingTop: 20}}>
+                                                Filtres appliqués :  
+                                                {Object.entries(props.filtersList).map(([key, value]) => {
+                                                    if(_.has(filters, value["name"]) && filters[value["name"]].length > 0){ 
+                                                        return(
+                                                            <span key={value["name"]} style={{padding: '5px 8px', background:"#e9e9e9", borderRadius: 5, margin: '0 5px'}}>
+                                                                <span className='font-heavy'>{value['label']} : </span>
+                                                                <span>{filters[value["name"]]}</span>
+                                                                <FontAwesomeIcon icon={faTimes} size="sm" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => handleRemoveFilter(value["name"])}/>
+                                                            </span>
+                                                        )
+                                                    }  
+                                                })}
+                                            </p>
+                                        }
                                         {props.isFilter && 
                                             <FiltersInteract filters={props.filtersList} onSubmit={e => handleFilterSubmit(e)} filterParsedType={props.filterParsedType}/>
                                         }
-                                        {!!props.data.content && props.data.content.length > 0 && 
-                                            <Table 
-                                                data={props.data.content} 
-                                                columns={props.columns} 
-                                                renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
-                                                hiddenColumns={hiddenColumns}/>
-                                        }
+                                        <Table 
+                                            data={props.data.content} 
+                                            columns={props.columns} 
+                                            renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
+                                            hiddenColumns={hiddenColumns}/>
                                     </>
                                 }
                                 <div className="footerTable">
