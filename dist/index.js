@@ -22634,7 +22634,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             };
         });
         setFiltersState(_initialFilters);
-        setSubmitFilterState(null);
+        setSubmitFilterState(_initialFilters);
     };
     return (React__default.createElement(FiltersContext.Provider, { value: {
             filtersState: filtersState,
