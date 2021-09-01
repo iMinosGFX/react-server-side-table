@@ -18,11 +18,11 @@ function translateOptionsToOperator(opt: string, val:string): string{
         case 'between' :
             return `=bw=(${val.split('-')[0]},${val.split('-')[1]})`
         case 'atDay' :
-            return `=bw=${moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ssZ')},${moment(val).add(1,'day').startOf('day').format('YYYY-MM-DDTHH:mm:ssZ')}`
+            return `=bw=(${moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS')}Z,${moment(val).add(1,'day').startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS')}Z)`
         case 'minDay' :
-            return `>=${moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ssZ')}`
+            return `>=${moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`
         case 'maxDay' :
-            return `<=${moment(val).endOf('day').format('YYYY-MM-DDTHH:mm:ssZ')}`
+            return `<=${moment(val).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`
         default:
             return opt
     }

@@ -221,14 +221,16 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         }
     }, [sorterValue])
     
-    useEffect(() => {
-        if(isInitialMount.current)
-            isInitialMount.current = false
-        else {
-            setOffset(0)
-            props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
-        }
-    }, [filters])
+    // useEffect(() => {
+    //     if(isInitialMount.current)
+    //         isInitialMount.current = false
+    //     else {
+    //         setOffset(0)
+    //         console.log(filters)
+    //         console.log("load 3")
+    //         props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+    //     }
+    // }, [filters])
 
     const CustomSelectOption = props => (
         <Option {...props}>
@@ -288,7 +290,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             let filters = props.filterParsedType === "rsql" 
             ? parseFilterRSQL(submitFiltersState)
             : parseFilterFuzzy(submitFiltersState)
-            if(props.filterParsedType === "rsql" || (props.filterParsedType === "fuzzy")){
+            if(props.filterParsedType === "rsql" || props.filterParsedType === "fuzzy"){
                 setOffset(0)
                 props.onDataChange({offset,perPage,filters})
             }  

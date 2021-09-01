@@ -22379,11 +22379,11 @@ function translateOptionsToOperator(opt, val) {
         case 'between':
             return "=bw=(" + val.split('-')[0] + "," + val.split('-')[1] + ")";
         case 'atDay':
-            return "=bw=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ssZ') + "," + moment(val).add(1, 'day').startOf('day').format('YYYY-MM-DDTHH:mm:ssZ');
+            return "=bw=(" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "Z," + moment(val).add(1, 'day').startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "Z)";
         case 'minDay':
-            return ">=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ssZ');
+            return ">=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "Z";
         case 'maxDay':
-            return "<=" + moment(val).endOf('day').format('YYYY-MM-DDTHH:mm:ssZ');
+            return "<=" + moment(val).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "Z";
         default:
             return opt;
     }
@@ -22526,17 +22526,19 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
     React.useEffect(function () {
         if (isInitialMount.current)
             isInitialMount.current = false;
-        else
+        else {
             props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
-    }, [offset, perPage, sorterValue]);
+        }
+    }, [offset, perPage]);
     React.useEffect(function () {
         if (isInitialMount.current)
             isInitialMount.current = false;
         else {
-            setOffset(0);
-            props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
+            if (!!sorterValue) {
+                props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
+            }
         }
-    }, [filters]);
+    }, [sorterValue]);
     var CustomSelectOption = function (props) { return (React__default.createElement(Option, __assign({}, props),
         props.data.label,
         props.data.icon)); };
@@ -22545,7 +22547,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         props.data.icon)); };
     React.useImperativeHandle(ref, function () { return ({
         reloadData: function () {
-            props.onDataChange({ offset: offset, perPage: perPage, filters: filters });
+            props.onDataChange({ offset: offset, perPage: perPage, filters: filters, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
         }
     }); });
     React.useEffect(function () {
@@ -22580,17 +22582,22 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         }
     }, [sorterOptions]);
     React.useEffect(function () {
+        if (isInitialMount.current)
             isInitialMount.current = false;
         else if (!!submitFiltersState) {
             var filters_1 = props.filterParsedType === "rsql"
                 ? parseFilterRSQL(submitFiltersState)
                 : parseFilterFuzzy(submitFiltersState);
-            if (props.filterParsedType === "rsql" || (props.filterParsedType === "fuzzy")) {
+            if (props.filterParsedType === "rsql" || props.filterParsedType === "fuzzy") {
                 setOffset(0);
-                setFilters(filters_1);
-                props.onDataChange({ offset: offset, perPage: perPage, filters: filters_1, sorter: sorterValue === null || sorterValue === void 0 ? void 0 : sorterValue.value });
+                props.onDataChange({ offset: offset, perPage: perPage, filters: filters_1 });
             }
         }
+    }, [submitFiltersState]);
+    var handleFilterSubmit = function (filters) {
+        setOffset(0);
+        setFilters(filters);
+        props.onDataChange({ offset: offset, perPage: perPage, filters: filters });
     };
     var changeMainFilter = function (name, content) {
         var _a;
@@ -22603,6 +22610,9 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         var _filter = filtersState[name];
         _filter["optionals"] = content;
         setFiltersState(__assign(__assign({}, filtersState), (_a = {}, _a[name] = _filter, _a)));
+    };
+    var handleRemoveFilter = function (propertyName) {
+        setFilters(lodash.omit(filters, propertyName));
     };
     var onClickApply = function () {
         var _object = lodash.cloneDeep(filtersState);
