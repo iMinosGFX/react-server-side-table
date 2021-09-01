@@ -294,10 +294,6 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
     }
     
-    const handleRemoveFilter = (propertyName: string) => {
-        setFilters(_.omit(filters, propertyName))
-    }
-
     const changeMainFilter = (name: string, content: {option:string, value:string}) => {
         let _filter = filtersState[name]
         _filter["main"] = {option: content.option, value:content.value}
@@ -338,7 +334,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             }
         })
         setFiltersState(_initialFilters)
-        setSubmitFilterState(null)
+        setSubmitFilterState(_initialFilters)
     }
 
     return(

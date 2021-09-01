@@ -22380,7 +22380,7 @@ function translateOptionsToOperator(opt, val) {
         case 'between':
             return "=bw=(" + val.split('-')[0] + "," + val.split('-')[1] + ")";
         case 'atDay':
-            return "=bw=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ssZ') + "-" + moment(val).add(1, 'day').startOf('day').format('YYYY-MM-DDTHH:mm:ssZ');
+            return "=bw=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ssZ') + "," + moment(val).add(1, 'day').startOf('day').format('YYYY-MM-DDTHH:mm:ssZ');
         case 'minDay':
             return ">=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ssZ');
         case 'maxDay':
