@@ -59,6 +59,7 @@ declare type Props = {
     darkMode?: boolean;
     withoutHeader?: boolean;
     translationsProps?: Translations;
+    filtersPosition?: "field" | "list";
 };
 declare const ServerSideTable: React.ForwardRefExoticComponent<Props & React.RefAttributes<unknown>>;
 export default ServerSideTable;

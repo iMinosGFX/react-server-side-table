@@ -19,6 +19,7 @@ declare type Props = {
     onSubmit(e: any): void;
     filterParsedType: filtersType;
     translationsProps?: Translations;
+    filtersPosition?: "field" | "list";
 };
 declare const FiltersInteract: (props: Props) => JSX.Element;
 export default FiltersInteract;

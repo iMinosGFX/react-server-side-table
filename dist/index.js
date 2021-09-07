@@ -22738,7 +22738,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                                                 }
                                             })),
                                     props.isFilter &&
-                                        React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps }),
+                                        React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, filtersPosition: props.filtersPosition }),
                                     React__default.createElement(Table, { data: props.data.content, columns: props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns })),
                             React__default.createElement("div", { className: "footerTable" },
                                 React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement(fa.FaChevronLeft, null), nextLabel: React__default.createElement(fa.FaChevronRight, null), breakLabel: "...", breakClassName: "break-me", pageCount: (_d = props.data) === null || _d === void 0 ? void 0 : _d.totalPages, marginPagesDisplayed: 2, pageRangeDisplayed: 2, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
