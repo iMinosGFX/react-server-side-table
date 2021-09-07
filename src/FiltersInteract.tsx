@@ -21,6 +21,7 @@ type Props = {
     onSubmit(e: any): void
     filterParsedType: filtersType
     translationsProps?: Translations
+    filtersPosition?: "field" | "list"
 }
 
 const Container = styled.div`

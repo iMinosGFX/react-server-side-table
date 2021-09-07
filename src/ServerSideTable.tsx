@@ -147,6 +147,7 @@ type Props = {
     darkMode?: boolean
     withoutHeader?:boolean
     translationsProps?: Translations
+    filtersPosition?: "field" | "list"
 }
 
 function getOptionsByType(type: string): string{
@@ -225,17 +226,6 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         }
     }, [sorterValue])
     
-    // useEffect(() => {
-    //     if(isInitialMount.current)
-    //         isInitialMount.current = false
-    //     else {
-    //         setOffset(0)
-    //         console.log(filters)
-    //         console.log("load 3")
-    //         props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
-    //     }
-    // }, [filters])
-
     const CustomSelectOption = props => (
         <Option {...props}>
           {props.data.label}
@@ -427,7 +417,8 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                                 filters={props.filtersList} 
                                                 onSubmit={e => handleFilterSubmit(e)} 
                                                 filterParsedType={props.filterParsedType}
-                                                translationsProps={translationsProps}/>
+                                                translationsProps={translationsProps}
+                                                filtersPosition={props.filtersPosition}/>
                                         }
                                         <Table 
                                             data={props.data.content} 
