@@ -3,6 +3,7 @@ import { FilterItem } from '../FiltersInteract';
 import styled  from 'styled-components';
 import _ from "lodash"
 import FiltersContext from "../context/filterscontext"
+import { Translations } from '../types/props';
 
 type Props = {
     filter: FilterItem

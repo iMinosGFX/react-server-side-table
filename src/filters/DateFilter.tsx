@@ -5,12 +5,15 @@ import Select from 'react-select';
 import _ from "lodash"
 import {filtersType} from "../ServerSideTable"
 import FiltersContext from "../context/filterscontext"
+import { Translations } from '../types/props';
+import { translations } from '../assets/translations';
 
 type Props = {
     filter: FilterItem
     onEnterPress(): void
     index: "main" | number
     filterParsedType: filtersType
+    translationsProps: Translations
 }
 
 const FilterContainer = styled.div`
@@ -58,16 +61,17 @@ const FilterContainer = styled.div`
     }
 `
 
-const options = [
-    {value:"atDay", label:"Au jour du"},
-    {value:"minDay", label:"A partir de"},
-    {value:"maxDay", label:"Jusqu'au"},
-]
-
 const DateFilter = (props: Props) => {
 
-    const {filter, index} = props
+    const {filter, index, translationsProps} = props
     const filtersState = useContext(FiltersContext)
+
+    const options = [
+        {value:"atDay", label:translationsProps?.filtersViewer?.atDay ?? translations.filtersViewer.atDay},
+        {value:"minDay", label:translationsProps?.filtersViewer?.minDay ?? translations.filtersViewer.minDay},
+        {value:"maxDay", label:translationsProps?.filtersViewer?.maxDay ?? translations.filtersViewer.maxDay},
+    ]
+    
 
     const handleChange = ({currentTarget}) => {
         const {value} = currentTarget
@@ -107,7 +111,7 @@ const DateFilter = (props: Props) => {
                             : _.find(options, {value: filtersState.filtersState[filter.name]["optionals"][index].option}) }
                         onChange={e => handleSelectChange(e)}
                         classNamePrefix="filterSelectChoice"/>
-                    : <span style={{lineHeight: "2.4rem", color: "#435F71"}}>Au jour du</span> 
+                    : <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.atDay ?? translations.filtersViewer.atDay}</span> 
                 }
                 <input 
                     name={filter.name} 

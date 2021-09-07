@@ -1,9 +1,11 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React from 'react'
 import styled  from 'styled-components';
 import ItemFilter from './ItemFilter';
 import _ from "lodash";
 import { filtersType} from './ServerSideTable';
 import FiltersContext from './context/filterscontext';
+import { Translations } from './types/props';
+import {translations} from "./assets/translations"
 
 export type FilterItem = {
     name: string, 
@@ -18,6 +20,7 @@ type Props = {
     filters?: FilterItem[]
     onSubmit(e: any): void
     filterParsedType: filtersType
+    translationsProps?: Translations
 }
 
 const Container = styled.div`
@@ -49,8 +52,7 @@ const Container = styled.div`
 
 const FiltersInteract = (props: Props) => {
 
-    const {filters} = props
-    // const filtersState = useContext(FiltersContext)
+    const {filters, translationsProps} = props
 
     return(
         <FiltersContext.Consumer>
@@ -61,10 +63,13 @@ const FiltersInteract = (props: Props) => {
                     <ItemFilter 
                         key={filter.name} 
                         filter={filter} 
-                        filterParsedType={props.filterParsedType}/>
+                        filterParsedType={props.filterParsedType}
+                        translationsProps={translationsProps}/>
                 ))}
                 <div style={{display: "flex", justifyContent: 'center', alignItems: 'center'}}>
-                    <span className="primary" onClick={() => filterContext.onClearAll()} style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>Effacer tout</span>
+                    <span className="primary" onClick={() => filterContext.onClearAll()} style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
+                        {translationsProps?.clearAll ?? translations.clearAll}
+                    </span>
                 </div>
             </Container>
             )}

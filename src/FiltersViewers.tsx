@@ -1,36 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import _ from "lodash";
 import FiltersContext from "./context/filterscontext"
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-
-function translateOption(opt: string): string{
-    switch(opt){
-        case 'contains':
-            return 'Contient'
-        case 'startWith' :
-            return 'Commence'
-        case 'finishWith' :
-            return 'Fini'
-        case 'equal' :
-            return 'Égal'
-        case 'moreThan' :
-            return 'Supérieur'
-        case 'lessThan' :
-            return 'Inférieur'
-        case 'between' :
-            return 'Entre'
-        case 'atDay' :
-            return 'Au jour du'
-        case 'minDay' :
-            return 'A partir'
-        case 'maxDay' :
-            return `Jusqu'au`
-        default:
-            return opt
-    }
-}
+import {translations} from "./assets/translations"
+import { Translations } from './types/props';
+import { FaTimes } from 'react-icons/fa';
 
 const Container = styled.div`
     height: 60px;
@@ -62,7 +36,41 @@ const Container = styled.div`
     }
 `
 
-const FiltersViewers = () => {
+type Props = {
+    translationsProps?: Translations
+}
+
+
+const FiltersViewers: React.FC<Props> = (props) => {
+
+    const {translationsProps} = props
+
+    function translateOption(opt: string): string{
+        switch(opt){
+            case 'contains':
+                return translationsProps?.filtersViewer?.contain ?? translations.filtersViewer.contain
+            case 'startWith' :
+                return translationsProps?.filtersViewer?.startWith ?? translations.filtersViewer.startWith
+            case 'finishWith' :
+                return translationsProps?.filtersViewer?.finishWith ?? translations.filtersViewer.finishWith
+            case 'equal' :
+                return translationsProps?.filtersViewer?.equal ?? translations.filtersViewer.equal
+            case 'moreThan' :
+                return translationsProps?.filtersViewer?.moreThan ?? translations.filtersViewer.moreThan
+            case 'lessThan' :
+                return translationsProps?.filtersViewer?.lessThan ?? translations.filtersViewer.lessThan
+            case 'between' :
+                return translationsProps?.filtersViewer?.between ?? translations.filtersViewer.between
+            case 'atDay' :
+                return translationsProps?.filtersViewer?.atDay ?? translations.filtersViewer.atDay
+            case 'minDay' :
+                return translationsProps?.filtersViewer?.minDay ?? translations.filtersViewer.minDay
+            case 'maxDay' :
+                return translationsProps?.filtersViewer?.maxDay ?? translations.filtersViewer.maxDay
+            default:
+                return opt
+        }
+    }
 
     const filtersState = useContext(FiltersContext)
 
@@ -103,7 +111,7 @@ const FiltersViewers = () => {
         <>
             {!!filtersState.submitFiltersState && !_.isEmpty(filtersState.submitFiltersState) ?
                 <Container>
-                    <span className="main">Filtres appliqués : </span>
+                    <span className="main">{translationsProps?.appliedFilters ?? translations.appliedFilters}</span>
                     {!!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).flatMap(([key, value], i) => { //Render of all not boolean / geoloc
                         let _array = []
                         if(value["type"] !== "booleanRadio" && value["type"] !== "geoloc"){
@@ -113,7 +121,7 @@ const FiltersViewers = () => {
                                         <span>{value["label"]}</span> : 
                                         <span className="font-italic font-light"> {translateOption(value["main"]["option"])} </span> 
                                         <span className="font-heavy"> {Array.isArray(value["main"]["value"]) ? value["main"]["value"].join(",") : value["main"]["value"]}</span>
-                                        <FontAwesomeIcon icon={faTimes} style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearMain(key)}/>
+                                        <FaTimes style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearMain(key)}/>
                                     </div>
                                 )
                             }
@@ -124,7 +132,7 @@ const FiltersViewers = () => {
                                             <span>{value["label"]}</span> : 
                                             <span className="font-italic font-light"> {translateOption(value["optionals"][keyOption]["option"])}</span> 
                                             <span className="font-heavy"> {value["optionals"][keyOption]["value"]}</span>
-                                            <FontAwesomeIcon icon={faTimes} style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearOptional(key, i)}/>
+                                            <FaTimes style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearOptional(key, i)}/>
                                         </div>
                                     )
                                 }
@@ -137,7 +145,7 @@ const FiltersViewers = () => {
                                             <span>{value["label"]}</span> : 
                                             <span className="font-italic font-light">{radio.label} </span>
                                             <span className="font-heavy"> {radio.status === "NO" ? "Non" : "Oui"}</span>
-                                            <FontAwesomeIcon icon={faTimes} style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearRadio(key, i)}/>
+                                            <FaTimes style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearRadio(key, i)}/>
                                         </div>
                                     )
                                 }
@@ -147,9 +155,9 @@ const FiltersViewers = () => {
                                 _array.push(
                                     <div className="filters-label" key={"geoloc_filter"}>
                                         <span>{value["label"]}</span> : 
-                                        <span className="font-italic font-light"> {value["main"]["option"]}Km autour de </span>
+                                        <span className="font-italic font-light"> {value["main"]["option"]}{translationsProps?.filtersViewer?.kmAroundOf ?? translations.filtersViewer.kmAroundOf}</span>
                                         <span className="font-heavy"> {value["main"]["value"]["display"]} </span>
-                                        <FontAwesomeIcon icon={faTimes} style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearGeoloc(key)}/>
+                                        <FaTimes style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearGeoloc(key)}/>
                                     </div>
                                 )
                             }

@@ -5,3 +5,4 @@ export declare type ICounterProps = {
 };
 declare const App: React.FC<ICounterProps>;
 export default App;
+

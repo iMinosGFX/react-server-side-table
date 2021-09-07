@@ -1,4 +1,5 @@
 import { filtersType } from './ServerSideTable';
+import { Translations } from './types/props';
 export declare type FilterItem = {
     name: string;
     label: string;
@@ -17,6 +18,7 @@ declare type Props = {
     filters?: FilterItem[];
     onSubmit(e: any): void;
     filterParsedType: filtersType;
+    translationsProps?: Translations;
 };
 declare const FiltersInteract: (props: Props) => JSX.Element;
 export default FiltersInteract;

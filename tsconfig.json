@@ -15,7 +15,8 @@
       "allowJs": false,
       "declaration": true,
       "moduleResolution": "node",
+      "resolveJsonModule": true
     },
-    "include": ["src"],
+    "include": ["src", "src/custom.d.ts"],
     "exclude": ["node_modules", "dist", "example", "rollup.config.js"],
   }

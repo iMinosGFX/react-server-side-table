@@ -9,11 +9,14 @@ import _ from "lodash"
 import {filtersType} from "./ServerSideTable";
 import BooleanRadioFilter from './filters/BooleanRadioFilter';
 import FiltersContext from "./context/filterscontext"
+import { Translations } from './types/props';
+import { translations } from './assets/translations';
 
 type Props = {
     filter: FilterItem
     ref?: any
     filterParsedType: filtersType
+    translationsProps?: Translations
 }
 
 const Item = styled("div")<any>`
@@ -108,6 +111,7 @@ const ItemFilter = (props: Props) => {
     const [open, setOpen] = useState<boolean>(false)
     const node = useRef()
     const filtersState = useContext(FiltersContext)
+    const {translationsProps} = props
 
     /**
      * useRef pour remove sidebar info au clic exterieur
@@ -172,7 +176,8 @@ const ItemFilter = (props: Props) => {
                         filter={filter} 
                         index={index === "main" ? "main" : index} 
                         onEnterPress={() => filtersState.onClickApply()}
-                        filterParsedType={props.filterParsedType} />
+                        filterParsedType={props.filterParsedType} 
+                        translationsProps={translationsProps}/>
                 )
             case 'number':
                 return(
@@ -180,7 +185,8 @@ const ItemFilter = (props: Props) => {
                         filter={filter} 
                         index={index === "main" ? "main" : index} 
                         onEnterPress={() => filtersState.onClickApply()}
-                        filterParsedType={props.filterParsedType} />
+                        filterParsedType={props.filterParsedType}
+                        translationsProps={translationsProps} />
                 )
             case 'date': 
                 return(
@@ -188,7 +194,8 @@ const ItemFilter = (props: Props) => {
                         filter={filter} 
                         index={index === "main" ? "main" : index} 
                         onEnterPress={() => filtersState.onClickApply()}
-                        filterParsedType={props.filterParsedType}/>
+                        filterParsedType={props.filterParsedType}
+                        translationsProps={translationsProps}/>
                     )
             case 'checkbox':
                 return(
@@ -197,7 +204,9 @@ const ItemFilter = (props: Props) => {
                 )
             case 'booleanRadio':
                 return(
-                    <BooleanRadioFilter filter={filter}/>
+                    <BooleanRadioFilter 
+                        filter={filter}
+                        translationsProps={translationsProps}/>
                 )
         }
     }
@@ -207,11 +216,11 @@ const ItemFilter = (props: Props) => {
             <span className="filterName">{props.filter.label}</span>
             {open && 
                 <div className="filterPopup">
-                    <h4>Filtre pour {props.filter.label}</h4>
+                    <h4>{translationsProps?.filterFor ?? translations.filterFor} {props.filter.label}</h4>
                     {FilterRender(props.filter, "main")}
                     {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (
                         <React.Fragment key={i}>
-                            <span className="addFilter">ET <span onClick={() => handleRemoveOptionalFilter(i)}>-</span></span>
+                            <span className="addFilter">{translationsProps?.and ?? translations.and} <span onClick={() => handleRemoveOptionalFilter(i)}>-</span></span>
                             {FilterRender(props.filter, i)}
                         </React.Fragment>
                     ))}
@@ -219,8 +228,13 @@ const ItemFilter = (props: Props) => {
                     {props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && <span className="addFilter" onClick={handleAddFilters}>+</span>}
                     
                     <div style={{display: "flex", justifyContent: 'center', alignItems: 'center', width: "inherit", margin: "auto", paddingTop: 5, fontSize: 14}}>
-                        <span className="primary" onClick={() => props.filter.type === "checkbox" ? handleClearCheckboxFilter() : props.filter.type === "booleanRadio" ? handleClearRadioFilter() : props.filter.type === "geoloc" ? handleClearGeolocFilter() : handleClear()}  style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>Effacer</span>
-                        <button className="btn align bg-primary light validBtn" onClick={() => filtersState.onClickApply()}>Appliquer</button>
+                        <span 
+                            className="primary" 
+                            onClick={() => props.filter.type === "checkbox" ? handleClearCheckboxFilter() : props.filter.type === "booleanRadio" ? handleClearRadioFilter() : props.filter.type === "geoloc" ? handleClearGeolocFilter() : handleClear()}  
+                            style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
+                                {translationsProps?.clear ?? translations.clear}
+                        </span>
+                        <button className="btn align bg-primary light validBtn" onClick={() => filtersState.onClickApply()}>{translationsProps?.apply ?? translations.apply}</button>
                     </div>
                 </div>
             }

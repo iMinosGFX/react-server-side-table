@@ -5,12 +5,15 @@ import Select from 'react-select';
 import _ from "lodash"
 import {filtersType} from "../ServerSideTable"
 import FiltersContext from "../context/filterscontext"
+import { Translations } from '../types/props';
+import { translations } from '../assets/translations';
 
 type Props = {
     filter: FilterItem
     onEnterPress(): void
     index: "main" | number
     filterParsedType: filtersType
+    translationsProps: Translations
 }
 
 const FilterContainer = styled.div`
@@ -59,16 +62,16 @@ const FilterContainer = styled.div`
     }
 `
 
-const options = [
-    {value:"contains", label:"Contient"},
-    {value:"startWith", label:"Commence par"},
-    {value:"finishWith", label:"Fini par"},
-]
-
 const TextFilter = (props: Props) => {
 
-    const {filter, index} = props
+    const {filter, index, translationsProps} = props
     const filtersState = useContext(FiltersContext)
+
+    const options = [
+        {value:"contains", label:translationsProps?.filtersViewer?.contain ?? translations.filtersViewer.contain},
+        {value:"startWith", label:translationsProps?.filtersViewer?.startWith ?? translations.filtersViewer.startWith},
+        {value:"finishWith", label:translationsProps?.filtersViewer?.finishWith ?? translations.filtersViewer.finishWith},
+    ]
 
     const handleChange = ({currentTarget}) => {
         const {value} = currentTarget
@@ -108,7 +111,7 @@ const TextFilter = (props: Props) => {
                             : _.find(options, {value: filtersState.filtersState[filter.name]["optionals"][index].option}) }
                         onChange={e => handleSelectChange(e)}
                         classNamePrefix="filterSelectChoice"/>
-                    : <span style={{lineHeight: "2.4rem", color: "#435F71"}}>Contient</span>
+                    : <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.contain ?? translations.filtersViewer.contain}</span>
                 }
                 <input 
                     name={filter.name} 

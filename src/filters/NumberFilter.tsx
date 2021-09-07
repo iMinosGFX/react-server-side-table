@@ -5,12 +5,15 @@ import Select from 'react-select';
 import _ from "lodash"
 import {filtersType} from "../ServerSideTable"
 import FiltersContext from "../context/filterscontext"
+import { Translations } from '../types/props';
+import { translations } from '../assets/translations';
 
 type Props = {
     filter: FilterItem
     onEnterPress(): void
     index: "main" | number
     filterParsedType: filtersType
+    translationsProps: Translations
 }
 
 const FilterContainer = styled.div`
@@ -58,17 +61,18 @@ const FilterContainer = styled.div`
     }
 `
 
-const options = [
-    {value:"equal", label:"Égal à"},
-    {value:"moreThan", label:"Supérieur à"},
-    {value:"lessThan", label:"Inférieur à"},
-    {value:"between", label:`Entre (séparateur -)`},
-]
-
 const TextFilter = (props: Props) => {
 
-    const {filter, index} = props
+    const {filter, index, translationsProps} = props
     const filtersState = useContext(FiltersContext)
+
+    const options = [
+        {value:"equal", label:translationsProps?.filtersViewer?.equal ?? translations.filtersViewer.equal},
+        {value:"moreThan", label:translationsProps?.filtersViewer?.moreThan ?? translations.filtersViewer.moreThan},
+        {value:"lessThan", label:translationsProps?.filtersViewer?.lessThan ?? translations.filtersViewer.lessThan},
+        {value:"between", label:translationsProps?.filtersViewer?.between ?? translations.filtersViewer.between},
+    ]
+    
     
     const handleChange = ({currentTarget}) => {
         const {value} = currentTarget
@@ -108,7 +112,7 @@ const TextFilter = (props: Props) => {
                             : _.find(options, {value: filtersState.filtersState[filter.name]["optionals"][index].option}) }
                         onChange={e => handleSelectChange(e)}
                         classNamePrefix="filterSelectChoice"/>
-                        : <span style={{lineHeight: "2.4rem", color: "#435F71"}}>Égal a</span> 
+                        : <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.equal ?? translations.filtersViewer.equal}</span> 
                     }
                 <input 
                     name={filter.name} 

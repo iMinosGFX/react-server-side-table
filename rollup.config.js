@@ -1,7 +1,8 @@
 import sass from 'rollup-plugin-sass'
 import typescript from 'rollup-plugin-typescript2'
 import commonjs from 'rollup-plugin-commonjs';
-
+import json from 'rollup-plugin-json';
+import svg from "rollup-plugin-svg"
 import pkg from './package.json'
 
 export default {
@@ -18,6 +19,8 @@ export default {
   plugins: [
     sass({ insert: true }), 
     typescript(),
+    json(),
+    svg(),
     commonjs({
       namedExports: {
         'react-table': [

@@ -3,8 +3,6 @@ import Table from './Table'
 import ReactPaginate from 'react-paginate';
 import { TableStyles } from './assets/styled-components';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faChevronLeft, faChevronRight, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import Select, {components} from 'react-select';
 import _ from 'lodash';
 import FiltersInteract, { FilterItem } from './FiltersInteract';
@@ -14,6 +12,9 @@ import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
 import FiltersContext from './context/filterscontext';
 import { getLineSpacing } from './helpers/SSTlocalStorageManagement';
+import {translations} from "./assets/translations"
+import { Translations } from './types/props';
+import {FaChevronRight, FaChevronLeft, FaAngleUp, FaAngleDown, FaTimes} from "react-icons/fa"
 
 const PerPageContainer = styled.div`
 	float: right;
@@ -145,6 +146,7 @@ type Props = {
     filterParsedType?: filtersType
     darkMode?: boolean
     withoutHeader?:boolean
+    translationsProps?: Translations
 }
 
 function getOptionsByType(type: string): string{
@@ -165,6 +167,8 @@ function getOptionsByType(type: string): string{
 FiltersContext.displayName = "ServerSideTableContext";
 
 const ServerSideTable = forwardRef((props: Props, ref: any) => {
+
+    const {translationsProps} = props
 
     useEffect(() => {
         let _initialFilters = {}
@@ -260,12 +264,12 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                         {
                             value: filter.value+",asc",
                             label: filter.label,
-                            icon: <FontAwesomeIcon icon={faAngleDown} size="lg" style={{paddingLeft: 5}} color="#57606f" />
+                            icon: <FaAngleUp style={{paddingLeft: 5}} color="#57606f" />
                         },
                         {
                             value: filter.value+",desc",
                             label: filter.label,
-                            icon: <FontAwesomeIcon icon={faAngleUp} size="lg" style={{paddingLeft: 5}} color="#57606f"/>,
+                            icon: <FaAngleDown style={{paddingLeft: 5}} color="#57606f"/>,
                         }])
                     }))
         } catch {
@@ -366,7 +370,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                             <TableStyles lineSpacing={lineSpacing}>
                                 {!props.withoutHeader && 
                                     <div className="btnActionsContainer">
-                                        {props.showAddBtn ? <button className="btn bg-primary light" onClick={props.onAddClick}>+ Ajouter</button> : <div></div>}
+                                        {props.showAddBtn ? <button className="btn bg-primary light" onClick={props.onAddClick}>{translationsProps?.add ?? translations.add}</button> : <div></div>}
                                         <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
                                         {props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0 && 
                                             <div className="selectContainer">
@@ -385,7 +389,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                                     }}
                                                     value={sorterValue}
                                                     classNamePrefix="ServerSideTableFilterSelect"
-                                                    placeholder="Trier par..."/>
+                                                    placeholder={translationsProps?.sortBy ?? translations.sortBy}/>
                                             </div>
                                         }
                                         <div className="icons">
@@ -393,24 +397,25 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                                 columns={props.columns}
                                                 hiddenColumns={hiddenColumns}
                                                 onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
-                                                onLineSpacingChange={e => setLineSpacing(e)}/>
+                                                onLineSpacingChange={e => setLineSpacing(e)}
+                                                translationsProps={translationsProps}/>
                                             </div>
                                         </div>
                                     </div>
                                 }
                                 {props.data &&
                                     <>
-                                        <FiltersViewers />
+                                        <FiltersViewers translationsProps={translationsProps}/>
                                         {Object.keys(filters).length > 0 && 
                                             <p style={{paddingTop: 20}}>
-                                                Filtres appliqués :  
+                                                {translationsProps?.appliedFilters ?? translations.appliedFilters}
                                                 {Object.entries(props.filtersList).map(([key, value]) => {
                                                     if(_.has(filters, value["name"]) && filters[value["name"]].length > 0){ 
                                                         return(
                                                             <span key={value["name"]} style={{padding: '5px 8px', background:"#e9e9e9", borderRadius: 5, margin: '0 5px'}}>
                                                                 <span className='font-heavy'>{value['label']} : </span>
                                                                 <span>{filters[value["name"]]}</span>
-                                                                <FontAwesomeIcon icon={faTimes} size="sm" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => handleRemoveFilter(value["name"])}/>
+                                                                <FaTimes size="sm" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => handleRemoveFilter(value["name"])}/>
                                                             </span>
                                                         )
                                                     }  
@@ -418,7 +423,11 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                             </p>
                                         }
                                         {props.isFilter && 
-                                            <FiltersInteract filters={props.filtersList} onSubmit={e => handleFilterSubmit(e)} filterParsedType={props.filterParsedType}/>
+                                            <FiltersInteract 
+                                                filters={props.filtersList} 
+                                                onSubmit={e => handleFilterSubmit(e)} 
+                                                filterParsedType={props.filterParsedType}
+                                                translationsProps={translationsProps}/>
                                         }
                                         <Table 
                                             data={props.data.content} 
@@ -429,8 +438,8 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                 }
                                 <div className="footerTable">
                                     <ReactPaginate
-                                        previousLabel={<FontAwesomeIcon icon={faChevronLeft}/>}
-                                        nextLabel={<FontAwesomeIcon icon={faChevronRight}/>}
+                                        previousLabel={<FaChevronLeft />}
+                                        nextLabel={<FaChevronRight />}
                                         breakLabel={"..."}
                                         breakClassName={"break-me"}
                                         pageCount={props.data?.totalPages}
@@ -441,7 +450,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                         subContainerClassName={"pages paginationTable"}
                                         activeClassName={"active"} />
                                     <PerPageContainer>
-                                        <label htmlFor="perPageSelect">Éléments par page</label>
+                                        <label htmlFor="perPageSelect">{translationsProps?.linePerPage ?? translations.linePerPage}</label>
                                         <select name="perPageSelect" value={perPage} onChange={(e) => setPerPage(parseInt(e.target.value))} style={{background: "#fff", width: 30}}>
                                             <option value="5">5</option>
                                             <option value="10">10</option>
