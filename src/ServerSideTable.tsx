@@ -11,10 +11,11 @@ import FiltersViewers from './FiltersViewers';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
 import FiltersContext from './context/filterscontext';
-import { getLineSpacing } from './helpers/SSTlocalStorageManagement';
+import { getLineSpacing, getFilterType } from './helpers/SSTlocalStorageManagement';
 import {translations} from "./assets/translations"
 import { Translations } from './types/props';
 import {FaChevronRight, FaChevronLeft, FaAngleUp, FaAngleDown, FaTimes} from "react-icons/fa"
+import { isMobile } from 'react-device-detect';
 
 const PerPageContainer = styled.div`
 	float: right;
@@ -92,7 +93,14 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
     }
 `
 
+const FiltersContainer = styled('div')<{darkMode: boolean, filterPosition: string}>`
+    background: ${props => props.filterPosition === "list" ? "initial" : props.darkMode ? "#272d3a" : "#f0f0f0"};
+    padding: 0 10px;
+`
+
 export type filtersType = "rsql" | "fuzzy"
+
+export type FiltersPosition = string
 
 export type Sort = {
     sorted: boolean,
@@ -147,7 +155,9 @@ type Props = {
     darkMode?: boolean
     withoutHeader?:boolean
     translationsProps?: Translations
-    filtersPosition?: "field" | "list"
+    enabledExport?: boolean
+    onExportClick?(): void
+    mobileColumns?: any[]
 }
 
 function getOptionsByType(type: string): string{
@@ -198,6 +208,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
     const [sorterOptions, setSorterOptions] = useState<{value:string, label:string, icon:any}[]>([])
     const [sorterValue, setSorterValue] = useState<{value:string, label:string, icon:any}>(null)
     const [lineSpacing, setLineSpacing] = useState<string>(getLineSpacing())
+    const [filterType, setFilterType] = useState<string>(getFilterType())
     const [hiddenColumns, setHiddenColumns] = useState<string[]>([])
     const { Option } = components
 
@@ -315,13 +326,10 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         })
     }
 
-    const handleRemoveFilter = (propertyName: string) => {
-        setFilters(_.omit(filters, propertyName))
-    }
-
     const onClickApply = () => {
         let _object = _.cloneDeep(filtersState)
         setSubmitFilterState(_object)
+        return;
     }
 
     const onClearAll = () => {
@@ -336,12 +344,13 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                     value: filter.type === "booleanRadio" ? 
                         filter.radioValues.map(value => ({name: value.value, status: "NA", label: value.label})) :
                         filter.type === "geoloc" ? {lat:0, lng: 0, display: ""} : ""
-                },
-                optionals: [],
+                },                
+                optionals: []
             }
         })
         setFiltersState(_initialFilters)
-        setSubmitFilterState(_initialFilters)
+        setSubmitFilterState(null)
+        return;
     }
 
     return(
@@ -388,49 +397,44 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                                 hiddenColumns={hiddenColumns}
                                                 onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
                                                 onLineSpacingChange={e => setLineSpacing(e)}
-                                                translationsProps={translationsProps}/>
+                                                onFilterTypeChange={e => setFilterType(e)}
+                                                filterType={filterType}
+                                                translationsProps={translationsProps}
+                                                enabledExport={props.enabledExport}
+                                                onExportClick={props.onExportClick}
+                                                darkMode={props.darkMode}/>
                                             </div>
                                         </div>
                                     </div>
                                 }
                                 {props.data &&
                                     <>
-                                        <FiltersViewers translationsProps={translationsProps}/>
-                                        {Object.keys(filters).length > 0 && 
-                                            <p style={{paddingTop: 20}}>
-                                                {translationsProps?.appliedFilters ?? translations.appliedFilters}
-                                                {Object.entries(props.filtersList).map(([key, value]) => {
-                                                    if(_.has(filters, value["name"]) && filters[value["name"]].length > 0){ 
-                                                        return(
-                                                            <span key={value["name"]} style={{padding: '5px 8px', background:"#e9e9e9", borderRadius: 5, margin: '0 5px'}}>
-                                                                <span className='font-heavy'>{value['label']} : </span>
-                                                                <span>{filters[value["name"]]}</span>
-                                                                <FaTimes size="sm" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => handleRemoveFilter(value["name"])}/>
-                                                            </span>
-                                                        )
-                                                    }  
-                                                })}
-                                            </p>
-                                        }
                                         {props.isFilter && 
-                                            <FiltersInteract 
-                                                filters={props.filtersList} 
-                                                onSubmit={e => handleFilterSubmit(e)} 
-                                                filterParsedType={props.filterParsedType}
-                                                translationsProps={translationsProps}
-                                                filtersPosition={props.filtersPosition}/>
+                                            <>
+                                                <FiltersContainer darkMode={props.darkMode} filterPosition={filterType}>
+                                                    <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode}/>
+                                                    <FiltersInteract 
+                                                        filters={props.filtersList} 
+                                                        onSubmit={e => handleFilterSubmit(e)} 
+                                                        filterParsedType={props.filterParsedType}
+                                                        translationsProps={translationsProps}
+                                                        filtersPosition={filterType}
+                                                        darkMode={props.darkMode}
+                                                        isMobile={isMobile}/>
+                                                </FiltersContainer>
+                                            </>
                                         }
                                         <Table 
                                             data={props.data.content} 
-                                            columns={props.columns} 
+                                            columns={isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns} 
                                             renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
                                             hiddenColumns={hiddenColumns}/>
                                     </>
                                 }
                                 <div className="footerTable">
                                     <ReactPaginate
-                                        previousLabel={<FaChevronLeft />}
-                                        nextLabel={<FaChevronRight />}
+                                        previousLabel={<FaChevronLeft style={{transform: "translateY(2px)"}}/>}
+                                        nextLabel={<FaChevronRight style={{transform: "translateY(2px)"}}/>}
                                         breakLabel={"..."}
                                         breakClassName={"break-me"}
                                         pageCount={props.data?.totalPages}

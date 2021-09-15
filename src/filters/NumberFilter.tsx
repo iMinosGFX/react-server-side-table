@@ -3,10 +3,11 @@ import { FilterItem } from '../FiltersInteract';
 import styled  from 'styled-components';
 import Select from 'react-select';
 import _ from "lodash"
-import {filtersType} from "../ServerSideTable"
+import {FiltersPosition, filtersType} from "../ServerSideTable"
 import FiltersContext from "../context/filterscontext"
 import { Translations } from '../types/props';
 import { translations } from '../assets/translations';
+import { FilterContainer } from '../assets/styled-components';
 
 type Props = {
     filter: FilterItem
@@ -14,56 +15,13 @@ type Props = {
     index: "main" | number
     filterParsedType: filtersType
     translationsProps: Translations
+    filtersPosition?: FiltersPosition
+    darkMode: boolean
 }
-
-const FilterContainer = styled.div`
-    width: 100%;
-    box-sizing: border-box;
-    padding: 8px 5px;
-    margin: 10px 0;
-    .title{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: #888;
-        cursor: pointer;
-        label {
-            font-size: 14px;
-        }
-        .chevron{
-            padding-right: 5px;
-        }
-    }
-    .inputs{
-        display: block;
-        input[type='number']{
-            background: #fff;
-            height: 35px;
-            line-height: 35px;
-            border: 1px solid #E0E0E0;
-            width: 70%;
-            padding-left: 5px;
-            float: right;
-            margin-bottom: 10px;
-            color: #435F71 !important;
-        }
-        .filterSelectChoice__control{
-            border: none;
-            margin-bottom: 10px;
-            border: 1px solid #E0E0E0;
-        }
-        .filterSelectChoice__input{
-            input{
-                height: 1.2rem !important;
-                font-size: 15px !important;
-            }
-        }
-    }
-`
 
 const TextFilter = (props: Props) => {
 
-    const {filter, index, translationsProps} = props
+    const {filter, index, translationsProps, filtersPosition, darkMode} = props
     const filtersState = useContext(FiltersContext)
 
     const options = [
@@ -102,7 +60,7 @@ const TextFilter = (props: Props) => {
     }
 
     return(
-        <FilterContainer>
+        <FilterContainer filtersPosition={filtersPosition} darkMode={darkMode}>
             <div className="inputs">
                 {props.filterParsedType === "rsql" ? 
                     <Select 
@@ -112,7 +70,8 @@ const TextFilter = (props: Props) => {
                             : _.find(options, {value: filtersState.filtersState[filter.name]["optionals"][index].option}) }
                         onChange={e => handleSelectChange(e)}
                         classNamePrefix="filterSelectChoice"/>
-                        : <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.equal ?? translations.filtersViewer.equal}</span> 
+                        : 
+                        filtersPosition === "list" && <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.equal ?? translations.filtersViewer.equal}</span> 
                     }
                 <input 
                     name={filter.name} 

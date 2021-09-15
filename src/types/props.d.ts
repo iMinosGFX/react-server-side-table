@@ -32,5 +32,8 @@ export type Translations = {
         highHeight?: string,
         mediumHeight?:  string,
         smallHeight?: string,
+        filterType:string,
+        filterList: string,
+        filterField: string
     }
 }

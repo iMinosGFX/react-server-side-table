@@ -2,10 +2,13 @@ import React, {useState, useEffect} from 'react'
 import styled from 'styled-components';
 import {CSSTransition} from "react-transition-group"
 import ColumnsSelector from './ColumnsSelector';
-import { saveLineSpacing, getLineSpacing } from './helpers/SSTlocalStorageManagement';
+import { saveLineSpacing, getLineSpacing, getFilterType, saveFilterType } from './helpers/SSTlocalStorageManagement';
 import { FaSlidersH, FaChevronRight, FaEye, FaTextWidth, FaChevronLeft, FaFileExport } from 'react-icons/fa';
 import { Translations } from './types/props';
 import { translations } from './assets/translations';
+import { IoFilterSharp } from 'react-icons/io5';
+import {ImTextHeight} from "react-icons/im"
+import { AiOutlineEye } from 'react-icons/ai';
 
 const Container = styled.div`
     position: relative;
@@ -33,12 +36,17 @@ type Props = {
     hiddenColumns:string[]
     onHiddenColumnsChange(e:string[]): void
     onLineSpacingChange(e: string): void
+    onFilterTypeChange(e: string): void
+    filterType: string
     translationsProps: Translations
+    enabledExport?: boolean
+    onExportClick?(): void
+    darkMode: boolean
 }
 
 const SettingsInteractor = (props: Props) => { 
 
-    const {translationsProps} = props
+    const {translationsProps, enabledExport, onExportClick, filterType, darkMode} = props
     const [open, setOpen] = useState<boolean>(false)
 
     return(
@@ -49,7 +57,12 @@ const SettingsInteractor = (props: Props) => {
                 hiddenColumns={props.hiddenColumns}
                 onHiddenColumnsChange={(e) => props.onHiddenColumnsChange(e)} 
                 onLineSpacingChange={e => props.onLineSpacingChange(e)}
-                translationsProps={translationsProps}/>}
+                onFilterTypeChange={e => props.onFilterTypeChange(e)}
+                translationsProps={translationsProps}
+                enabledExport={enabledExport}
+                filterType={filterType}
+                onExportClick={onExportClick}
+                darkMode={darkMode}/>}
         </Container>
     )
 }
@@ -60,12 +73,17 @@ type PropsDropdown = {
     hiddenColumns: string[]
     onHiddenColumnsChange(e:string[]): void
     onLineSpacingChange(e: string): void
+    onFilterTypeChange(e: string): void
+    filterType: string
     translationsProps: Translations
+    enabledExport?: boolean
+    onExportClick?(): void
+    darkMode: boolean
 }
 
 const DropdownMenu = (props: PropsDropdown) => {
 
-    const {translationsProps} = props
+    const {translationsProps, enabledExport, onExportClick, filterType, darkMode} = props
     const [activeMenu, setActiveMenu] = useState<string>('main')
     const [menuHeight, setMenuHeight] = useState<any>(null)
     const [lineSpacing, setLineSpacing] = useState<string>(getLineSpacing())
@@ -91,25 +109,33 @@ const DropdownMenu = (props: PropsDropdown) => {
     }
 
     return(
-        <div className="table-settings-dropdown" style={{height: menuHeight}}>
+        <div className={`table-settings-dropdown ${darkMode ? "dark" : ""}`}style={{height: menuHeight}}>
             <CSSTransition in={activeMenu === "main"} unmountOnExit timeout={200} classNames="menu-primary" onEnter={calcHeight}>
                 <div className="menu">
                     <DropdownItem 
-                        leftIcon={<FaEye />}
+                        leftIcon={<AiOutlineEye />}
                         rightIcon={<FaChevronRight />}
                         goToMenu="columns">
                             {translationsProps?.settings?.toggleColumns ?? translations.settings.toggleColumns}
                     </DropdownItem>
                     <DropdownItem 
-                        leftIcon={<FaTextWidth />}
+                        leftIcon={<ImTextHeight />}
                         rightIcon={<FaChevronRight />}
                         goToMenu="lineSpacing">
                             {translationsProps?.settings?.lineSpacing ?? translations.settings.lineSpacing}
                     </DropdownItem>
                     <DropdownItem 
-                        leftIcon={<FaFileExport />}>
-                        {translationsProps?.settings?.export ?? translations.settings.export}
+                        leftIcon={<IoFilterSharp />}
+                        rightIcon={<FaChevronRight />}
+                        goToMenu="filterType">
+                            {translationsProps?.settings?.filterType ?? translations.settings.filterType}
                     </DropdownItem>
+                    {enabledExport && 
+                        <DropdownItem
+                            leftIcon={<FaFileExport />}>
+                            <span onClick={onExportClick}>{translationsProps?.settings?.export ?? translations.settings.export} </span>
+                        </DropdownItem>
+                    }
                 </div>
             </CSSTransition>
             <CSSTransition in={activeMenu === "columns"} unmountOnExit timeout={200} classNames="menu-secondary" onEnter={calcHeight}>
@@ -144,6 +170,26 @@ const DropdownMenu = (props: PropsDropdown) => {
                     <label className="radio-container" key="settings_radio_small">
                         <input type="radio" id={`radio_type_settings_radio_small`} name={`radio_type_settings_radio_small`} value={'small'} checked={lineSpacing === 'small'} onChange={() => setLineSpacing('small')}/>
                         <span>{translationsProps?.settings?.smallHeight ?? translations.settings.smallHeight}</span>
+                    </label>
+                    <div style={{paddingTop: 10}}></div>
+                </div>
+            </CSSTransition>
+            <CSSTransition in={activeMenu === "filterType"} unmountOnExit timeout={200} classNames="menu-secondary" onEnter={calcHeight}>
+            <div className="menu">
+                    <DropdownItem 
+                        leftIcon={<FaChevronLeft/>}
+                        goToMenu="main">
+                        {translationsProps?.settings?.back ?? translations.settings.back}
+                    </DropdownItem>
+                    <div style={{paddingTop: 10}}></div>
+                    <label className="radio-container" key="settings_radio_field">
+                        <input type="radio" id={`radio_type_settings_radio_field`} name={`radio_type_settings_radio_field`} value={'field'} checked={filterType === 'field'} onChange={() => {props.onFilterTypeChange('field'); saveFilterType('field')}}/>
+                        <span>{translationsProps?.settings?.filterField ?? translations.settings.filterField}</span>
+                    </label>
+                    <div style={{paddingTop: 5}}></div>
+                    <label className="radio-container" key="settings_radio_list">
+                        <input type="radio" id={`radio_type_settings_radio_list`} name={`radio_type_settings_radio_list`} value={'list'} checked={filterType === 'list'} onChange={() => {props.onFilterTypeChange('list'); saveFilterType('list')}}/>
+                        <span>{translationsProps?.settings?.filterList ?? translations.settings.filterList}</span>
                     </label>
                     <div style={{paddingTop: 10}}></div>
                 </div>

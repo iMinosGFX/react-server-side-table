@@ -1,5 +1,5 @@
 import { FilterItem } from '../FiltersInteract';
-import { filtersType } from "../ServerSideTable";
+import { FiltersPosition, filtersType } from "../ServerSideTable";
 import { Translations } from '../types/props';
 declare type Props = {
     filter: FilterItem;
@@ -7,6 +7,8 @@ declare type Props = {
     index: "main" | number;
     filterParsedType: filtersType;
     translationsProps: Translations;
+    filtersPosition?: FiltersPosition;
+    darkMode: boolean;
 };
 declare const TextFilter: (props: Props) => JSX.Element;
 export default TextFilter;

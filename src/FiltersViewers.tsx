@@ -5,8 +5,10 @@ import styled from 'styled-components';
 import {translations} from "./assets/translations"
 import { Translations } from './types/props';
 import { FaTimes } from 'react-icons/fa';
+import { parseFilterRSQL } from './parserRSQL';
+import { parseFilterFuzzy } from './parserFuzzy';
 
-const Container = styled.div`
+const Container = styled('div')<{darkMode: boolean}>`
     height: 60px;
     width: 100%;
     border-radius: 3px 3px 0 0;
@@ -17,7 +19,7 @@ const Container = styled.div`
     border-bottom: 1px solid #e8e8e8;
     span{
         line-height: 60px;
-        color: #435F71;
+        color: ${props => props.darkMode ? "#e6e6e6" : "#435F71"};
     }
     .filters-label{
         background: rgba(33, 106, 154, .2);
@@ -34,16 +36,20 @@ const Container = styled.div`
             color: #216A9A;
         }
     }
+    @media (max-width: 540px){
+        display: none !important;
+    }
 `
 
 type Props = {
     translationsProps?: Translations
+    darkMode: boolean
 }
 
 
 const FiltersViewers: React.FC<Props> = (props) => {
 
-    const {translationsProps} = props
+    const {translationsProps, darkMode} = props
 
     function translateOption(opt: string): string{
         switch(opt){
@@ -109,8 +115,8 @@ const FiltersViewers: React.FC<Props> = (props) => {
 
     return(
         <>
-            {!!filtersState.submitFiltersState && !_.isEmpty(filtersState.submitFiltersState) ?
-                <Container>
+            {parseFilterRSQL(filtersState.submitFiltersState).length > 0 &&  !_.isEmpty(parseFilterFuzzy(filtersState.submitFiltersState)) ?
+                <Container darkMode={darkMode}>
                     <span className="main">{translationsProps?.appliedFilters ?? translations.appliedFilters}</span>
                     {!!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).flatMap(([key, value], i) => { //Render of all not boolean / geoloc
                         let _array = []
@@ -121,7 +127,7 @@ const FiltersViewers: React.FC<Props> = (props) => {
                                         <span>{value["label"]}</span> : 
                                         <span className="font-italic font-light"> {translateOption(value["main"]["option"])} </span> 
                                         <span className="font-heavy"> {Array.isArray(value["main"]["value"]) ? value["main"]["value"].join(",") : value["main"]["value"]}</span>
-                                        <FaTimes style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearMain(key)}/>
+                                        <FaTimes style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearMain(key)}/>
                                     </div>
                                 )
                             }
@@ -132,7 +138,7 @@ const FiltersViewers: React.FC<Props> = (props) => {
                                             <span>{value["label"]}</span> : 
                                             <span className="font-italic font-light"> {translateOption(value["optionals"][keyOption]["option"])}</span> 
                                             <span className="font-heavy"> {value["optionals"][keyOption]["value"]}</span>
-                                            <FaTimes style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearOptional(key, i)}/>
+                                            <FaTimes style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearOptional(key, i)}/>
                                         </div>
                                     )
                                 }
@@ -164,6 +170,11 @@ const FiltersViewers: React.FC<Props> = (props) => {
                         }
                         return _array
                     })}
+                    <div style={{display: "flex", justifyContent: 'center', alignItems: 'center'}}>
+                        <span className="primary" onClick={() => filtersState.onClearAll()} style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
+                            {translationsProps?.clearAll ?? translations.clearAll}
+                        </span>
+                    </div>
                 </Container>
                 :  <></>
             }

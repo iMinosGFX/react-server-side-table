@@ -2,6 +2,7 @@ import React from 'react';
 import { FilterItem } from './FiltersInteract';
 import { Translations } from './types/props';
 export declare type filtersType = "rsql" | "fuzzy";
+export declare type FiltersPosition = string;
 export declare type Sort = {
     sorted: boolean;
     unsorted: boolean;
@@ -59,7 +60,9 @@ declare type Props = {
     darkMode?: boolean;
     withoutHeader?: boolean;
     translationsProps?: Translations;
-    filtersPosition?: "field" | "list";
+    enabledExport?: boolean;
+    onExportClick?(): void;
+    mobileColumns?: any[];
 };
 declare const ServerSideTable: React.ForwardRefExoticComponent<Props & React.RefAttributes<unknown>>;
 export default ServerSideTable;

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { FiltersPosition } from '../ServerSideTable'
 
 const TableStyles = styled("div")<{lineSpacing: string}>`
   table {
@@ -52,6 +53,9 @@ const TableStyles = styled("div")<{lineSpacing: string}>`
     overflow: hidden;
     z-index: 999;
     transition: height 300ms ease;
+    &.dark{
+        background-color: #141b24;
+    }
     .menu-item{
         height: 35px;
         display: flex;
@@ -107,6 +111,168 @@ const TableStyles = styled("div")<{lineSpacing: string}>`
   }
 `
 
+const ListItem = styled('div')<any>`
+    width: max-content;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    font-size: 15px;
+    margin-bottom: 5px;
+    margin: 1px 10px;
+    border: ${props => props.type === "top" && "1px solid #E1E1E1"};
+    border-radius: 2px;
+    color: #798c97;
+    transition: all 200ms ease;
+    position: relative;
+    /* background:${props => props.type === "top" && "#FFF"}; */
+    &:after{
+        color: #798c97;
+        border-right: 1px solid currentcolor;
+        border-bottom: 1px solid currentcolor;
+        content: '';
+        position: absolute;
+        top: 10px;
+        right: -5px;
+        width: 6px;
+        height: 6px;
+        transform: rotate(45deg)
+    }
+    .filterName{
+        cursor: pointer;
+    }
+    &:hover{
+        background: ${props => props.type === "left" && "rgba(33, 106, 154,.1)"};
+        /* border: ${props => props.type === "top" && "1px solid #216A9A"}; */
+        color: #216A9A;
+    }
+    .filterPopup{
+        width: 300px;
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        position: absolute;
+        top: ${props => props.type === "left" ? "0px" : "110%"};
+        left: ${props => props.type === "left" ? "105%" : "0"};
+        z-index: 9999;
+        padding: 10px;
+        h4{
+            font-weight: 400;
+            color: #435F71 !important;
+        }
+    }
+    .addFilter{
+        clear: both;
+        display: block;
+        width: 40px;
+        border: 1px solid #c8c8c8;
+        background: #fff;
+        color: #707070;
+        border-radius: 2px;
+        text-align: center;
+        margin: 10px auto;
+        position: relative;
+        cursor: pointer;
+        &:after{
+            content:"";
+            z-index: -1;
+            width: 300px;
+            height: 1px;
+            background: #c8c8c8;
+            position: absolute;
+            display: block;
+            top: 50%;
+            left: -130px;
+        }
+    }
+`
+
+const FieldItem = styled('div')<{widthPercentage?: number}>`
+    width: ${props => !!props.widthPercentage ? `${props.widthPercentage}%`: "33%"};
+    padding: 0px 5px;
+    label {
+        padding-left: 5px;
+    }
+    @media (max-width: 540px){
+        width: 100% !important;
+    } 
+`
+
+const FilterContainer = styled('div')<{filtersPosition:FiltersPosition, darkMode?: boolean}>`
+    width: 100%;
+    box-sizing: border-box;
+    padding: ${props => props.filtersPosition === "list" ? "8px 5px" : "0"};
+    margin:  ${props => props.filtersPosition === "list" ? "10px 0" : "0 0 10px 0"};
+    .title{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #888;
+        cursor: pointer;
+        label {
+            font-size: 14px;
+        }
+        .chevron{
+            padding-right: 5px;
+        }
+    }
+    .inputs{
+        display: ${props => props.filtersPosition === "list" ? "block" : "flex"};
+        input[type='text'], input[type='date'], input[type="number"]{
+            background: ${props => props.darkMode ? "#2a3c4e" : "#fff"};
+            height: ${props => props.filtersPosition === "list" ? "35px" : "38px"};
+            line-height: ${props => props.filtersPosition === "list" ? "35px" : "38px"};
+            border: ${props => props.filtersPosition === "list" ? "1px solid #E0E0E0" : "initial"};
+            width: ${props => props.filtersPosition === "list" ? "70%" : "100%"};
+            padding-left: 5px;
+            float: right;
+            margin-bottom: ${props => props.filtersPosition === "list" ? "10px" : "initial"};
+            color: #435F71 !important;
+        }
+
+        .filterSelectChoice__control{
+            border: none;
+            margin-bottom: ${props => props.filtersPosition === "list" ? "10px" : "initial"};
+            border: 1px solid #E0E0E0;
+            width: ${props => props.filtersPosition === "field" ? "170px" : "initial"};
+        }
+        .filterSelectChoice__input{
+            input{
+                height: 1.2rem !important;
+                font-size: 15px !important;
+            }
+        }
+    }
+`
+
+const CheckContainer = styled('div')<{filtersPosition: FiltersPosition}>`
+    max-height: 200px;
+    overflow: auto;
+    position: relative;
+    z-index: 99;
+    background:${props => props.filtersPosition === "field" ? "#fff" : "initial"};
+    box-shadow: ${props => props.filtersPosition === "field" ? "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" : "initial"};
+    .check-group{
+        label{
+            color: #435F71 !important;
+            &:after{
+                top: 2px;
+            }
+        }
+    }
+`
+
+const FieldContainer = styled('div')<{darkMode: boolean}>`
+    line-height: 38px;
+    height: 38px;
+    /* border: 1px solid #E0E0E0; */
+    background:${props => props.darkMode ? "#2a3c4e" : "#fff"};
+    border-radius: 3px;
+`
+
 export {
-    TableStyles
-  }
+  TableStyles,
+  ListItem,
+  FieldItem,
+  FilterContainer,
+  CheckContainer,
+  FieldContainer
+}

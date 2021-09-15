@@ -34,5 +34,8 @@ export const translations: Translations = {
         highHeight: "Grande hauteur",
         mediumHeight: "Hauteur moyenne",
         smallHeight: "Petite hauteur",
+        filterType:"Affichage des filtres",
+        filterList: "Liste",
+        filterField: "Champs"
     }
 }

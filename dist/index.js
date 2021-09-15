@@ -25,9 +25,14 @@ var React__default = _interopDefault(React);
 var styled = _interopDefault(require('styled-components'));
 var Select = require('react-select');
 var Select__default = _interopDefault(Select);
+var bi = require('react-icons/bi');
 var reactTransitionGroup = require('react-transition-group');
 var fa = require('react-icons/fa');
+var io5 = require('react-icons/io5');
+var im = require('react-icons/im');
+var ai = require('react-icons/ai');
 var moment = _interopDefault(require('moment'));
+var reactDeviceDetect = require('react-device-detect');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -4647,8 +4652,13 @@ var reactPaginate = createCommonjsModule(function (module, exports) {
 var ReactPaginate = unwrapExports(reactPaginate);
 var reactPaginate_1 = reactPaginate.ReactPaginate;
 
-var TableStyles = styled("div")(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        text-align:left;\n        padding:0 40px;\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background-color: \"#F5F5F5\";\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n  }\n  @media only screen and (max-width: 540px){\n    th{\n      white-space: nowrap;\n    }\n    tbody{\n      td{\n        white-space: nowrap;\n      }\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    background-color: #fff;\n    box-shadow: $shadow-xl;\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: $gray-medium;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: transparentize($primary, 0.8)\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n"], ["\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        text-align:left;\n        padding:0 40px;\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background-color: \"#F5F5F5\";\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n  }\n  @media only screen and (max-width: 540px){\n    th{\n      white-space: nowrap;\n    }\n    tbody{\n      td{\n        white-space: nowrap;\n      }\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    background-color: #fff;\n    box-shadow: $shadow-xl;\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: $gray-medium;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: transparentize($primary, 0.8)\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n"])), function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; });
-var templateObject_1;
+var TableStyles = styled("div")(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        text-align:left;\n        padding:0 40px;\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background-color: \"#F5F5F5\";\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n  }\n  @media only screen and (max-width: 540px){\n    th{\n      white-space: nowrap;\n    }\n    tbody{\n      td{\n        white-space: nowrap;\n      }\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    background-color: #fff;\n    box-shadow: $shadow-xl;\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: $gray-medium;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: transparentize($primary, 0.8)\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n"], ["\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        text-align:left;\n        padding:0 40px;\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background-color: \"#F5F5F5\";\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n  }\n  @media only screen and (max-width: 540px){\n    th{\n      white-space: nowrap;\n    }\n    tbody{\n      td{\n        white-space: nowrap;\n      }\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    background-color: #fff;\n    box-shadow: $shadow-xl;\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: $gray-medium;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: transparentize($primary, 0.8)\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n"])), function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; });
+var ListItem = styled('div')(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .filterPopup{\n        width: 300px;\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"], ["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .filterPopup{\n        width: 300px;\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"])), function (props) { return props.type === "top" && "1px solid #E1E1E1"; }, function (props) { return props.type === "top" && "#FFF"; }, function (props) { return props.type === "left" && "rgba(33, 106, 154,.1)"; }, function (props) { return props.type === "top" && "1px solid #216A9A"; }, function (props) { return props.type === "left" ? "0px" : "110%"; }, function (props) { return props.type === "left" ? "105%" : "0"; });
+var FieldItem = styled('div')(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    width: ", ";\n    padding: 0px 5px;\n    label {\n        padding-left: 5px;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"], ["\n    width: ", ";\n    padding: 0px 5px;\n    label {\n        padding-left: 5px;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"])), function (props) { return !!props.widthPercentage ? props.widthPercentage + "%" : "33%"; });
+var FilterContainer = styled('div')(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    padding: ", ";\n    margin:  ", ";\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: ", ";\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            background: ", ";\n            height: ", ";\n            line-height: ", ";\n            border: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: ", ";\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            border: none;\n            margin-bottom: ", ";\n            border: 1px solid #E0E0E0;\n            width: ", ";\n        }\n        .filterSelectChoice__input{\n            input{\n                height: 1.2rem !important;\n                font-size: 15px !important;\n            }\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    padding: ", ";\n    margin:  ", ";\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: ", ";\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            background: ", ";\n            height: ", ";\n            line-height: ", ";\n            border: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: ", ";\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            border: none;\n            margin-bottom: ", ";\n            border: 1px solid #E0E0E0;\n            width: ", ";\n        }\n        .filterSelectChoice__input{\n            input{\n                height: 1.2rem !important;\n                font-size: 15px !important;\n            }\n        }\n    }\n"])), function (props) { return props.filtersPosition === "list" ? "8px 5px" : "0"; }, function (props) { return props.filtersPosition === "list" ? "10px 0" : "0 0 10px 0"; }, function (props) { return props.filtersPosition === "list" ? "block" : "flex"; }, function (props) { return props.darkMode ? "#2a3c4e" : "#fff"; }, function (props) { return props.filtersPosition === "list" ? "35px" : "38px"; }, function (props) { return props.filtersPosition === "list" ? "35px" : "38px"; }, function (props) { return props.filtersPosition === "list" ? "1px solid #E0E0E0" : "initial"; }, function (props) { return props.filtersPosition === "list" ? "70%" : "100%"; }, function (props) { return props.filtersPosition === "list" ? "10px" : "initial"; }, function (props) { return props.filtersPosition === "list" ? "10px" : "initial"; }, function (props) { return props.filtersPosition === "field" ? "170px" : "initial"; });
+var CheckContainer = styled('div')(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    max-height: 200px;\n    overflow: auto;\n    position: relative;\n    z-index: 99;\n    background:", ";\n    box-shadow: ", ";\n    .check-group{\n        label{\n            color: #435F71 !important;\n            &:after{\n                top: 2px;\n            }\n        }\n    }\n"], ["\n    max-height: 200px;\n    overflow: auto;\n    position: relative;\n    z-index: 99;\n    background:", ";\n    box-shadow: ", ";\n    .check-group{\n        label{\n            color: #435F71 !important;\n            &:after{\n                top: 2px;\n            }\n        }\n    }\n"])), function (props) { return props.filtersPosition === "field" ? "#fff" : "initial"; }, function (props) { return props.filtersPosition === "field" ? "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" : "initial"; });
+var FieldContainer = styled('div')(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    line-height: 38px;\n    height: 38px;\n    /* border: 1px solid #E0E0E0; */\n    background:", ";\n    border-radius: 3px;\n"], ["\n    line-height: 38px;\n    height: 38px;\n    /* border: 1px solid #E0E0E0; */\n    background:", ";\n    border-radius: 3px;\n"])), function (props) { return props.darkMode ? "#2a3c4e" : "#fff"; });
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6;
 
 var lodash = createCommonjsModule(function (module, exports) {
 (function() {
@@ -21883,13 +21893,15 @@ var translations = {
         highHeight: "Grande hauteur",
         mediumHeight: "Hauteur moyenne",
         smallHeight: "Petite hauteur",
+        filterType: "Affichage des filtres",
+        filterList: "Liste",
+        filterField: "Champs"
     }
 };
 
-var FilterContainer = styled.div(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: block;\n        input[type='text']{\n            background: #fff;\n            height: 35px;\n            line-height: 35px;\n            border: 1px solid #E0E0E0;\n            width: 70%;\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            border: none;\n            margin-bottom: 10px;\n            border: 1px solid #E0E0E0;\n        }\n        .filterSelectChoice__input{\n            input{\n                height: 1.2rem !important;\n                font-size: 15px !important;\n            }\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: block;\n        input[type='text']{\n            background: #fff;\n            height: 35px;\n            line-height: 35px;\n            border: 1px solid #E0E0E0;\n            width: 70%;\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            border: none;\n            margin-bottom: 10px;\n            border: 1px solid #E0E0E0;\n        }\n        .filterSelectChoice__input{\n            input{\n                height: 1.2rem !important;\n                font-size: 15px !important;\n            }\n        }\n    }\n"])));
 var TextFilter = function (props) {
     var _a, _b, _c, _d, _e, _f, _g, _h;
-    var filter = props.filter, index = props.index, translationsProps = props.translationsProps;
+    var filter = props.filter, index = props.index, translationsProps = props.translationsProps, filtersPosition = props.filtersPosition, darkMode = props.darkMode;
     var filtersState = React.useContext(FiltersContext);
     var options = [
         { value: "contains", label: (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.contain) !== null && _b !== void 0 ? _b : translations.filtersViewer.contain },
@@ -21924,23 +21936,22 @@ var TextFilter = function (props) {
             filtersState.changeOptionalsFilters(filter.name, _optionalsFilter);
         }
     };
-    return (React__default.createElement(FilterContainer, null,
+    return (React__default.createElement(FilterContainer, { filtersPosition: filtersPosition, darkMode: darkMode },
         React__default.createElement("div", { className: "inputs" },
             props.filterParsedType === "rsql" ?
                 React__default.createElement(Select__default, { options: options, value: index === "main"
                         ? lodash.find(options, { value: filtersState.filtersState[filter.name]["main"].option })
                         : lodash.find(options, { value: filtersState.filtersState[filter.name]["optionals"][index].option }), onChange: function (e) { return handleSelectChange(e); }, classNamePrefix: "filterSelectChoice" })
-                : React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.contain) !== null && _h !== void 0 ? _h : translations.filtersViewer.contain),
+                :
+                    filtersPosition === "list" && React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.contain) !== null && _h !== void 0 ? _h : translations.filtersViewer.contain),
             React__default.createElement("input", { name: filter.name, type: "text", value: index === "main"
                     ? filtersState.filtersState[filter.name]["main"].value
                     : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
 };
-var templateObject_1$1;
 
-var FilterContainer$1 = styled.div(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: block;\n        input[type='number']{\n            background: #fff;\n            height: 35px;\n            line-height: 35px;\n            border: 1px solid #E0E0E0;\n            width: 70%;\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n        .filterSelectChoice__control{\n            border: none;\n            margin-bottom: 10px;\n            border: 1px solid #E0E0E0;\n        }\n        .filterSelectChoice__input{\n            input{\n                height: 1.2rem !important;\n                font-size: 15px !important;\n            }\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: block;\n        input[type='number']{\n            background: #fff;\n            height: 35px;\n            line-height: 35px;\n            border: 1px solid #E0E0E0;\n            width: 70%;\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n        .filterSelectChoice__control{\n            border: none;\n            margin-bottom: 10px;\n            border: 1px solid #E0E0E0;\n        }\n        .filterSelectChoice__input{\n            input{\n                height: 1.2rem !important;\n                font-size: 15px !important;\n            }\n        }\n    }\n"])));
 var TextFilter$1 = function (props) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-    var filter = props.filter, index = props.index, translationsProps = props.translationsProps;
+    var filter = props.filter, index = props.index, translationsProps = props.translationsProps, filtersPosition = props.filtersPosition, darkMode = props.darkMode;
     var filtersState = React.useContext(FiltersContext);
     var options = [
         { value: "equal", label: (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.equal) !== null && _b !== void 0 ? _b : translations.filtersViewer.equal },
@@ -21976,39 +21987,62 @@ var TextFilter$1 = function (props) {
             filtersState.changeOptionalsFilters(filter.name, _optionalsFilter);
         }
     };
-    return (React__default.createElement(FilterContainer$1, null,
+    return (React__default.createElement(FilterContainer, { filtersPosition: filtersPosition, darkMode: darkMode },
         React__default.createElement("div", { className: "inputs" },
             props.filterParsedType === "rsql" ?
                 React__default.createElement(Select__default, { options: options, value: index === "main"
                         ? lodash.find(options, { value: filtersState.filtersState[filter.name]["main"].option })
                         : lodash.find(options, { value: filtersState.filtersState[filter.name]["optionals"][index].option }), onChange: function (e) { return handleSelectChange(e); }, classNamePrefix: "filterSelectChoice" })
-                : React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _j === void 0 ? void 0 : _j.equal) !== null && _k !== void 0 ? _k : translations.filtersViewer.equal),
+                :
+                    filtersPosition === "list" && React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _j === void 0 ? void 0 : _j.equal) !== null && _k !== void 0 ? _k : translations.filtersViewer.equal),
             React__default.createElement("input", { name: filter.name, type: "number", value: index === "main"
                     ? filtersState.filtersState[filter.name]["main"].value
                     : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
 };
-var templateObject_1$2;
 
-var FilterContainer$2 = styled.div(templateObject_1$3 || (templateObject_1$3 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .checksContainer{\n        max-height: 200px;\n        overflow: auto;\n        .check-group{\n            label{\n                color: #435F71 !important;\n                &:after{\n                    top: 2px;\n                }\n            }\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .checksContainer{\n        max-height: 200px;\n        overflow: auto;\n        .check-group{\n            label{\n                color: #435F71 !important;\n                &:after{\n                    top: 2px;\n                }\n            }\n        }\n    }\n"])));
+var ListContainer = styled.div(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n"])));
 var CheckboxFilter = function (props) {
+    var _a, _b, _c, _d, _e;
+    var filtersPosition = props.filtersPosition, darkMode = props.darkMode;
     var filtersState = React.useContext(FiltersContext);
+    var node = React.useRef();
+    var _f = React.useState(false), open = _f[0], setOpen = _f[1];
+    var handleClick = function (e) {
+        if (node.current && node.current.contains(e.target))
+            return;
+        else
+            setOpen(false);
+    };
+    React.useEffect(function () {
+        document.addEventListener("mousedown", handleClick);
+        return function () { return document.removeEventListener("mousedown", handleClick); };
+    }, []);
     var handleChange = function (check) {
         filtersState.changeMainFilter(props.filter.name, {
             option: filtersState.filtersState[props.filter.name]["main"].option,
             value: lodash.xor(filtersState.filtersState[props.filter.name]["main"].value, [check])
         });
     };
-    return (React__default.createElement(FilterContainer$2, null,
-        React__default.createElement("div", { className: "checksContainer" }, props.filter.checkboxValues.map(function (check, i) { return (React__default.createElement("div", { className: "check-group", style: { paddingTop: 10 }, key: i },
-            React__default.createElement("input", { type: "checkbox", name: check.value, id: check.value, onChange: function () { return handleChange(check.value); }, checked: filtersState.filtersState[props.filter.name]["main"].value.includes(check.value) }),
-            React__default.createElement("label", { htmlFor: check.value }, check.label))); }))));
+    if (filtersPosition === "field") {
+        return (React__default.createElement(FieldContainer, { ref: node, onClick: function () { setOpen(true); }, darkMode: darkMode },
+            React__default.createElement("label", null, (!!filtersState.submitFiltersState && !!((_a = filtersState.submitFiltersState) === null || _a === void 0 ? void 0 : _a[props.filter.name]) && ((_c = (_b = filtersState === null || filtersState === void 0 ? void 0 : filtersState.submitFiltersState[props.filter.name]) === null || _b === void 0 ? void 0 : _b.main) === null || _c === void 0 ? void 0 : _c.value.length) > 0) ? (_e = (_d = filtersState === null || filtersState === void 0 ? void 0 : filtersState.submitFiltersState[props.filter.name]) === null || _d === void 0 ? void 0 : _d.main) === null || _e === void 0 ? void 0 : _e.value.join(',') : "Choisir"),
+            open &&
+                React__default.createElement(CheckContainer, { filtersPosition: filtersPosition }, props.filter.checkboxValues.map(function (check, i) { return (React__default.createElement("div", { className: "check-group", style: { paddingTop: 10 }, key: i },
+                    React__default.createElement("input", { type: "checkbox", name: check.value, id: check.value, onChange: function () { return handleChange(check.value); }, checked: filtersState.filtersState[props.filter.name]["main"].value.includes(check.value) }),
+                    React__default.createElement("label", { htmlFor: check.value }, check.label))); }))));
+    }
+    else {
+        return (React__default.createElement(ListContainer, null,
+            React__default.createElement(CheckContainer, { filtersPosition: filtersPosition }, props.filter.checkboxValues.map(function (check, i) { return (React__default.createElement("div", { className: "check-group", style: { paddingTop: 10 }, key: i },
+                React__default.createElement("input", { type: "checkbox", name: check.value, id: check.value, onChange: function () { return handleChange(check.value); }, checked: filtersState.filtersState[props.filter.name]["main"].value.includes(check.value) }),
+                React__default.createElement("label", { htmlFor: check.value }, check.label))); }))));
+    }
 };
-var templateObject_1$3;
+var templateObject_1$1;
 
-var FilterContainer$3 = styled.div(templateObject_1$4 || (templateObject_1$4 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: block;\n        input[type='date']{\n            background: #fff;\n            height: 35px;\n            line-height: 35px;\n            border: 1px solid #E0E0E0;\n            width: 70%;\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n        .filterSelectChoice__control{\n            border: none;\n            margin-bottom: 10px;\n            border: 1px solid #E0E0E0;\n        }\n        .filterSelectChoice__input{\n            input{\n                height: 1.2rem !important;\n                font-size: 15px !important;\n            }\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 5px;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: block;\n        input[type='date']{\n            background: #fff;\n            height: 35px;\n            line-height: 35px;\n            border: 1px solid #E0E0E0;\n            width: 70%;\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n        .filterSelectChoice__control{\n            border: none;\n            margin-bottom: 10px;\n            border: 1px solid #E0E0E0;\n        }\n        .filterSelectChoice__input{\n            input{\n                height: 1.2rem !important;\n                font-size: 15px !important;\n            }\n        }\n    }\n"])));
 var DateFilter = function (props) {
     var _a, _b, _c, _d, _e, _f, _g, _h;
-    var filter = props.filter, index = props.index, translationsProps = props.translationsProps;
+    var filter = props.filter, index = props.index, translationsProps = props.translationsProps, filtersPosition = props.filtersPosition, darkMode = props.darkMode;
     var filtersState = React.useContext(FiltersContext);
     var options = [
         { value: "atDay", label: (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.atDay) !== null && _b !== void 0 ? _b : translations.filtersViewer.atDay },
@@ -22043,48 +22077,82 @@ var DateFilter = function (props) {
             filtersState.changeOptionalsFilters(filter.name, _optionalsFilter);
         }
     };
-    return (React__default.createElement(FilterContainer$3, null,
+    return (React__default.createElement(FilterContainer, { filtersPosition: filtersPosition, darkMode: darkMode },
         React__default.createElement("div", { className: "inputs" },
             props.filterParsedType === "rsql" ?
                 React__default.createElement(Select__default, { options: options, value: index === "main"
                         ? lodash.find(options, { value: filtersState.filtersState[filter.name]["main"].option })
                         : lodash.find(options, { value: filtersState.filtersState[filter.name]["optionals"][index].option }), onChange: function (e) { return handleSelectChange(e); }, classNamePrefix: "filterSelectChoice" })
-                : React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.atDay) !== null && _h !== void 0 ? _h : translations.filtersViewer.atDay),
+                :
+                    filtersPosition === "list" && React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.atDay) !== null && _h !== void 0 ? _h : translations.filtersViewer.atDay),
             React__default.createElement("input", { name: filter.name, type: "date", value: index === "main"
                     ? filtersState.filtersState[filter.name]["main"].value
                     : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
 };
-var templateObject_1$4;
 
-var FilterContainer$4 = styled.div(templateObject_1$5 || (templateObject_1$5 = __makeTemplateObject(["\nwidth: 100%;\nbox-sizing: border-box;\npadding: 8px 5px;\nmargin: 10px 0;\n.title{\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    color: #888;\n    cursor: pointer;\n    label {\n        font-size: 14px;\n    }\n    .chevron{\n        padding-right: 5px;\n    }\n}\n.checksContainer{\n    max-height: 300px;\n    overflow: auto;\n    .check-group{\n        label{\n            &:after{\n                top: 2px;\n            }\n        }\n    }\n}\n"], ["\nwidth: 100%;\nbox-sizing: border-box;\npadding: 8px 5px;\nmargin: 10px 0;\n.title{\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    color: #888;\n    cursor: pointer;\n    label {\n        font-size: 14px;\n    }\n    .chevron{\n        padding-right: 5px;\n    }\n}\n.checksContainer{\n    max-height: 300px;\n    overflow: auto;\n    .check-group{\n        label{\n            &:after{\n                top: 2px;\n            }\n        }\n    }\n}\n"])));
+var FilterContainer$1 = styled.div(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject(["\nwidth: 100%;\nbox-sizing: border-box;\npadding: 8px 5px;\nmargin: 10px 0;\n.title{\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    color: #888;\n    cursor: pointer;\n    label {\n        font-size: 14px;\n    }\n    .chevron{\n        padding-right: 5px;\n    }\n}\n.checksContainer{\n    max-height: 300px;\n    overflow: auto;\n    .check-group{\n        label{\n            &:after{\n                top: 2px;\n            }\n        }\n    }\n}\n"], ["\nwidth: 100%;\nbox-sizing: border-box;\npadding: 8px 5px;\nmargin: 10px 0;\n.title{\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    color: #888;\n    cursor: pointer;\n    label {\n        font-size: 14px;\n    }\n    .chevron{\n        padding-right: 5px;\n    }\n}\n.checksContainer{\n    max-height: 300px;\n    overflow: auto;\n    .check-group{\n        label{\n            &:after{\n                top: 2px;\n            }\n        }\n    }\n}\n"])));
 var BooleanRadioFilter = function (props) {
+    var _a, _b;
     var filtersState = React.useContext(FiltersContext);
-    var translationsProps = props.translationsProps;
+    var translationsProps = props.translationsProps, filtersPosition = props.filtersPosition, darkMode = props.darkMode;
+    var node = React.useRef();
+    var _c = React.useState(false), open = _c[0], setOpen = _c[1];
+    var handleClick = function (e) {
+        if (node.current && node.current.contains(e.target))
+            return;
+        else
+            setOpen(false);
+    };
+    React.useEffect(function () {
+        document.addEventListener("mousedown", handleClick);
+        return function () { return document.removeEventListener("mousedown", handleClick); };
+    }, []);
     var handleChange = function (index, status) {
         var _preventArray = filtersState.filtersState[props.filter.name]["main"];
         _preventArray["value"][index].status = status;
         filtersState.changeMainFilter(props.filter.name, _preventArray);
     };
-    return (React__default.createElement(FilterContainer$4, null,
-        React__default.createElement("div", { className: "checksContainer" }, filtersState.filtersState[props.filter.name]["main"]["value"].flatMap(function (radio, i) {
-            var _a, _b, _c;
-            return (React__default.createElement("div", { key: i },
-                React__default.createElement("label", null, radio.label),
-                React__default.createElement("div", { style: { display: 'flex', paddingTop: 5 } },
-                    React__default.createElement("label", { className: "radio-container" },
-                        React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_YES", name: "radio_type_" + radio.name + "_YES", value: "YES", checked: radio.status === "YES", onChange: function () { return handleChange(i, "YES"); } }),
-                        React__default.createElement("span", null, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.yes) !== null && _a !== void 0 ? _a : translations.yes)),
-                    React__default.createElement("label", { className: "radio-container" },
-                        React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_NO", name: "radio_type_" + radio.name + "_NO", value: "NO", checked: radio.status === "NO", onChange: function () { return handleChange(i, "NO"); } }),
-                        React__default.createElement("span", null, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.no) !== null && _b !== void 0 ? _b : translations.no)),
-                    React__default.createElement("label", { className: "radio-container" },
-                        React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_NA", name: "radio_type_" + radio.name + "_NA", value: "NA", checked: radio.status === "NA", onChange: function () { return handleChange(i, "NA"); } }),
-                        React__default.createElement("span", null, (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.na) !== null && _c !== void 0 ? _c : translations.na)))));
-        }))));
+    if (filtersPosition === "field") {
+        return (React__default.createElement(FieldContainer, { ref: node, onClick: function () { setOpen(true); }, darkMode: darkMode },
+            React__default.createElement("label", null, (!!filtersState.submitFiltersState && !!((_a = filtersState.submitFiltersState) === null || _a === void 0 ? void 0 : _a[props.filter.name])) ? (_b = filtersState.submitFiltersState) === null || _b === void 0 ? void 0 : _b[props.filter.name].main.value.map(function (filter) { return filter.label + "," + filter.status; }) : "Choisir"),
+            open &&
+                React__default.createElement(CheckContainer, { filtersPosition: filtersPosition }, filtersState.filtersState[props.filter.name]["main"]["value"].flatMap(function (radio, i) {
+                    var _a, _b, _c;
+                    return (React__default.createElement("div", { key: i },
+                        React__default.createElement("label", null, radio.label),
+                        React__default.createElement("div", { style: { display: 'flex', paddingTop: 5 } },
+                            React__default.createElement("label", { className: "radio-container" },
+                                React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_YES", name: "radio_type_" + radio.name + "_YES", value: "YES", checked: radio.status === "YES", onChange: function () { return handleChange(i, "YES"); } }),
+                                React__default.createElement("span", null, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.yes) !== null && _a !== void 0 ? _a : translations.yes)),
+                            React__default.createElement("label", { className: "radio-container" },
+                                React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_NO", name: "radio_type_" + radio.name + "_NO", value: "NO", checked: radio.status === "NO", onChange: function () { return handleChange(i, "NO"); } }),
+                                React__default.createElement("span", null, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.no) !== null && _b !== void 0 ? _b : translations.no)),
+                            React__default.createElement("label", { className: "radio-container" },
+                                React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_NA", name: "radio_type_" + radio.name + "_NA", value: "NA", checked: radio.status === "NA", onChange: function () { return handleChange(i, "NA"); } }),
+                                React__default.createElement("span", null, (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.na) !== null && _c !== void 0 ? _c : translations.na)))));
+                }))));
+    }
+    else {
+        return (React__default.createElement(FilterContainer$1, null,
+            React__default.createElement(CheckContainer, { filtersPosition: filtersPosition }, filtersState.filtersState[props.filter.name]["main"]["value"].flatMap(function (radio, i) {
+                var _a, _b, _c;
+                return (React__default.createElement("div", { key: i },
+                    React__default.createElement("label", null, radio.label),
+                    React__default.createElement("div", { style: { display: 'flex', paddingTop: 5 } },
+                        React__default.createElement("label", { className: "radio-container" },
+                            React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_YES", name: "radio_type_" + radio.name + "_YES", value: "YES", checked: radio.status === "YES", onChange: function () { return handleChange(i, "YES"); } }),
+                            React__default.createElement("span", null, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.yes) !== null && _a !== void 0 ? _a : translations.yes)),
+                        React__default.createElement("label", { className: "radio-container" },
+                            React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_NO", name: "radio_type_" + radio.name + "_NO", value: "NO", checked: radio.status === "NO", onChange: function () { return handleChange(i, "NO"); } }),
+                            React__default.createElement("span", null, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.no) !== null && _b !== void 0 ? _b : translations.no)),
+                        React__default.createElement("label", { className: "radio-container" },
+                            React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_NA", name: "radio_type_" + radio.name + "_NA", value: "NA", checked: radio.status === "NA", onChange: function () { return handleChange(i, "NA"); } }),
+                            React__default.createElement("span", null, (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.na) !== null && _c !== void 0 ? _c : translations.na)))));
+            }))));
+    }
 };
-var templateObject_1$5;
+var templateObject_1$2;
 
-var Item = styled("div")(templateObject_1$6 || (templateObject_1$6 = __makeTemplateObject(["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .filterPopup{\n        width: 300px;\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"], ["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .filterPopup{\n        width: 300px;\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"])), function (props) { return props.type === "top" && "1px solid #E1E1E1"; }, function (props) { return props.type === "top" && "#FFF"; }, function (props) { return props.type === "left" && "rgba(33, 106, 154,.1)"; }, function (props) { return props.type === "top" && "1px solid #216A9A"; }, function (props) { return props.type === "left" ? "0px" : "110%"; }, function (props) { return props.type === "left" ? "105%" : "0"; });
 function getOptionsByType(type) {
     switch (type) {
         case 'text':
@@ -22100,7 +22168,7 @@ var ItemFilter = function (props) {
     var _d = React.useState(false), open = _d[0], setOpen = _d[1];
     var node = React.useRef();
     var filtersState = React.useContext(FiltersContext);
-    var translationsProps = props.translationsProps;
+    var translationsProps = props.translationsProps, filtersPosition = props.filtersPosition, darkMode = props.darkMode;
     var handleClick = function (e) {
         if (node.current && node.current.contains(e.target)) {
             return;
@@ -22147,52 +22215,87 @@ var ItemFilter = function (props) {
     function FilterRender(filter, index) {
         switch (filter.type) {
             case 'text':
-                return (React__default.createElement(TextFilter, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { return filtersState.onClickApply(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps }));
+                return (React__default.createElement(TextFilter, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { return filtersState.onClickApply(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, filtersPosition: filtersPosition, darkMode: darkMode }));
             case 'number':
-                return (React__default.createElement(TextFilter$1, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { return filtersState.onClickApply(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps }));
+                return (React__default.createElement(TextFilter$1, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { return filtersState.onClickApply(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, filtersPosition: filtersPosition, darkMode: darkMode }));
             case 'date':
-                return (React__default.createElement(DateFilter, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { return filtersState.onClickApply(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps }));
+                return (React__default.createElement(DateFilter, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { return filtersState.onClickApply(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, filtersPosition: filtersPosition, darkMode: darkMode }));
             case 'checkbox':
-                return (React__default.createElement(CheckboxFilter, { filter: filter }));
+                return (React__default.createElement(CheckboxFilter, { filter: filter, filtersPosition: filtersPosition, darkMode: darkMode }));
             case 'booleanRadio':
-                return (React__default.createElement(BooleanRadioFilter, { filter: filter, translationsProps: translationsProps }));
+                return (React__default.createElement(BooleanRadioFilter, { filter: filter, translationsProps: translationsProps, filtersPosition: filtersPosition, darkMode: darkMode }));
         }
     }
-    return (React__default.createElement(Item, { ref: node, onClick: function () { setOpen(true); } },
-        React__default.createElement("span", { className: "filterName" }, props.filter.label),
-        open &&
-            React__default.createElement("div", { className: "filterPopup" },
-                React__default.createElement("h4", null, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filterFor) !== null && _a !== void 0 ? _a : translations.filterFor,
+    if (filtersPosition === "field") {
+        return (React__default.createElement(React__default.Fragment, null,
+            React__default.createElement(FieldItem, { widthPercentage: props.filter.widthPercentage },
+                React__default.createElement("label", null,
+                    props.filter.label,
                     " ",
-                    props.filter.label),
-                FilterRender(props.filter, "main"),
-                filtersState.filtersState[props.filter.name].optionals.map(function (optional, i) {
-                    var _a;
-                    return (React__default.createElement(React__default.Fragment, { key: i },
-                        React__default.createElement("span", { className: "addFilter" }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.and) !== null && _a !== void 0 ? _a : translations.and,
-                            " ",
-                            React__default.createElement("span", { onClick: function () { return handleRemoveOptionalFilter(i); } }, "-")),
-                        FilterRender(props.filter, i)));
-                }),
-                props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && React__default.createElement("span", { className: "addFilter", onClick: handleAddFilters }, "+"),
-                React__default.createElement("div", { style: { display: "flex", justifyContent: 'center', alignItems: 'center', width: "inherit", margin: "auto", paddingTop: 5, fontSize: 14 } },
-                    React__default.createElement("span", { className: "primary", onClick: function () { return props.filter.type === "checkbox" ? handleClearCheckboxFilter() : props.filter.type === "booleanRadio" ? handleClearRadioFilter() : props.filter.type === "geoloc" ? handleClearGeolocFilter() : handleClear(); }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer' } }, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.clear) !== null && _b !== void 0 ? _b : translations.clear),
-                    React__default.createElement("button", { className: "btn align bg-primary light validBtn", onClick: function () { return filtersState.onClickApply(); } }, (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.apply) !== null && _c !== void 0 ? _c : translations.apply)))));
+                    props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && React__default.createElement("span", { className: "addFilter", style: { cursor: "pointer" }, onClick: handleAddFilters }, "+")),
+                FilterRender(props.filter, "main")),
+            filtersState.filtersState[props.filter.name].optionals.map(function (optional, i) { return (React__default.createElement(FieldItem, { widthPercentage: props.filter.widthPercentage, key: i },
+                React__default.createElement("label", null,
+                    props.filter.label,
+                    " ",
+                    React__default.createElement("span", { style: { cursor: "pointer" }, onClick: function () { return handleRemoveOptionalFilter(i); } }, "-")),
+                FilterRender(props.filter, i))); })));
+    }
+    else {
+        return (React__default.createElement(ListItem, { ref: node, onClick: function () { setOpen(true); } },
+            React__default.createElement("span", { className: "filterName" }, props.filter.label),
+            open &&
+                React__default.createElement("div", { className: "filterPopup" },
+                    React__default.createElement("h4", null, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filterFor) !== null && _a !== void 0 ? _a : translations.filterFor,
+                        " ",
+                        props.filter.label),
+                    FilterRender(props.filter, "main"),
+                    filtersState.filtersState[props.filter.name].optionals.map(function (optional, i) {
+                        var _a;
+                        return (React__default.createElement(React__default.Fragment, { key: i },
+                            React__default.createElement("span", { className: "addFilter" }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.and) !== null && _a !== void 0 ? _a : translations.and,
+                                " ",
+                                React__default.createElement("span", { onClick: function () { return handleRemoveOptionalFilter(i); } }, "-")),
+                            FilterRender(props.filter, i)));
+                    }),
+                    props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && React__default.createElement("span", { className: "addFilter", onClick: handleAddFilters }, "+"),
+                    React__default.createElement("div", { style: { display: "flex", justifyContent: 'center', alignItems: 'center', width: "inherit", margin: "auto", paddingTop: 5, fontSize: 14 } },
+                        React__default.createElement("span", { className: "primary", onClick: function () { return props.filter.type === "checkbox" ? handleClearCheckboxFilter() : props.filter.type === "booleanRadio" ? handleClearRadioFilter() : props.filter.type === "geoloc" ? handleClearGeolocFilter() : handleClear(); }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer' } }, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.clear) !== null && _b !== void 0 ? _b : translations.clear),
+                        React__default.createElement("button", { className: "btn align bg-primary light validBtn", onClick: function () { return filtersState.onClickApply(); } }, (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.apply) !== null && _c !== void 0 ? _c : translations.apply)))));
+    }
 };
-var templateObject_1$6;
 
-var Container = styled.div(templateObject_1$7 || (templateObject_1$7 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n"], ["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n"])));
+var ListContainer$1 = styled.div(templateObject_1$3 || (templateObject_1$3 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n"], ["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n"])));
+var SectionFilters = styled('div')(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    margin-bottom: 10px;\n    p{\n        width: 100%;\n        text-align: center;\n        display: flex;\n        align-items: center;\n        justify-content: center;\n    }\n    @media (max-width: 540px){\n        flex-direction: column;\n    }\n"], ["\n    display: flex;\n    align-items: center;\n    margin-bottom: 10px;\n    p{\n        width: 100%;\n        text-align: center;\n        display: flex;\n        align-items: center;\n        justify-content: center;\n    }\n    @media (max-width: 540px){\n        flex-direction: column;\n    }\n"])));
+var FieldContainer$1 = styled('div')(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject(["\n    display: flex;\n    flex-wrap: wrap;\n    width: 90%;\n    padding: 10px 0;\n    @media (max-width: 540px){\n        flex-direction: column;\n        width: 100%;\n    }\n"], ["\n    display: flex;\n    flex-wrap: wrap;\n    width: 90%;\n    padding: 10px 0;\n    @media (max-width: 540px){\n        flex-direction: column;\n        width: 100%;\n    }\n"])));
+var SearchContainer = styled('div')(templateObject_4$1 || (templateObject_4$1 = __makeTemplateObject(["\n    width: 10%;\n    display: flex;\n    justify-content: space-evenly;\n    align-items: center;\n    label{\n        display: none;\n    }\n    span{\n        width: 30px;\n        height: 30px;\n        display: flex;\n        box-shadow:\n        0 0px 1.1px rgba(0, 0, 0, 0.043),\n        0 0px 2.8px rgba(0, 0, 0, 0.062),\n        0 0px 5.7px rgba(0, 0, 0, 0.078),\n        0 0px 11.7px rgba(0, 0, 0, 0.097),\n        0 0px 32px rgba(0, 0, 0, 0.14);\n        cursor: pointer;\n        background: ", ";\n        border-radius: 20px;\n        align-items: center;\n        justify-content: center;\n        svg{\n            font-size: 20px;\n        }\n    }\n    @media (max-width: 540px){\n        width: 100%;\n        padding: 10px 0; \n        span{\n            width: fit-content;\n            border-radius: 3px;\n        }\n        label{\n            display: block;\n            padding: 0 10px;\n        }\n    }\n"], ["\n    width: 10%;\n    display: flex;\n    justify-content: space-evenly;\n    align-items: center;\n    label{\n        display: none;\n    }\n    span{\n        width: 30px;\n        height: 30px;\n        display: flex;\n        box-shadow:\n        0 0px 1.1px rgba(0, 0, 0, 0.043),\n        0 0px 2.8px rgba(0, 0, 0, 0.062),\n        0 0px 5.7px rgba(0, 0, 0, 0.078),\n        0 0px 11.7px rgba(0, 0, 0, 0.097),\n        0 0px 32px rgba(0, 0, 0, 0.14);\n        cursor: pointer;\n        background: ", ";\n        border-radius: 20px;\n        align-items: center;\n        justify-content: center;\n        svg{\n            font-size: 20px;\n        }\n    }\n    @media (max-width: 540px){\n        width: 100%;\n        padding: 10px 0; \n        span{\n            width: fit-content;\n            border-radius: 3px;\n        }\n        label{\n            display: block;\n            padding: 0 10px;\n        }\n    }\n"])), function (props) { return props.darkMode ? "#141b24" : "#fff"; });
 var FiltersInteract = function (props) {
-    var filters = props.filters, translationsProps = props.translationsProps;
+    var filters = props.filters, translationsProps = props.translationsProps, filtersPosition = props.filtersPosition, darkMode = props.darkMode, isMobile = props.isMobile;
+    var _a = React.useState(!isMobile), isFilterOpen = _a[0], setIsFilterOpen = _a[1];
     return (React__default.createElement(FiltersContext.Consumer, null, function (filterContext) {
         var _a;
-        return (React__default.createElement(Container, null,
-            filters.map(function (filter) { return (React__default.createElement(ItemFilter, { key: filter.name, filter: filter, filterParsedType: props.filterParsedType, translationsProps: translationsProps })); }),
-            React__default.createElement("div", { style: { display: "flex", justifyContent: 'center', alignItems: 'center' } },
-                React__default.createElement("span", { className: "primary", onClick: function () { return filterContext.onClearAll(); }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer' } }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.clearAll) !== null && _a !== void 0 ? _a : translations.clearAll))));
+        return (filtersPosition === "list" ?
+            React__default.createElement(ListContainer$1, null,
+                filters.map(function (filter) { return (React__default.createElement(ItemFilter, { key: filter.name, filter: filter, filterParsedType: props.filterParsedType, translationsProps: translationsProps, filtersPosition: filtersPosition, darkMode: darkMode })); }),
+                React__default.createElement("div", { style: { display: "flex", justifyContent: 'center', alignItems: 'center' } },
+                    React__default.createElement("span", { className: "primary", onClick: function () { return filterContext.onClearAll(); }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer' } }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.clearAll) !== null && _a !== void 0 ? _a : translations.clearAll)))
+            :
+                React__default.createElement(SectionFilters, null,
+                    isMobile && React__default.createElement("p", { onClick: function () { return setIsFilterOpen(!isFilterOpen); } },
+                        "Filtres ",
+                        isFilterOpen ? React__default.createElement(bi.BiChevronUp, null) : React__default.createElement(bi.BiChevronDown, null)),
+                    isFilterOpen &&
+                        React__default.createElement(React__default.Fragment, null,
+                            React__default.createElement(FieldContainer$1, null, filters.map(function (filter) { return (React__default.createElement(ItemFilter, { key: filter.name, filter: filter, filterParsedType: props.filterParsedType, translationsProps: translationsProps, filtersPosition: filtersPosition, darkMode: darkMode })); })),
+                            React__default.createElement(SearchContainer, { darkMode: darkMode },
+                                React__default.createElement("span", { onClick: function () { return filterContext.onClickApply(); } },
+                                    " ",
+                                    React__default.createElement(bi.BiSearchAlt, null),
+                                    " ",
+                                    React__default.createElement("label", null, "Rechercher"))))));
     }));
 };
-var templateObject_1$7;
+var templateObject_1$3, templateObject_2$1, templateObject_3$1, templateObject_4$1;
 
 var ColumnsSelector = function (props) {
     var _a = React.useState(props.columns.filter(function (column) { return !!column.Header && column.Header.length > 0; }).map(function (column) { return column.accessor; }).filter(function (column) { return !props.hiddenColumns.includes(column); })), checkedColumns = _a[0], setCheckedColumns = _a[1];
@@ -22221,22 +22324,31 @@ function getLineSpacing() {
 function saveLineSpacing(space) {
     localStorage.setItem('line-spacing-table', space);
 }
+function getFilterType() {
+    if (!!localStorage.getItem('filter-type-table'))
+        return localStorage.getItem('filter-type-table');
+    else
+        return 'field';
+}
+function saveFilterType(type) {
+    localStorage.setItem('filter-type-table', type);
+}
 
-var Container$1 = styled.div(templateObject_1$8 || (templateObject_1$8 = __makeTemplateObject(["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    span{\n        padding: 10px;\n        border-radius: 50%;\n        transition: background 200ms;\n        svg{\n            transform: translateY(2px);\n        }\n        &:hover{\n            background: rgba(0,0,0,.1)\n        }\n    }\n"], ["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    span{\n        padding: 10px;\n        border-radius: 50%;\n        transition: background 200ms;\n        svg{\n            transform: translateY(2px);\n        }\n        &:hover{\n            background: rgba(0,0,0,.1)\n        }\n    }\n"])));
+var Container = styled.div(templateObject_1$4 || (templateObject_1$4 = __makeTemplateObject(["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    span{\n        padding: 10px;\n        border-radius: 50%;\n        transition: background 200ms;\n        svg{\n            transform: translateY(2px);\n        }\n        &:hover{\n            background: rgba(0,0,0,.1)\n        }\n    }\n"], ["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    span{\n        padding: 10px;\n        border-radius: 50%;\n        transition: background 200ms;\n        svg{\n            transform: translateY(2px);\n        }\n        &:hover{\n            background: rgba(0,0,0,.1)\n        }\n    }\n"])));
 var SettingsInteractor = function (props) {
-    var translationsProps = props.translationsProps;
+    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, onExportClick = props.onExportClick, filterType = props.filterType, darkMode = props.darkMode;
     var _a = React.useState(false), open = _a[0], setOpen = _a[1];
-    return (React__default.createElement(Container$1, null,
+    return (React__default.createElement(Container, null,
         React__default.createElement("span", { onClick: function () { return setOpen(!open); } },
             React__default.createElement(fa.FaSlidersH, { style: { fontSize: 18, color: "#828282", cursor: "pointer" } })),
-        open && React__default.createElement(DropdownMenu, { columns: props.columns, hiddenColumns: props.hiddenColumns, onHiddenColumnsChange: function (e) { return props.onHiddenColumnsChange(e); }, onLineSpacingChange: function (e) { return props.onLineSpacingChange(e); }, translationsProps: translationsProps })));
+        open && React__default.createElement(DropdownMenu, { columns: props.columns, hiddenColumns: props.hiddenColumns, onHiddenColumnsChange: function (e) { return props.onHiddenColumnsChange(e); }, onLineSpacingChange: function (e) { return props.onLineSpacingChange(e); }, onFilterTypeChange: function (e) { return props.onFilterTypeChange(e); }, translationsProps: translationsProps, enabledExport: enabledExport, filterType: filterType, onExportClick: onExportClick, darkMode: darkMode })));
 };
 var DropdownMenu = function (props) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
-    var translationsProps = props.translationsProps;
-    var _s = React.useState('main'), activeMenu = _s[0], setActiveMenu = _s[1];
-    var _t = React.useState(null), menuHeight = _t[0], setMenuHeight = _t[1];
-    var _u = React.useState(getLineSpacing()), lineSpacing = _u[0], setLineSpacing = _u[1];
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, onExportClick = props.onExportClick, filterType = props.filterType, darkMode = props.darkMode;
+    var _0 = React.useState('main'), activeMenu = _0[0], setActiveMenu = _0[1];
+    var _1 = React.useState(null), menuHeight = _1[0], setMenuHeight = _1[1];
+    var _2 = React.useState(getLineSpacing()), lineSpacing = _2[0], setLineSpacing = _2[1];
     React.useEffect(function () {
         props.onLineSpacingChange(lineSpacing);
         saveLineSpacing(lineSpacing);
@@ -22251,169 +22363,50 @@ var DropdownMenu = function (props) {
             props.children,
             !!props.rightIcon && React__default.createElement("span", { className: "icon-right" }, props.rightIcon)));
     }
-    return (React__default.createElement("div", { className: "table-settings-dropdown", style: { height: menuHeight } },
+    return (React__default.createElement("div", { className: "table-settings-dropdown " + (darkMode ? "dark" : ""), style: { height: menuHeight } },
         React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "main", unmountOnExit: true, timeout: 200, classNames: "menu-primary", onEnter: calcHeight },
             React__default.createElement("div", { className: "menu" },
-                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(fa.FaEye, null), rightIcon: React__default.createElement(fa.FaChevronRight, null), goToMenu: "columns" }, (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _a === void 0 ? void 0 : _a.toggleColumns) !== null && _b !== void 0 ? _b : translations.settings.toggleColumns),
-                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(fa.FaTextWidth, null), rightIcon: React__default.createElement(fa.FaChevronRight, null), goToMenu: "lineSpacing" }, (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _c === void 0 ? void 0 : _c.lineSpacing) !== null && _d !== void 0 ? _d : translations.settings.lineSpacing),
-                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(fa.FaFileExport, null) }, (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _e === void 0 ? void 0 : _e.export) !== null && _f !== void 0 ? _f : translations.settings.export))),
+                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(ai.AiOutlineEye, null), rightIcon: React__default.createElement(fa.FaChevronRight, null), goToMenu: "columns" }, (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _a === void 0 ? void 0 : _a.toggleColumns) !== null && _b !== void 0 ? _b : translations.settings.toggleColumns),
+                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(im.ImTextHeight, null), rightIcon: React__default.createElement(fa.FaChevronRight, null), goToMenu: "lineSpacing" }, (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _c === void 0 ? void 0 : _c.lineSpacing) !== null && _d !== void 0 ? _d : translations.settings.lineSpacing),
+                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(io5.IoFilterSharp, null), rightIcon: React__default.createElement(fa.FaChevronRight, null), goToMenu: "filterType" }, (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _e === void 0 ? void 0 : _e.filterType) !== null && _f !== void 0 ? _f : translations.settings.filterType),
+                enabledExport &&
+                    React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(fa.FaFileExport, null) },
+                        React__default.createElement("span", { onClick: onExportClick }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _g === void 0 ? void 0 : _g.export) !== null && _h !== void 0 ? _h : translations.settings.export,
+                            " ")))),
         React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "columns", unmountOnExit: true, timeout: 200, classNames: "menu-secondary", onEnter: calcHeight },
             React__default.createElement("div", { className: "menu" },
-                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(fa.FaChevronLeft, null), goToMenu: "main" }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _g === void 0 ? void 0 : _g.back) !== null && _h !== void 0 ? _h : translations.settings.back),
+                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(fa.FaChevronLeft, null), goToMenu: "main" }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _j === void 0 ? void 0 : _j.back) !== null && _k !== void 0 ? _k : translations.settings.back),
                 React__default.createElement(ColumnsSelector, { columns: props.columns, onChange: function (e) { return props.onHiddenColumnsChange(e); }, hiddenColumns: props.hiddenColumns }))),
         React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "lineSpacing", unmountOnExit: true, timeout: 200, classNames: "menu-secondary", onEnter: calcHeight },
             React__default.createElement("div", { className: "menu" },
-                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(fa.FaChevronLeft, null), goToMenu: "main" }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _j === void 0 ? void 0 : _j.back) !== null && _k !== void 0 ? _k : translations.settings.back),
+                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(fa.FaChevronLeft, null), goToMenu: "main" }, (_m = (_l = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _l === void 0 ? void 0 : _l.back) !== null && _m !== void 0 ? _m : translations.settings.back),
                 React__default.createElement("div", { style: { paddingTop: 10 } }),
                 React__default.createElement("label", { className: "radio-container", key: "settings_radio_high" },
                     React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_high", name: "radio_type_settings_radio_high", value: 'high', checked: lineSpacing === 'high', onChange: function () { return setLineSpacing('high'); } }),
-                    React__default.createElement("span", null, (_m = (_l = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _l === void 0 ? void 0 : _l.highHeight) !== null && _m !== void 0 ? _m : translations.settings.highHeight)),
+                    React__default.createElement("span", null, (_p = (_o = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _o === void 0 ? void 0 : _o.highHeight) !== null && _p !== void 0 ? _p : translations.settings.highHeight)),
                 React__default.createElement("div", { style: { paddingTop: 5 } }),
                 React__default.createElement("label", { className: "radio-container", key: "settings_radio_medium" },
                     React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_medium", name: "radio_type_settings_radio_medium", value: 'medium', checked: lineSpacing === 'medium', onChange: function () { return setLineSpacing('medium'); } }),
-                    React__default.createElement("span", null, (_p = (_o = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _o === void 0 ? void 0 : _o.mediumHeight) !== null && _p !== void 0 ? _p : translations.settings.mediumHeight)),
+                    React__default.createElement("span", null, (_r = (_q = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _q === void 0 ? void 0 : _q.mediumHeight) !== null && _r !== void 0 ? _r : translations.settings.mediumHeight)),
                 React__default.createElement("div", { style: { paddingTop: 5 } }),
                 React__default.createElement("label", { className: "radio-container", key: "settings_radio_small" },
                     React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_small", name: "radio_type_settings_radio_small", value: 'small', checked: lineSpacing === 'small', onChange: function () { return setLineSpacing('small'); } }),
-                    React__default.createElement("span", null, (_r = (_q = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _q === void 0 ? void 0 : _q.smallHeight) !== null && _r !== void 0 ? _r : translations.settings.smallHeight)),
+                    React__default.createElement("span", null, (_t = (_s = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _s === void 0 ? void 0 : _s.smallHeight) !== null && _t !== void 0 ? _t : translations.settings.smallHeight)),
+                React__default.createElement("div", { style: { paddingTop: 10 } }))),
+        React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "filterType", unmountOnExit: true, timeout: 200, classNames: "menu-secondary", onEnter: calcHeight },
+            React__default.createElement("div", { className: "menu" },
+                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement(fa.FaChevronLeft, null), goToMenu: "main" }, (_v = (_u = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _u === void 0 ? void 0 : _u.back) !== null && _v !== void 0 ? _v : translations.settings.back),
+                React__default.createElement("div", { style: { paddingTop: 10 } }),
+                React__default.createElement("label", { className: "radio-container", key: "settings_radio_field" },
+                    React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_field", name: "radio_type_settings_radio_field", value: 'field', checked: filterType === 'field', onChange: function () { props.onFilterTypeChange('field'); saveFilterType('field'); } }),
+                    React__default.createElement("span", null, (_x = (_w = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _w === void 0 ? void 0 : _w.filterField) !== null && _x !== void 0 ? _x : translations.settings.filterField)),
+                React__default.createElement("div", { style: { paddingTop: 5 } }),
+                React__default.createElement("label", { className: "radio-container", key: "settings_radio_list" },
+                    React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_list", name: "radio_type_settings_radio_list", value: 'list', checked: filterType === 'list', onChange: function () { props.onFilterTypeChange('list'); saveFilterType('list'); } }),
+                    React__default.createElement("span", null, (_z = (_y = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _y === void 0 ? void 0 : _y.filterList) !== null && _z !== void 0 ? _z : translations.settings.filterList)),
                 React__default.createElement("div", { style: { paddingTop: 10 } })))));
 };
-var templateObject_1$8;
-
-var Container$2 = styled.div(templateObject_1$9 || (templateObject_1$9 = __makeTemplateObject(["\n    height: 60px;\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    padding: 0 10px;\n    box-sizing: border-box;\n    border-top: 1px solid #e8e8e8;\n    border-bottom: 1px solid #e8e8e8;\n    span{\n        line-height: 60px;\n        color: #435F71;\n    }\n    .filters-label{\n        background: rgba(33, 106, 154, .2);\n        color: #216A9A;\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 20px;\n        height: 25px;\n        font-size: 12px;\n        span{\n            line-height: 25px;\n        }\n        svg{\n            color: #216A9A;\n        }\n    }\n"], ["\n    height: 60px;\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    padding: 0 10px;\n    box-sizing: border-box;\n    border-top: 1px solid #e8e8e8;\n    border-bottom: 1px solid #e8e8e8;\n    span{\n        line-height: 60px;\n        color: #435F71;\n    }\n    .filters-label{\n        background: rgba(33, 106, 154, .2);\n        color: #216A9A;\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 20px;\n        height: 25px;\n        font-size: 12px;\n        span{\n            line-height: 25px;\n        }\n        svg{\n            color: #216A9A;\n        }\n    }\n"])));
-var FiltersViewers = function (props) {
-    var _a;
-    var translationsProps = props.translationsProps;
-    function translateOption(opt) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
-        switch (opt) {
-            case 'contains':
-                return (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.contain) !== null && _b !== void 0 ? _b : translations.filtersViewer.contain;
-            case 'startWith':
-                return (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _c === void 0 ? void 0 : _c.startWith) !== null && _d !== void 0 ? _d : translations.filtersViewer.startWith;
-            case 'finishWith':
-                return (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _e === void 0 ? void 0 : _e.finishWith) !== null && _f !== void 0 ? _f : translations.filtersViewer.finishWith;
-            case 'equal':
-                return (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.equal) !== null && _h !== void 0 ? _h : translations.filtersViewer.equal;
-            case 'moreThan':
-                return (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _j === void 0 ? void 0 : _j.moreThan) !== null && _k !== void 0 ? _k : translations.filtersViewer.moreThan;
-            case 'lessThan':
-                return (_m = (_l = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _l === void 0 ? void 0 : _l.lessThan) !== null && _m !== void 0 ? _m : translations.filtersViewer.lessThan;
-            case 'between':
-                return (_p = (_o = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _o === void 0 ? void 0 : _o.between) !== null && _p !== void 0 ? _p : translations.filtersViewer.between;
-            case 'atDay':
-                return (_r = (_q = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _q === void 0 ? void 0 : _q.atDay) !== null && _r !== void 0 ? _r : translations.filtersViewer.atDay;
-            case 'minDay':
-                return (_t = (_s = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _s === void 0 ? void 0 : _s.minDay) !== null && _t !== void 0 ? _t : translations.filtersViewer.minDay;
-            case 'maxDay':
-                return (_v = (_u = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _u === void 0 ? void 0 : _u.maxDay) !== null && _v !== void 0 ? _v : translations.filtersViewer.maxDay;
-            default:
-                return opt;
-        }
-    }
-    var filtersState = React.useContext(FiltersContext);
-    var clearMain = function (name) {
-        var _filter = filtersState.filtersState[name];
-        _filter["main"].value = "";
-        filtersState.changeMainFilter(name, { option: filtersState.filtersState[name]["main"].option, value: "" });
-        filtersState.onClickApply();
-    };
-    var clearOptional = function (name, index) {
-        if (filtersState.filtersState[name]["optionals"].length === 1) {
-            filtersState.changeOptionalsFilters(name, []);
-            return;
-        }
-        var _filtersArray = filtersState.filtersState[name]["optionals"];
-        _filtersArray.splice(index, 1);
-        filtersState.changeOptionalsFilters(name, _filtersArray);
-        filtersState.onClickApply();
-    };
-    var clearRadio = function (name, index) {
-        var _preventArray = filtersState.filtersState[name]["main"];
-        _preventArray["value"][index].status = "NA";
-        filtersState.changeMainFilter(name, _preventArray);
-        filtersState.onClickApply();
-    };
-    var clearGeoloc = function (name) {
-        var _preventArray = filtersState.filtersState[name]["main"];
-        _preventArray["option"] = "";
-        _preventArray["value"] = { lat: 0, lng: 0, display: "" };
-        filtersState.changeMainFilter(name, _preventArray);
-        filtersState.onClickApply();
-    };
-    return (React__default.createElement(React__default.Fragment, null, !!filtersState.submitFiltersState && !lodash.isEmpty(filtersState.submitFiltersState) ?
-        React__default.createElement(Container$2, null,
-            React__default.createElement("span", { className: "main" }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.appliedFilters) !== null && _a !== void 0 ? _a : translations.appliedFilters),
-            !!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).flatMap(function (_a, i) {
-                var _b, _c;
-                var key = _a[0], value = _a[1];
-                var _array = [];
-                if (value["type"] !== "booleanRadio" && value["type"] !== "geoloc") {
-                    if (!!value["main"].value && value["main"].value !== "") {
-                        _array.push(React__default.createElement("div", { className: "filters-label", key: i },
-                            React__default.createElement("span", null, value["label"]),
-                            " :",
-                            React__default.createElement("span", { className: "font-italic font-light" },
-                                " ",
-                                translateOption(value["main"]["option"]),
-                                " "),
-                            React__default.createElement("span", { className: "font-heavy" },
-                                " ",
-                                Array.isArray(value["main"]["value"]) ? value["main"]["value"].join(",") : value["main"]["value"]),
-                            React__default.createElement(fa.FaTimes, { style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearMain(key); } })));
-                    }
-                    Object.entries(value["optionals"]).map(function (_a, i) {
-                        var keyOption = _a[0], valueOptions = _a[1];
-                        if (!!value["optionals"][keyOption]["value"] && value["optionals"][keyOption]["value"] !== "") {
-                            _array.push(React__default.createElement("div", { className: "filters-label", key: i },
-                                React__default.createElement("span", null, value["label"]),
-                                " :",
-                                React__default.createElement("span", { className: "font-italic font-light" },
-                                    " ",
-                                    translateOption(value["optionals"][keyOption]["option"])),
-                                React__default.createElement("span", { className: "font-heavy" },
-                                    " ",
-                                    value["optionals"][keyOption]["value"]),
-                                React__default.createElement(fa.FaTimes, { style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearOptional(key, i); } })));
-                        }
-                    });
-                }
-                else if (value["type"] === "booleanRadio") {
-                    value["main"]["value"].map(function (radio, i) {
-                        if (radio.status !== "NA") {
-                            _array.push(React__default.createElement("div", { className: "filters-label", key: i },
-                                React__default.createElement("span", null, value["label"]),
-                                " :",
-                                React__default.createElement("span", { className: "font-italic font-light" },
-                                    radio.label,
-                                    " "),
-                                React__default.createElement("span", { className: "font-heavy" },
-                                    " ",
-                                    radio.status === "NO" ? "Non" : "Oui"),
-                                React__default.createElement(fa.FaTimes, { style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearRadio(key, i); } })));
-                        }
-                    });
-                }
-                else {
-                    if (value["main"]["value"]["lat"] !== 0 && value["main"]["value"]["lng"] !== 0) {
-                        _array.push(React__default.createElement("div", { className: "filters-label", key: "geoloc_filter" },
-                            React__default.createElement("span", null, value["label"]),
-                            " :",
-                            React__default.createElement("span", { className: "font-italic font-light" },
-                                " ",
-                                value["main"]["option"], (_c = (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _b === void 0 ? void 0 : _b.kmAroundOf) !== null && _c !== void 0 ? _c : translations.filtersViewer.kmAroundOf),
-                            React__default.createElement("span", { className: "font-heavy" },
-                                " ",
-                                value["main"]["value"]["display"],
-                                " "),
-                            React__default.createElement(fa.FaTimes, { style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearGeoloc(key); } })));
-                    }
-                }
-                return _array;
-            }))
-        : React__default.createElement(React__default.Fragment, null)));
-};
-var templateObject_1$9;
+var templateObject_1$4;
 
 function translateOptionsToOperator(opt, val) {
     switch (opt) {
@@ -22524,8 +22517,146 @@ function parseFilterFuzzy(filters) {
     return _resultFilter;
 }
 
-var PerPageContainer = styled.div(templateObject_1$a || (templateObject_1$a = __makeTemplateObject(["\n\tfloat: right;\n    transform: translateY(3px);\n    padding-right: 10px;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n\t}\n"], ["\n\tfloat: right;\n    transform: translateY(3px);\n    padding-right: 10px;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n\t}\n"])));
-var TableContainer = styled("div")(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    padding-top: 10px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .btnActionsContainer{\n        padding: .4rem;\n        width: 100% auto;\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        padding-right: 10px;\n    }\n    @media only screen and (max-width: 540px){\n        .btnActionsContainer{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"], ["\n    padding-top: 10px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .btnActionsContainer{\n        padding: .4rem;\n        width: 100% auto;\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        padding-right: 10px;\n    }\n    @media only screen and (max-width: 540px){\n        .btnActionsContainer{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"])), function (props) { return props.darkMode ? "#2a3c4e" : "#fff"; }, function (props) { return props.darkMode ? "#272d3a" : "#E0E0E0"; }, function (props) { return props.darkMode ? "#bccde0" : "#2a3c4e"; }, function (props) { return props.darkMode ? "#2a3c4e" : "#fff;"; }, function (props) { return props.darkMode ? "#bccde0" : "#435F71"; });
+var Container$1 = styled('div')(templateObject_1$5 || (templateObject_1$5 = __makeTemplateObject(["\n    height: 60px;\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    padding: 0 10px;\n    box-sizing: border-box;\n    border-top: 1px solid #e8e8e8;\n    border-bottom: 1px solid #e8e8e8;\n    span{\n        line-height: 60px;\n        color: ", ";\n    }\n    .filters-label{\n        background: rgba(33, 106, 154, .2);\n        color: #216A9A;\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 20px;\n        height: 25px;\n        font-size: 12px;\n        span{\n            line-height: 25px;\n        }\n        svg{\n            color: #216A9A;\n        }\n    }\n    @media (max-width: 540px){\n        display: none !important;\n    }\n"], ["\n    height: 60px;\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    padding: 0 10px;\n    box-sizing: border-box;\n    border-top: 1px solid #e8e8e8;\n    border-bottom: 1px solid #e8e8e8;\n    span{\n        line-height: 60px;\n        color: ", ";\n    }\n    .filters-label{\n        background: rgba(33, 106, 154, .2);\n        color: #216A9A;\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 20px;\n        height: 25px;\n        font-size: 12px;\n        span{\n            line-height: 25px;\n        }\n        svg{\n            color: #216A9A;\n        }\n    }\n    @media (max-width: 540px){\n        display: none !important;\n    }\n"])), function (props) { return props.darkMode ? "#e6e6e6" : "#435F71"; });
+var FiltersViewers = function (props) {
+    var _a, _b;
+    var translationsProps = props.translationsProps, darkMode = props.darkMode;
+    function translateOption(opt) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+        switch (opt) {
+            case 'contains':
+                return (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.contain) !== null && _b !== void 0 ? _b : translations.filtersViewer.contain;
+            case 'startWith':
+                return (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _c === void 0 ? void 0 : _c.startWith) !== null && _d !== void 0 ? _d : translations.filtersViewer.startWith;
+            case 'finishWith':
+                return (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _e === void 0 ? void 0 : _e.finishWith) !== null && _f !== void 0 ? _f : translations.filtersViewer.finishWith;
+            case 'equal':
+                return (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.equal) !== null && _h !== void 0 ? _h : translations.filtersViewer.equal;
+            case 'moreThan':
+                return (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _j === void 0 ? void 0 : _j.moreThan) !== null && _k !== void 0 ? _k : translations.filtersViewer.moreThan;
+            case 'lessThan':
+                return (_m = (_l = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _l === void 0 ? void 0 : _l.lessThan) !== null && _m !== void 0 ? _m : translations.filtersViewer.lessThan;
+            case 'between':
+                return (_p = (_o = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _o === void 0 ? void 0 : _o.between) !== null && _p !== void 0 ? _p : translations.filtersViewer.between;
+            case 'atDay':
+                return (_r = (_q = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _q === void 0 ? void 0 : _q.atDay) !== null && _r !== void 0 ? _r : translations.filtersViewer.atDay;
+            case 'minDay':
+                return (_t = (_s = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _s === void 0 ? void 0 : _s.minDay) !== null && _t !== void 0 ? _t : translations.filtersViewer.minDay;
+            case 'maxDay':
+                return (_v = (_u = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _u === void 0 ? void 0 : _u.maxDay) !== null && _v !== void 0 ? _v : translations.filtersViewer.maxDay;
+            default:
+                return opt;
+        }
+    }
+    var filtersState = React.useContext(FiltersContext);
+    var clearMain = function (name) {
+        var _filter = filtersState.filtersState[name];
+        _filter["main"].value = "";
+        filtersState.changeMainFilter(name, { option: filtersState.filtersState[name]["main"].option, value: "" });
+        filtersState.onClickApply();
+    };
+    var clearOptional = function (name, index) {
+        if (filtersState.filtersState[name]["optionals"].length === 1) {
+            filtersState.changeOptionalsFilters(name, []);
+            return;
+        }
+        var _filtersArray = filtersState.filtersState[name]["optionals"];
+        _filtersArray.splice(index, 1);
+        filtersState.changeOptionalsFilters(name, _filtersArray);
+        filtersState.onClickApply();
+    };
+    var clearRadio = function (name, index) {
+        var _preventArray = filtersState.filtersState[name]["main"];
+        _preventArray["value"][index].status = "NA";
+        filtersState.changeMainFilter(name, _preventArray);
+        filtersState.onClickApply();
+    };
+    var clearGeoloc = function (name) {
+        var _preventArray = filtersState.filtersState[name]["main"];
+        _preventArray["option"] = "";
+        _preventArray["value"] = { lat: 0, lng: 0, display: "" };
+        filtersState.changeMainFilter(name, _preventArray);
+        filtersState.onClickApply();
+    };
+    return (React__default.createElement(React__default.Fragment, null, parseFilterRSQL(filtersState.submitFiltersState).length > 0 && !lodash.isEmpty(parseFilterFuzzy(filtersState.submitFiltersState)) ?
+        React__default.createElement(Container$1, { darkMode: darkMode },
+            React__default.createElement("span", { className: "main" }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.appliedFilters) !== null && _a !== void 0 ? _a : translations.appliedFilters),
+            !!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).flatMap(function (_a, i) {
+                var _b, _c;
+                var key = _a[0], value = _a[1];
+                var _array = [];
+                if (value["type"] !== "booleanRadio" && value["type"] !== "geoloc") {
+                    if (!!value["main"].value && value["main"].value !== "") {
+                        _array.push(React__default.createElement("div", { className: "filters-label", key: i },
+                            React__default.createElement("span", null, value["label"]),
+                            " :",
+                            React__default.createElement("span", { className: "font-italic font-light" },
+                                " ",
+                                translateOption(value["main"]["option"]),
+                                " "),
+                            React__default.createElement("span", { className: "font-heavy" },
+                                " ",
+                                Array.isArray(value["main"]["value"]) ? value["main"]["value"].join(",") : value["main"]["value"]),
+                            React__default.createElement(fa.FaTimes, { style: { marginLeft: 5, cursor: "pointer", transform: "translateY(1px)" }, onClick: function () { return clearMain(key); } })));
+                    }
+                    Object.entries(value["optionals"]).map(function (_a, i) {
+                        var keyOption = _a[0], valueOptions = _a[1];
+                        if (!!value["optionals"][keyOption]["value"] && value["optionals"][keyOption]["value"] !== "") {
+                            _array.push(React__default.createElement("div", { className: "filters-label", key: i },
+                                React__default.createElement("span", null, value["label"]),
+                                " :",
+                                React__default.createElement("span", { className: "font-italic font-light" },
+                                    " ",
+                                    translateOption(value["optionals"][keyOption]["option"])),
+                                React__default.createElement("span", { className: "font-heavy" },
+                                    " ",
+                                    value["optionals"][keyOption]["value"]),
+                                React__default.createElement(fa.FaTimes, { style: { marginLeft: 5, cursor: "pointer", transform: "translateY(1px)" }, onClick: function () { return clearOptional(key, i); } })));
+                        }
+                    });
+                }
+                else if (value["type"] === "booleanRadio") {
+                    value["main"]["value"].map(function (radio, i) {
+                        if (radio.status !== "NA") {
+                            _array.push(React__default.createElement("div", { className: "filters-label", key: i },
+                                React__default.createElement("span", null, value["label"]),
+                                " :",
+                                React__default.createElement("span", { className: "font-italic font-light" },
+                                    radio.label,
+                                    " "),
+                                React__default.createElement("span", { className: "font-heavy" },
+                                    " ",
+                                    radio.status === "NO" ? "Non" : "Oui"),
+                                React__default.createElement(fa.FaTimes, { style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearRadio(key, i); } })));
+                        }
+                    });
+                }
+                else {
+                    if (value["main"]["value"]["lat"] !== 0 && value["main"]["value"]["lng"] !== 0) {
+                        _array.push(React__default.createElement("div", { className: "filters-label", key: "geoloc_filter" },
+                            React__default.createElement("span", null, value["label"]),
+                            " :",
+                            React__default.createElement("span", { className: "font-italic font-light" },
+                                " ",
+                                value["main"]["option"], (_c = (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _b === void 0 ? void 0 : _b.kmAroundOf) !== null && _c !== void 0 ? _c : translations.filtersViewer.kmAroundOf),
+                            React__default.createElement("span", { className: "font-heavy" },
+                                " ",
+                                value["main"]["value"]["display"],
+                                " "),
+                            React__default.createElement(fa.FaTimes, { style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearGeoloc(key); } })));
+                    }
+                }
+                return _array;
+            }),
+            React__default.createElement("div", { style: { display: "flex", justifyContent: 'center', alignItems: 'center' } },
+                React__default.createElement("span", { className: "primary", onClick: function () { return filtersState.onClearAll(); }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer' } }, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.clearAll) !== null && _b !== void 0 ? _b : translations.clearAll)))
+        : React__default.createElement(React__default.Fragment, null)));
+};
+var templateObject_1$5;
+
+var PerPageContainer = styled.div(templateObject_1$6 || (templateObject_1$6 = __makeTemplateObject(["\n\tfloat: right;\n    transform: translateY(3px);\n    padding-right: 10px;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n\t}\n"], ["\n\tfloat: right;\n    transform: translateY(3px);\n    padding-right: 10px;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n\t}\n"])));
+var TableContainer = styled("div")(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject(["\n    padding-top: 10px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .btnActionsContainer{\n        padding: .4rem;\n        width: 100% auto;\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        padding-right: 10px;\n    }\n    @media only screen and (max-width: 540px){\n        .btnActionsContainer{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"], ["\n    padding-top: 10px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .btnActionsContainer{\n        padding: .4rem;\n        width: 100% auto;\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        padding-right: 10px;\n    }\n    @media only screen and (max-width: 540px){\n        .btnActionsContainer{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"])), function (props) { return props.darkMode ? "#2a3c4e" : "#fff"; }, function (props) { return props.darkMode ? "#272d3a" : "#E0E0E0"; }, function (props) { return props.darkMode ? "#bccde0" : "#2a3c4e"; }, function (props) { return props.darkMode ? "#2a3c4e" : "#fff;"; }, function (props) { return props.darkMode ? "#bccde0" : "#435F71"; });
+var FiltersContainer = styled('div')(templateObject_3$2 || (templateObject_3$2 = __makeTemplateObject(["\n    background: ", ";\n    padding: 0 10px;\n"], ["\n    background: ", ";\n    padding: 0 10px;\n"])), function (props) { return props.filterPosition === "list" ? "initial" : props.darkMode ? "#272d3a" : "#f0f0f0"; });
 function getOptionsByType$1(type) {
     switch (type) {
         case 'text':
@@ -22542,7 +22673,7 @@ function getOptionsByType$1(type) {
 }
 FiltersContext.displayName = "ServerSideTableContext";
 var ServerSideTable = React.forwardRef(function (props, ref) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d;
     var translationsProps = props.translationsProps;
     React.useEffect(function () {
         var _initialFilters = {};
@@ -22562,14 +22693,15 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         });
         setFiltersState(_initialFilters);
     }, []);
-    var _f = React.useState({}), filters = _f[0], setFilters = _f[1];
-    var _g = React.useState({}), filtersState = _g[0], setFiltersState = _g[1];
-    var _h = React.useState({}), submitFiltersState = _h[0], setSubmitFilterState = _h[1];
-    var _j = React.useState(0), offset = _j[0], setOffset = _j[1];
-    var _k = React.useState(props.perPageItems ? props.perPageItems : 10), perPage = _k[0], setPerPage = _k[1];
-    var _l = React.useState([]), sorterOptions = _l[0], setSorterOptions = _l[1];
-    var _m = React.useState(null), sorterValue = _m[0], setSorterValue = _m[1];
-    var _o = React.useState(getLineSpacing()), lineSpacing = _o[0], setLineSpacing = _o[1];
+    var _e = React.useState({}), filters = _e[0], setFilters = _e[1];
+    var _f = React.useState({}), filtersState = _f[0], setFiltersState = _f[1];
+    var _g = React.useState({}), submitFiltersState = _g[0], setSubmitFilterState = _g[1];
+    var _h = React.useState(0), offset = _h[0], setOffset = _h[1];
+    var _j = React.useState(props.perPageItems ? props.perPageItems : 10), perPage = _j[0], setPerPage = _j[1];
+    var _k = React.useState([]), sorterOptions = _k[0], setSorterOptions = _k[1];
+    var _l = React.useState(null), sorterValue = _l[0], setSorterValue = _l[1];
+    var _m = React.useState(getLineSpacing()), lineSpacing = _m[0], setLineSpacing = _m[1];
+    var _o = React.useState(getFilterType()), filterType = _o[0], setFilterType = _o[1];
     var _p = React.useState([]), hiddenColumns = _p[0], setHiddenColumns = _p[1];
     var Option = Select.components.Option;
     var isInitialMount = React.useRef(true);
@@ -22665,12 +22797,10 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         _filter["optionals"] = content;
         setFiltersState(__assign(__assign({}, filtersState), (_a = {}, _a[name] = _filter, _a)));
     };
-    var handleRemoveFilter = function (propertyName) {
-        setFilters(lodash.omit(filters, propertyName));
-    };
     var onClickApply = function () {
         var _object = lodash.cloneDeep(filtersState);
         setSubmitFilterState(_object);
+        return;
     };
     var onClearAll = function () {
         var _initialFilters = {};
@@ -22685,11 +22815,12 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                         filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) :
                         filter.type === "geoloc" ? { lat: 0, lng: 0, display: "" } : ""
                 },
-                optionals: [],
+                optionals: []
             };
         });
         setFiltersState(_initialFilters);
-        setSubmitFilterState(_initialFilters);
+        setSubmitFilterState(null);
+        return;
     };
     return (React__default.createElement(FiltersContext.Provider, { value: {
             filtersState: filtersState,
@@ -22720,30 +22851,19 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                                                         }
                                                     }, value: sorterValue, classNamePrefix: "ServerSideTableFilterSelect", placeholder: (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.sortBy) !== null && _b !== void 0 ? _b : translations.sortBy })),
                                         React__default.createElement("div", { className: "icons" },
-                                            React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: function (e) { return setLineSpacing(e); }, translationsProps: translationsProps })))),
+                                            React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: function (e) { return setLineSpacing(e); }, onFilterTypeChange: function (e) { return setFilterType(e); }, filterType: filterType, translationsProps: translationsProps, enabledExport: props.enabledExport, onExportClick: props.onExportClick, darkMode: props.darkMode })))),
                             props.data &&
                                 React__default.createElement(React__default.Fragment, null,
-                                    React__default.createElement(FiltersViewers, { translationsProps: translationsProps }),
-                                    Object.keys(filters).length > 0 &&
-                                        React__default.createElement("p", { style: { paddingTop: 20 } }, (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.appliedFilters) !== null && _c !== void 0 ? _c : translations.appliedFilters,
-                                            Object.entries(props.filtersList).map(function (_a) {
-                                                var key = _a[0], value = _a[1];
-                                                if (lodash.has(filters, value["name"]) && filters[value["name"]].length > 0) {
-                                                    return (React__default.createElement("span", { key: value["name"], style: { padding: '5px 8px', background: "#e9e9e9", borderRadius: 5, margin: '0 5px' } },
-                                                        React__default.createElement("span", { className: 'font-heavy' },
-                                                            value['label'],
-                                                            " : "),
-                                                        React__default.createElement("span", null, filters[value["name"]]),
-                                                        React__default.createElement(fa.FaTimes, { size: "sm", style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return handleRemoveFilter(value["name"]); } })));
-                                                }
-                                            })),
                                     props.isFilter &&
-                                        React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, filtersPosition: props.filtersPosition }),
-                                    React__default.createElement(Table, { data: props.data.content, columns: props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns })),
+                                        React__default.createElement(React__default.Fragment, null,
+                                            React__default.createElement(FiltersContainer, { darkMode: props.darkMode, filterPosition: filterType },
+                                                React__default.createElement(FiltersViewers, { translationsProps: translationsProps, darkMode: props.darkMode }),
+                                                React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, filtersPosition: filterType, darkMode: props.darkMode, isMobile: reactDeviceDetect.isMobile }))),
+                                    React__default.createElement(Table, { data: props.data.content, columns: reactDeviceDetect.isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns })),
                             React__default.createElement("div", { className: "footerTable" },
-                                React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement(fa.FaChevronLeft, null), nextLabel: React__default.createElement(fa.FaChevronRight, null), breakLabel: "...", breakClassName: "break-me", pageCount: (_d = props.data) === null || _d === void 0 ? void 0 : _d.totalPages, marginPagesDisplayed: 2, pageRangeDisplayed: 2, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
+                                React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement(fa.FaChevronLeft, { style: { transform: "translateY(2px)" } }), nextLabel: React__default.createElement(fa.FaChevronRight, { style: { transform: "translateY(2px)" } }), breakLabel: "...", breakClassName: "break-me", pageCount: (_c = props.data) === null || _c === void 0 ? void 0 : _c.totalPages, marginPagesDisplayed: 2, pageRangeDisplayed: 2, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
                                 React__default.createElement(PerPageContainer, null,
-                                    React__default.createElement("label", { htmlFor: "perPageSelect" }, (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.linePerPage) !== null && _e !== void 0 ? _e : translations.linePerPage),
+                                    React__default.createElement("label", { htmlFor: "perPageSelect" }, (_d = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.linePerPage) !== null && _d !== void 0 ? _d : translations.linePerPage),
                                     React__default.createElement("select", { name: "perPageSelect", value: perPage, onChange: function (e) { return setPerPage(parseInt(e.target.value)); }, style: { background: "#fff", width: 30 } },
                                         React__default.createElement("option", { value: "5" }, "5"),
                                         React__default.createElement("option", { value: "10" }, "10"),
@@ -22751,7 +22871,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                                         React__default.createElement("option", { value: "50" }, "50")))),
                             React__default.createElement("div", { style: { clear: "both" } }))))))));
 });
-var templateObject_1$a, templateObject_2;
+var templateObject_1$6, templateObject_2$2, templateObject_3$2;
 
 exports.default = ServerSideTable;
 //# sourceMappingURL=index.js.map
