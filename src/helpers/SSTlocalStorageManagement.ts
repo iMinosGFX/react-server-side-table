@@ -1,3 +1,4 @@
+import _ from 'lodash';
 export function getLineSpacing(): string{
     if(!!localStorage.getItem('line-spacing-table')) 
         return localStorage.getItem('line-spacing-table')
@@ -19,4 +20,18 @@ export function getFilterType(): string{
 
 export function saveFilterType(type: string): void{  
     localStorage.setItem('filter-type-table', type)
+}
+
+export function getTableFilters(tableId: string): any{
+    return !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId)) : {}
+}
+
+export function registerTableFilters(tableId: string, filters: any): void {
+    if(!!filters && !_.isEmpty(filters)){
+        localStorage.setItem(tableId, JSON.stringify(filters))
+    }
+}
+
+export function destroyTableFiltersStorage(tableId: string): void{
+    localStorage.removeItem(tableId)
 }

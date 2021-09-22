@@ -11,10 +11,10 @@ import FiltersViewers from './FiltersViewers';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
 import FiltersContext from './context/filterscontext';
-import { getLineSpacing, getFilterType } from './helpers/SSTlocalStorageManagement';
+import { getLineSpacing, getFilterType, getTableFilters, registerTableFilters, destroyTableFiltersStorage } from './helpers/SSTlocalStorageManagement';
 import {translations} from "./assets/translations"
 import { Translations } from './types/props';
-import {FaChevronRight, FaChevronLeft, FaAngleUp, FaAngleDown, FaTimes} from "react-icons/fa"
+import {FaChevronRight, FaChevronLeft, FaAngleUp, FaAngleDown} from "react-icons/fa"
 import { isMobile } from 'react-device-detect';
 
 const PerPageContainer = styled.div`
@@ -157,7 +157,10 @@ type Props = {
     translationsProps?: Translations
     enabledExport?: boolean
     onExportClick?(): void
-    mobileColumns?: any[]
+    mobileColumns?: any[] 
+    containerClassName?:string
+    filtersContainerClassName?:string
+    tableId?: string // Only for save filter & sort
 }
 
 function getOptionsByType(type: string): string{
@@ -182,27 +185,32 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
     const {translationsProps} = props
 
     useEffect(() => {
-        let _initialFilters = {}
-        props.filtersList.map(filter => {
-            _initialFilters[filter.name] = {
-                type: filter.type,
-                label: filter.label,
-                parsedValue: '',
-                main: {
-                    option: getOptionsByType(filter.type), 
-                    value: filter.type === "booleanRadio" ? 
-                        filter.radioValues.map(value => ({name: value.value, status: "NA", label: value.label})) :
-                        filter.type === "geoloc" ? {lat:0, lng: 0, display: ""} : ""
-                },                
-                optionals: []
+        if(!!props.isFilter && !!props.filtersList && props.filtersList.length > 0)
+            if(!!props.tableId && !_.isEmpty(getTableFilters(props.tableId))) {
+                setFiltersState(getTableFilters(props.tableId))
+            } else {
+                let _initialFilters = {}
+                props.filtersList.map(filter => {
+                    _initialFilters[filter.name] = {
+                        type: filter.type,
+                        label: filter.label,
+                        parsedValue: '',
+                        main: {
+                            option: getOptionsByType(filter.type), 
+                            value: filter.type === "booleanRadio" ? 
+                                filter.radioValues.map(value => ({name: value.value, status: "NA", label: value.label})) :
+                                filter.type === "geoloc" ? {lat:0, lng: 0, display: ""} : ""
+                        },                
+                        optionals: []
+                    }
+                })
+                setFiltersState(_initialFilters)
             }
-        })
-        setFiltersState(_initialFilters)
     }, [])
 
     const [filters, setFilters] = useState<any>({})
     const [filtersState, setFiltersState] = useState({})
-    const [submitFiltersState, setSubmitFilterState] = useState({})
+    const [submitFiltersState, setSubmitFilterState] = useState(!!props.tableId ? getTableFilters(props.tableId) : {})
 	const [offset, setOffset] = useState<number>(0);
     const [perPage, setPerPage] = useState<number>(props.perPageItems ? props.perPageItems : 10);
     const [sorterOptions, setSorterOptions] = useState<{value:string, label:string, icon:any}[]>([])
@@ -221,9 +229,9 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
     
 	useEffect(() => {
         if(isInitialMount.current)
-            isInitialMount.current = false
+        isInitialMount.current = false
         else {
-		    props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+            props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
         }
     }, [offset, perPage])
 
@@ -292,6 +300,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             isInitialMount.current = false
         else if(!!submitFiltersState){
             //Filter can be a string query or object with mulitple properties inside
+            registerTableFilters(props.tableId, submitFiltersState)
             let filters = props.filterParsedType === "rsql" 
             ? parseFilterRSQL(submitFiltersState)
             : parseFilterFuzzy(submitFiltersState)
@@ -350,6 +359,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         })
         setFiltersState(_initialFilters)
         setSubmitFilterState({})
+        destroyTableFiltersStorage(props.tableId)
         return;
     }
 
@@ -364,9 +374,9 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         }}>
             <TableContainer darkMode={props.darkMode}>
                 <div className="row">
-                    <div className={`md-12  arrayCard`}>
+                    <div className={`md-12`}>
                         <div className="">
-                            <TableStyles lineSpacing={lineSpacing}>
+                            <TableStyles lineSpacing={lineSpacing} className={props.containerClassName}>
                                 {!props.withoutHeader && 
                                     <div className="btnActionsContainer">
                                         {props.showAddBtn ? <button className="btn bg-primary light" onClick={props.onAddClick}>{translationsProps?.add ?? translations.add}</button> : <div></div>}
@@ -409,9 +419,9 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                 }
                                 {props.data &&
                                     <>
-                                        {props.isFilter && 
+                                        {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
                                             <>
-                                                <FiltersContainer darkMode={props.darkMode} filterPosition={filterType}>
+                                                <FiltersContainer darkMode={props.darkMode} filterPosition={filterType} className={props.filtersContainerClassName}>
                                                     <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode}/>
                                                     <FiltersInteract 
                                                         filters={props.filtersList} 
