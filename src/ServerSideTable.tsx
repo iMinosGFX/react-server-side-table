@@ -349,7 +349,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             }
         })
         setFiltersState(_initialFilters)
-        setSubmitFilterState(null)
+        setSubmitFilterState({})
         return;
     }
 
