@@ -63,6 +63,9 @@ declare type Props = {
     enabledExport?: boolean;
     onExportClick?(): void;
     mobileColumns?: any[];
+    containerClassName?: string;
+    filtersContainerClassName?: string;
+    tableId?: string;
 };
 declare const ServerSideTable: React.ForwardRefExoticComponent<Props & React.RefAttributes<unknown>>;
 export default ServerSideTable;

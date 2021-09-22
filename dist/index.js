@@ -22333,6 +22333,17 @@ function getFilterType() {
 function saveFilterType(type) {
     localStorage.setItem('filter-type-table', type);
 }
+function getTableFilters(tableId) {
+    return !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId)) : {};
+}
+function registerTableFilters(tableId, filters) {
+    if (!!filters && !lodash.isEmpty(filters)) {
+        localStorage.setItem(tableId, JSON.stringify(filters));
+    }
+}
+function destroyTableFiltersStorage(tableId) {
+    localStorage.removeItem(tableId);
+}
 
 var Container = styled.div(templateObject_1$4 || (templateObject_1$4 = __makeTemplateObject(["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    span{\n        padding: 10px;\n        border-radius: 50%;\n        transition: background 200ms;\n        svg{\n            transform: translateY(2px);\n        }\n        &:hover{\n            background: rgba(0,0,0,.1)\n        }\n    }\n"], ["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    span{\n        padding: 10px;\n        border-radius: 50%;\n        transition: background 200ms;\n        svg{\n            transform: translateY(2px);\n        }\n        &:hover{\n            background: rgba(0,0,0,.1)\n        }\n    }\n"])));
 var SettingsInteractor = function (props) {
@@ -22676,26 +22687,32 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
     var _a, _b, _c, _d;
     var translationsProps = props.translationsProps;
     React.useEffect(function () {
-        var _initialFilters = {};
-        props.filtersList.map(function (filter) {
-            _initialFilters[filter.name] = {
-                type: filter.type,
-                label: filter.label,
-                parsedValue: '',
-                main: {
-                    option: getOptionsByType$1(filter.type),
-                    value: filter.type === "booleanRadio" ?
-                        filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) :
-                        filter.type === "geoloc" ? { lat: 0, lng: 0, display: "" } : ""
-                },
-                optionals: []
-            };
-        });
-        setFiltersState(_initialFilters);
+        if (!!props.isFilter && !!props.filtersList && props.filtersList.length > 0)
+            if (!!props.tableId && !lodash.isEmpty(getTableFilters(props.tableId))) {
+                setFiltersState(getTableFilters(props.tableId));
+            }
+            else {
+                var _initialFilters_1 = {};
+                props.filtersList.map(function (filter) {
+                    _initialFilters_1[filter.name] = {
+                        type: filter.type,
+                        label: filter.label,
+                        parsedValue: '',
+                        main: {
+                            option: getOptionsByType$1(filter.type),
+                            value: filter.type === "booleanRadio" ?
+                                filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) :
+                                filter.type === "geoloc" ? { lat: 0, lng: 0, display: "" } : ""
+                        },
+                        optionals: []
+                    };
+                });
+                setFiltersState(_initialFilters_1);
+            }
     }, []);
     var _e = React.useState({}), filters = _e[0], setFilters = _e[1];
     var _f = React.useState({}), filtersState = _f[0], setFiltersState = _f[1];
-    var _g = React.useState({}), submitFiltersState = _g[0], setSubmitFilterState = _g[1];
+    var _g = React.useState(!!props.tableId ? getTableFilters(props.tableId) : {}), submitFiltersState = _g[0], setSubmitFilterState = _g[1];
     var _h = React.useState(0), offset = _h[0], setOffset = _h[1];
     var _j = React.useState(props.perPageItems ? props.perPageItems : 10), perPage = _j[0], setPerPage = _j[1];
     var _k = React.useState([]), sorterOptions = _k[0], setSorterOptions = _k[1];
@@ -22771,6 +22788,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         if (isInitialMount.current)
             isInitialMount.current = false;
         else if (!!submitFiltersState) {
+            registerTableFilters(props.tableId, submitFiltersState);
             var filters_1 = props.filterParsedType === "rsql"
                 ? parseFilterRSQL(submitFiltersState)
                 : parseFilterFuzzy(submitFiltersState);
@@ -22820,6 +22838,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         });
         setFiltersState(_initialFilters);
         setSubmitFilterState({});
+        destroyTableFiltersStorage(props.tableId);
         return;
     };
     return (React__default.createElement(FiltersContext.Provider, { value: {
@@ -22832,9 +22851,9 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         } },
         React__default.createElement(TableContainer, { darkMode: props.darkMode },
             React__default.createElement("div", { className: "row" },
-                React__default.createElement("div", { className: "md-12  arrayCard" },
+                React__default.createElement("div", { className: "md-12" },
                     React__default.createElement("div", { className: "" },
-                        React__default.createElement(TableStyles, { lineSpacing: lineSpacing },
+                        React__default.createElement(TableStyles, { lineSpacing: lineSpacing, className: props.containerClassName },
                             !props.withoutHeader &&
                                 React__default.createElement("div", { className: "btnActionsContainer" },
                                     props.showAddBtn ? React__default.createElement("button", { className: "btn bg-primary light", onClick: props.onAddClick }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.add) !== null && _a !== void 0 ? _a : translations.add) : React__default.createElement("div", null),
@@ -22854,9 +22873,9 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                                             React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: function (e) { return setLineSpacing(e); }, onFilterTypeChange: function (e) { return setFilterType(e); }, filterType: filterType, translationsProps: translationsProps, enabledExport: props.enabledExport, onExportClick: props.onExportClick, darkMode: props.darkMode })))),
                             props.data &&
                                 React__default.createElement(React__default.Fragment, null,
-                                    props.isFilter &&
+                                    props.isFilter && !!props.filtersList && props.filtersList.length > 0 &&
                                         React__default.createElement(React__default.Fragment, null,
-                                            React__default.createElement(FiltersContainer, { darkMode: props.darkMode, filterPosition: filterType },
+                                            React__default.createElement(FiltersContainer, { darkMode: props.darkMode, filterPosition: filterType, className: props.filtersContainerClassName },
                                                 React__default.createElement(FiltersViewers, { translationsProps: translationsProps, darkMode: props.darkMode }),
                                                 React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, filtersPosition: filterType, darkMode: props.darkMode, isMobile: reactDeviceDetect.isMobile }))),
                                     React__default.createElement(Table, { data: props.data.content, columns: reactDeviceDetect.isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns })),
