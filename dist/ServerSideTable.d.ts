@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { FilterItem } from './FiltersInteract';
 import { Translations } from './types/props';
 export declare type filtersType = "rsql" | "fuzzy";
@@ -31,6 +31,10 @@ export declare type PaginationObject = {
 export interface Data extends PaginationObject {
     content: any[];
 }
+declare type optionalIconContent = {
+    icon: ReactElement;
+    text: string;
+};
 declare type Props = {
     columns: any[];
     data: Data;
@@ -54,7 +58,7 @@ declare type Props = {
     showAddBtn?: boolean;
     onAddClick?(): void;
     showOptionalBtn?: boolean;
-    optionalIconBtn?: any;
+    optionalIconContent?: optionalIconContent;
     onOptionalBtnClick?(): void;
     filterParsedType?: filtersType;
     darkMode?: boolean;

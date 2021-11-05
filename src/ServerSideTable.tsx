@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
+import React, {useState, useEffect, useRef, useImperativeHandle, forwardRef, ReactElement } from 'react'
 import Table from './Table'
 import ReactPaginate from 'react-paginate';
 import { TableStyles } from './assets/styled-components';
@@ -28,6 +28,9 @@ const PerPageContainer = styled.div`
 		height: 40px;
 		width: 20px;
 	}
+    .perPageSelect {
+        color: #A3A6C0;
+    }
 `
 
 const TableContainer = styled("div")<{darkMode: boolean}>`
@@ -69,16 +72,34 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
 
         }   
     } 
-    .btnActionsContainer{
+    .SstHeader{
         padding: .4rem;
-        width: 100% auto;
+        width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding-right: 10px;
+        .sst_actions_buttons{
+            display: flex;
+            align-items: center;
+            .sst_optional_button{
+                margin-left: 10px;
+                background: none;
+                border: none;
+                color: ${props => props.darkMode ? "#bccde0" : "#2a3c4e" };
+                span{
+                    display: flex;
+                    align-items: center;
+                    font-size: 1rem;
+                    svg{
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
     }
     @media only screen and (max-width: 540px){
-        .btnActionsContainer{
+        .SstHeader{
             display: contents;
             button{
                 float: right;
@@ -94,7 +115,7 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
 `
 
 const FiltersContainer = styled('div')<{darkMode: boolean, filterPosition: string}>`
-    background: ${props => props.filterPosition === "list" ? "initial" : props.darkMode ? "#272d3a" : "#f0f0f0"};
+    /* background: ${props => props.filterPosition === "list" ? "initial" : props.darkMode ? "#272d3a" : "#f0f0f0"}; */
     padding: 0 10px;
 `
 
@@ -134,6 +155,11 @@ export interface Data extends PaginationObject {
     content: any[]
 }
 
+type optionalIconContent = {
+    icon: ReactElement,
+    text: string
+}
+
 type Props = {
     columns: any[]
     data: Data
@@ -149,7 +175,7 @@ type Props = {
     showAddBtn?: boolean
     onAddClick?(): void
     showOptionalBtn?:boolean
-    optionalIconBtn?:any
+    optionalIconContent?: optionalIconContent
     onOptionalBtnClick?():void
     filterParsedType?: filtersType
     darkMode?: boolean
@@ -378,8 +404,17 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                         <div className="">
                             <TableStyles lineSpacing={lineSpacing} className={props.containerClassName}>
                                 {!props.withoutHeader && 
-                                    <div className="btnActionsContainer">
-                                        {props.showAddBtn ? <button className="btn bg-primary light" onClick={props.onAddClick}>{translationsProps?.add ?? translations.add}</button> : <div></div>}
+                                    <div className="SstHeader">
+                                        <div className="sst_actions_buttons">
+                                                {props.showAddBtn && 
+                                                    <button className="btn bg-primary sst_main_button"  onClick={props.onAddClick}>
+                                                            {translationsProps?.add ?? translations.add}
+                                                    </button>}
+                                                {props.showOptionalBtn && !!props.optionalIconContent && !!props.onOptionalBtnClick && 
+                                                    <button className="sst_optional_button"  onClick={props.onOptionalBtnClick}>
+                                                        <span>{props.optionalIconContent.icon} {props.optionalIconContent.text}</span>
+                                                    </button>}
+                                        </div>
                                         <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
                                         {props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0 && 
                                             <div className="selectContainer">

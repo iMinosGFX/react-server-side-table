@@ -188,9 +188,6 @@ const ListItem = styled('div')<any>`
 const FieldItem = styled('div')<{widthPercentage?: number}>`
     width: ${props => !!props.widthPercentage ? `${props.widthPercentage}%`: "33%"};
     padding: 0px 5px;
-    label {
-        padding-left: 5px;
-    }
     @media (max-width: 540px){
         width: 100% !important;
     } 
@@ -217,7 +214,7 @@ const FilterContainer = styled('div')<{filtersPosition:FiltersPosition, darkMode
     .inputs{
         display: ${props => props.filtersPosition === "list" ? "block" : "flex"};
         input[type='text'], input[type='date'], input[type="number"]{
-            background: ${props => props.darkMode ? "#2a3c4e" : "#fff"};
+            background: ${props => props.darkMode ? "#2a3c4e" : "#ECECEC"};
             height: ${props => props.filtersPosition === "list" ? "35px" : "38px"};
             line-height: ${props => props.filtersPosition === "list" ? "35px" : "38px"};
             border: ${props => props.filtersPosition === "list" ? "1px solid #E0E0E0" : "initial"};
@@ -248,7 +245,7 @@ const CheckContainer = styled('div')<{filtersPosition: FiltersPosition}>`
     overflow: auto;
     position: relative;
     z-index: 99;
-    background:${props => props.filtersPosition === "field" ? "#fff" : "initial"};
+    background:${props => props.filtersPosition === "field" ? "#ECECEC" : "initial"};
     box-shadow: ${props => props.filtersPosition === "field" ? "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" : "initial"};
     .check-group{
         label{
@@ -264,7 +261,7 @@ const FieldContainer = styled('div')<{darkMode: boolean}>`
     line-height: 38px;
     height: 38px;
     /* border: 1px solid #E0E0E0; */
-    background:${props => props.darkMode ? "#2a3c4e" : "#fff"};
+    background:${props => props.darkMode ? "#2a3c4e" : "#ECECEC"};
     border-radius: 3px;
 `
 
