@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { FiltersPosition } from '../ServerSideTable'
 
-const TableStyles = styled("div")<{lineSpacing: string}>`
+const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
   table {
     border-spacing: 0;
     width:100%;
@@ -16,7 +16,7 @@ const TableStyles = styled("div")<{lineSpacing: string}>`
           height: ${props => props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"};
           border-bottom: 1px solid #F0F0F0;
           &:hover{
-            background-color: "#F5F5F5";
+            background: #F5F5F5 !important;
           }
       }
     }
@@ -188,6 +188,15 @@ const ListItem = styled('div')<any>`
 const FieldItem = styled('div')<{widthPercentage?: number}>`
     width: ${props => !!props.widthPercentage ? `${props.widthPercentage}%`: "33%"};
     padding: 0px 5px;
+    @media (max-width: 1230px){
+        width: 33% !important;
+    }
+    @media (max-width: 1150px){
+        width: 50% !important;
+    }
+    @media (max-width: 820px){
+        width: 100% !important;
+    }
     @media (max-width: 540px){
         width: 100% !important;
     } 
@@ -214,7 +223,7 @@ const FilterContainer = styled('div')<{filtersPosition:FiltersPosition, darkMode
     .inputs{
         display: ${props => props.filtersPosition === "list" ? "block" : "flex"};
         input[type='text'], input[type='date'], input[type="number"]{
-            background: ${props => props.darkMode ? "#2a3c4e" : "#ECECEC"};
+            background: ${props => props.darkMode ? "#272d3a" : "#ECECEC"};
             height: ${props => props.filtersPosition === "list" ? "35px" : "38px"};
             line-height: ${props => props.filtersPosition === "list" ? "35px" : "38px"};
             border: ${props => props.filtersPosition === "list" ? "1px solid #E0E0E0" : "initial"};
@@ -228,11 +237,23 @@ const FilterContainer = styled('div')<{filtersPosition:FiltersPosition, darkMode
         .filterSelectChoice__control{
             border: none;
             margin-bottom: ${props => props.filtersPosition === "list" ? "10px" : "initial"};
-            border: 1px solid #E0E0E0;
-            width: ${props => props.filtersPosition === "field" ? "170px" : "initial"};
+            width: ${props => props.filtersPosition === "field" ? "155px" : "initial"};
+            background: ${props => props.darkMode ? "#141b24" : "#e3e3e3"};
+            border-radius: 2px 0 0 2px;
+        }
+        .filterSelectChoice__control--is-focused{
+            border:none;
+            box-shadow: none;
+        }
+        .filterSelectChoice__indicator-separator{
+            display: none;
+        }
+        .filterSelectChoice__single-value{
+            color: ${props => props.darkMode ? "#bccde0" : "#initial"};
         }
         .filterSelectChoice__input{
             input{
+                color: ${props => props.darkMode ? "#bccde0" : "#initial"};
                 height: 1.2rem !important;
                 font-size: 15px !important;
             }
@@ -240,12 +261,12 @@ const FilterContainer = styled('div')<{filtersPosition:FiltersPosition, darkMode
     }
 `
 
-const CheckContainer = styled('div')<{filtersPosition: FiltersPosition}>`
+const CheckContainer = styled('div')<{filtersPosition: FiltersPosition, darkMode: boolean}>`
     max-height: 200px;
     overflow: auto;
     position: relative;
     z-index: 99;
-    background:${props => props.filtersPosition === "field" ? "#ECECEC" : "initial"};
+    background:${props => props.filtersPosition === "field" ? props.darkMode ? "#272d3a" : "#ECECEC" : "initial"};
     box-shadow: ${props => props.filtersPosition === "field" ? "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" : "initial"};
     .check-group{
         label{
@@ -261,8 +282,14 @@ const FieldContainer = styled('div')<{darkMode: boolean}>`
     line-height: 38px;
     height: 38px;
     /* border: 1px solid #E0E0E0; */
-    background:${props => props.darkMode ? "#2a3c4e" : "#ECECEC"};
+    background:${props => props.darkMode ? "#272d3a" : "#ECECEC"};
     border-radius: 3px;
+    label{
+        margin-left: 3px;
+    }
+    @media(max-width: 820px){
+        margin-bottom: 10px;
+    }
 `
 
 export {

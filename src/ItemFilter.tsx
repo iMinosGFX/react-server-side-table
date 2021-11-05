@@ -151,12 +151,12 @@ const ItemFilter = (props: Props) => {
     if(filtersPosition === "field"){
         return(
             <>
-            <FieldItem widthPercentage={props.filter.widthPercentage}>
+            <FieldItem widthPercentage={props.filter.widthPercentage} className="SST_field_filter_item">
                 <label>{props.filter.label} {props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && <span className="addFilter" style={{cursor: "pointer"}} onClick={handleAddFilters}>+</span>}</label>
                 {FilterRender(props.filter, "main")}
             </FieldItem>
             {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (
-                <FieldItem widthPercentage={props.filter.widthPercentage} key={i}>
+                <FieldItem widthPercentage={props.filter.widthPercentage} key={i} className="SST_field_filter_item SST_field_filter_optional_item">
                     <label>{props.filter.label} <span style={{cursor: "pointer"}} onClick={() => handleRemoveOptionalFilter(i)}>-</span></label>
                     {FilterRender(props.filter, i)}
                 </FieldItem>
@@ -166,10 +166,10 @@ const ItemFilter = (props: Props) => {
       
     } else {
         return(
-            <ListItem ref={node} onClick={() => {setOpen(true)}}>
+            <ListItem ref={node} onClick={() => {setOpen(true)}} className="SST_list_filter_item">
                 <span className="filterName">{props.filter.label}</span>
                 {open && 
-                    <div className="filterPopup">
+                    <div className="filterPopup SST_list_filter_item_popup">
                         <h4>{translationsProps?.filterFor ?? translations.filterFor} {props.filter.label}</h4>
                         {FilterRender(props.filter, "main")}
                         {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (

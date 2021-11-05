@@ -77,7 +77,7 @@ const BooleanRadioFilter = (props: Props) => {
             <FieldContainer ref={node} onClick={() => {setOpen(true)}} darkMode={darkMode}>
                 <label>{(!!filtersState.submitFiltersState && !!filtersState.submitFiltersState?.[props.filter.name]) ? filtersState.submitFiltersState?.[props.filter.name].main.value.map(filter => `${filter.label},${filter.status}`) : "Choisir"}</label>
                 {open && 
-                    <CheckContainer filtersPosition={filtersPosition}>
+                    <CheckContainer filtersPosition={filtersPosition} darkMode={darkMode}>
                         {filtersState.filtersState[props.filter.name]["main"]["value"].flatMap((radio,i) => {
                             return(
                                 <div key={i}>
@@ -106,7 +106,7 @@ const BooleanRadioFilter = (props: Props) => {
     } else {
         return(
             <FilterContainer>
-                <CheckContainer filtersPosition={filtersPosition}>
+                <CheckContainer filtersPosition={filtersPosition} darkMode={darkMode}>
                     {filtersState.filtersState[props.filter.name]["main"]["value"].flatMap((radio,i) => {
                         return(
                             <div key={i}>

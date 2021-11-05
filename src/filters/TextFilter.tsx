@@ -25,6 +25,7 @@ const TextFilter = (props: Props) => {
 
     const options = [
         {value:"contains", label:translationsProps?.filtersViewer?.contain ?? translations.filtersViewer.contain},
+        {value:"equal", label:translationsProps?.filtersViewer?.equal ?? translations.filtersViewer.equal},
         {value:"startWith", label:translationsProps?.filtersViewer?.startWith ?? translations.filtersViewer.startWith},
         {value:"finishWith", label:translationsProps?.filtersViewer?.finishWith ?? translations.filtersViewer.finishWith},
     ]

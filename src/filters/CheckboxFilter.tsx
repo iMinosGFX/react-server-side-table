@@ -68,7 +68,7 @@ const CheckboxFilter = (props: Props) => {
             <FieldContainer ref={node} onClick={() => {setOpen(true)}} darkMode={darkMode}>
                 <label>{(!!filtersState.submitFiltersState && !!filtersState.submitFiltersState?.[props.filter.name] && filtersState?.submitFiltersState[props.filter.name]?.main?.value.length > 0) ? filtersState?.submitFiltersState[props.filter.name]?.main?.value.join(',') : "Choisir"}</label>
                {open &&
-                    <CheckContainer filtersPosition={filtersPosition}>
+                        <CheckContainer filtersPosition={filtersPosition} darkMode={darkMode}>
                         {props.filter.checkboxValues.map((check,i) => (
                             <div className="check-group" style={{paddingTop: 10}} key={i}>
                                 <input 
@@ -87,7 +87,7 @@ const CheckboxFilter = (props: Props) => {
     } else {
         return(
             <ListContainer>
-                <CheckContainer filtersPosition={filtersPosition}>
+                <CheckContainer filtersPosition={filtersPosition} darkMode={darkMode}>
                     {props.filter.checkboxValues.map((check,i) => (
                         <div className="check-group" style={{paddingTop: 10}} key={i}>
                             <input 

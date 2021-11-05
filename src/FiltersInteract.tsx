@@ -93,14 +93,8 @@ const SearchContainer = styled('div')<{darkMode: boolean}>`
         width: 30px;
         height: 30px;
         display: flex;
-        box-shadow:
-        0 0px 1.1px rgba(0, 0, 0, 0.043),
-        0 0px 2.8px rgba(0, 0, 0, 0.062),
-        0 0px 5.7px rgba(0, 0, 0, 0.078),
-        0 0px 11.7px rgba(0, 0, 0, 0.097),
-        0 0px 32px rgba(0, 0, 0, 0.14);
         cursor: pointer;
-        background: ${props => props.darkMode ? "#141b24" : "#fff"};
+        background: ${props => props.darkMode ? "#141b24" : "#ececec"};
         border-radius: 20px;
         align-items: center;
         justify-content: center;
@@ -133,7 +127,7 @@ const FiltersInteract = (props: Props) => {
         <FiltersContext.Consumer>
             {filterContext => (
                 filtersPosition === "list" ? 
-                    <ListContainer>
+                    <ListContainer className="SST_list_filters_container">
                         {/* @ts-ignore */}
                         {filters.map(filter => (
                             <ItemFilter 
@@ -151,11 +145,11 @@ const FiltersInteract = (props: Props) => {
                         </div>
                     </ListContainer>
                 : 
-                <SectionFilters>
+                <SectionFilters className="SST_field_filters_container">
                     {isMobile && <p onClick={() => setIsFilterOpen(!isFilterOpen)}>Filtres {isFilterOpen ? <BiChevronUp /> : <BiChevronDown />}</p>}
                     {isFilterOpen && 
                         <>
-                        <FieldContainer>
+                        <FieldContainer className="SST_field_filters">
                             {filters.map(filter => (
                                 <ItemFilter 
                                     key={filter.name} 
@@ -166,7 +160,7 @@ const FiltersInteract = (props: Props) => {
                                     darkMode={darkMode}/>
                             ))}
                         </FieldContainer>
-                        <SearchContainer darkMode={darkMode}>
+                        <SearchContainer darkMode={darkMode} className="SST_submit_filters_btn">
                             <span onClick={() => filterContext.onClickApply()}> <BiSearchAlt /> <label>Rechercher</label></span>
                         </SearchContainer>
                         </>

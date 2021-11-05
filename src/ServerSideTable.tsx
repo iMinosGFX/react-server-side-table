@@ -35,6 +35,7 @@ const PerPageContainer = styled.div`
 
 const TableContainer = styled("div")<{darkMode: boolean}>`
     padding-top: 10px;
+    margin: 0 5px;
     .extender{
         position: absolute; 
         top: -25px;
@@ -72,17 +73,17 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
 
         }   
     } 
-    .SstHeader{
+    .SST_HEADER{
         padding: .4rem;
         width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding-right: 10px;
-        .sst_actions_buttons{
+        .SST_actions_buttons{
             display: flex;
             align-items: center;
-            .sst_optional_button{
+            .SST_optional_button{
                 margin-left: 10px;
                 background: none;
                 border: none;
@@ -99,7 +100,7 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
         }
     }
     @media only screen and (max-width: 540px){
-        .SstHeader{
+        .SST_HEADER{
             display: contents;
             button{
                 float: right;
@@ -245,6 +246,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
     const [filterType, setFilterType] = useState<string>(getFilterType())
     const [hiddenColumns, setHiddenColumns] = useState<string[]>([])
     const { Option } = components
+    const [parsedFilters, setParsedFilters] = useState<any>(null)
 
     const isInitialMount = useRef(true);
 
@@ -257,7 +259,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         if(isInitialMount.current)
         isInitialMount.current = false
         else {
-            props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+            props.onDataChange({offset,perPage,filters: parsedFilters, sorter: sorterValue?.value})
         }
     }, [offset, perPage])
 
@@ -266,7 +268,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             isInitialMount.current = false
         else {
             if(!!sorterValue){
-                props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+                props.onDataChange({offset,perPage,filters: parsedFilters, sorter: sorterValue?.value})
             }
         }
     }, [sorterValue])
@@ -331,8 +333,9 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             ? parseFilterRSQL(submitFiltersState)
             : parseFilterFuzzy(submitFiltersState)
             if(props.filterParsedType === "rsql" || props.filterParsedType === "fuzzy"){
+                setParsedFilters(filters)
                 setOffset(0)
-                props.onDataChange({offset,perPage,filters})
+                props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
             }  
         }
     }, [submitFiltersState])
@@ -340,7 +343,8 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
     const handleFilterSubmit = (filters: any) => {
         setOffset(0)
         setFilters(filters)
-        props.onDataChange({offset,perPage,filters})
+        setParsedFilters(filters)
+        props.onDataChange({offset,perPage,filters,sorter: sorterValue?.value})
     }
     
     const changeMainFilter = (name: string, content: {option:string, value:string}) => {
@@ -398,112 +402,106 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             onClearAll: onClearAll,
             onClickApply: onClickApply
         }}>
-            <TableContainer darkMode={props.darkMode}>
-                <div className="row">
-                    <div className={`md-12`}>
-                        <div className="">
-                            <TableStyles lineSpacing={lineSpacing} className={props.containerClassName}>
-                                {!props.withoutHeader && 
-                                    <div className="SstHeader">
-                                        <div className="sst_actions_buttons">
-                                                {props.showAddBtn && 
-                                                    <button className="btn bg-primary sst_main_button"  onClick={props.onAddClick}>
-                                                            {translationsProps?.add ?? translations.add}
-                                                    </button>}
-                                                {props.showOptionalBtn && !!props.optionalIconContent && !!props.onOptionalBtnClick && 
-                                                    <button className="sst_optional_button"  onClick={props.onOptionalBtnClick}>
-                                                        <span>{props.optionalIconContent.icon} {props.optionalIconContent.text}</span>
-                                                    </button>}
-                                        </div>
-                                        <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
-                                        {props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0 && 
-                                            <div className="selectContainer">
-                                                <Select 
-                                                    options={sorterOptions}
-                                                    components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
-                                                    isClearable
-                                                    onChange={(e, triggeredAction) => {
-                                                        if(triggeredAction.action === "clear") {
-                                                            props.onDataChange({offset,perPage,filters})
-                                                            setSorterValue(null)
-                                                        }
-                                                        else {
-                                                            setSorterValue(e)
-                                                        }
-                                                    }}
-                                                    value={sorterValue}
-                                                    classNamePrefix="ServerSideTableFilterSelect"
-                                                    placeholder={translationsProps?.sortBy ?? translations.sortBy}/>
-                                            </div>
-                                        }
-                                        <div className="icons">
-                                            <SettingsInteractor 
-                                                columns={props.columns}
-                                                hiddenColumns={hiddenColumns}
-                                                onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
-                                                onLineSpacingChange={e => setLineSpacing(e)}
-                                                onFilterTypeChange={e => setFilterType(e)}
-                                                filterType={filterType}
-                                                translationsProps={translationsProps}
-                                                enabledExport={props.enabledExport}
-                                                onExportClick={props.onExportClick}
-                                                darkMode={props.darkMode}/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                {props.data &&
-                                    <>
-                                        {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
-                                            <>
-                                                <FiltersContainer darkMode={props.darkMode} filterPosition={filterType} className={props.filtersContainerClassName}>
-                                                    <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode}/>
-                                                    <FiltersInteract 
-                                                        filters={props.filtersList} 
-                                                        onSubmit={e => handleFilterSubmit(e)} 
-                                                        filterParsedType={props.filterParsedType}
-                                                        translationsProps={translationsProps}
-                                                        filtersPosition={filterType}
-                                                        darkMode={props.darkMode}
-                                                        isMobile={isMobile}/>
-                                                </FiltersContainer>
-                                            </>
-                                        }
-                                        <Table 
-                                            data={props.data.content} 
-                                            columns={isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns} 
-                                            renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
-                                            hiddenColumns={hiddenColumns}/>
-                                    </>
-                                }
-                                <div className="footerTable">
-                                    <ReactPaginate
-                                        previousLabel={<FaChevronLeft style={{transform: "translateY(2px)"}}/>}
-                                        nextLabel={<FaChevronRight style={{transform: "translateY(2px)"}}/>}
-                                        breakLabel={"..."}
-                                        breakClassName={"break-me"}
-                                        pageCount={props.data?.totalPages}
-                                        marginPagesDisplayed={2}
-                                        pageRangeDisplayed={2}
-                                        onPageChange={handlePageClick}
-                                        containerClassName={"paginationTable"}
-                                        subContainerClassName={"pages paginationTable"}
-                                        activeClassName={"active"} />
-                                    <PerPageContainer>
-                                        <label htmlFor="perPageSelect">{translationsProps?.linePerPage ?? translations.linePerPage}</label>
-                                        <select name="perPageSelect" value={perPage} onChange={(e) => setPerPage(parseInt(e.target.value))} style={{background: "#fff", width: 30}}>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="20">20</option>
-                                            <option value="50">50</option>
-                                        </select>
-                                    </PerPageContainer>
+            <TableContainer darkMode={props.darkMode} className="SST_container">
+                <TableStyles lineSpacing={lineSpacing} className={props.containerClassName} darkMode={props.darkMode}>
+                    {!props.withoutHeader && 
+                        <div className="SST_HEADER">
+                            <div className="SST_actions_buttons">
+                                    {props.showAddBtn && 
+                                        <button className="btn bg-primary sst_main_button"  onClick={props.onAddClick}>
+                                                {translationsProps?.add ?? translations.add}
+                                        </button>}
+                                    {props.showOptionalBtn && !!props.optionalIconContent && !!props.onOptionalBtnClick && 
+                                        <button className="SST_optional_button"  onClick={props.onOptionalBtnClick}>
+                                            <span>{props.optionalIconContent.icon} {props.optionalIconContent.text}</span>
+                                        </button>}
+                            </div>
+                            <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
+                            {props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0 && 
+                                <div className="selectContainer">
+                                    <Select 
+                                        options={sorterOptions}
+                                        components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
+                                        isClearable
+                                        onChange={(e, triggeredAction) => {
+                                            if(triggeredAction.action === "clear") {
+                                                props.onDataChange({offset,perPage,filters})
+                                                setSorterValue(null)
+                                            }
+                                            else {
+                                                setSorterValue(e)
+                                            }
+                                        }}
+                                        value={sorterValue}
+                                        classNamePrefix="ServerSideTableFilterSelect"
+                                        placeholder={translationsProps?.sortBy ?? translations.sortBy}/>
                                 </div>
-                                <div style={{clear: "both"}}></div>
-                            </TableStyles>
+                            }
+                            <div className="icons">
+                                <SettingsInteractor 
+                                    columns={props.columns}
+                                    hiddenColumns={hiddenColumns}
+                                    onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
+                                    onLineSpacingChange={e => setLineSpacing(e)}
+                                    onFilterTypeChange={e => setFilterType(e)}
+                                    filterType={filterType}
+                                    translationsProps={translationsProps}
+                                    enabledExport={props.enabledExport}
+                                    onExportClick={props.onExportClick}
+                                    darkMode={props.darkMode}/>
+                                </div>
+                            </div>
                         </div>
+                    }
+                    {props.data &&
+                        <>
+                            {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
+                                <>
+                                    <FiltersContainer darkMode={props.darkMode} filterPosition={filterType} className={`${props.filtersContainerClassName ?? ""} SST_filters_container`}>
+                                        <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode}/>
+                                        <FiltersInteract 
+                                            filters={props.filtersList} 
+                                            onSubmit={e => handleFilterSubmit(e)} 
+                                            filterParsedType={props.filterParsedType}
+                                            translationsProps={translationsProps}
+                                            filtersPosition={filterType}
+                                            darkMode={props.darkMode}
+                                            isMobile={isMobile}/>
+                                    </FiltersContainer>
+                                </>
+                            }
+                            <Table 
+                                data={props.data.content} 
+                                columns={isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns} 
+                                renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
+                                hiddenColumns={hiddenColumns}/>
+                        </>
+                    }
+                    <div className="footerTable">
+                        <ReactPaginate
+                            previousLabel={<FaChevronLeft style={{transform: "translateY(2px)"}}/>}
+                            nextLabel={<FaChevronRight style={{transform: "translateY(2px)"}}/>}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            pageCount={props.data?.totalPages}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={2}
+                            onPageChange={handlePageClick}
+                            containerClassName={"paginationTable"}
+                            subContainerClassName={"pages paginationTable"}
+                            activeClassName={"active"} />
+                        <PerPageContainer>
+                            <label htmlFor="perPageSelect">{translationsProps?.linePerPage ?? translations.linePerPage}</label>
+                            <select name="perPageSelect" value={perPage} onChange={(e) => setPerPage(parseInt(e.target.value))} style={{background: "#fff", width: 30}}>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                        </PerPageContainer>
                     </div>
-                </div>
+                    <div style={{clear: "both"}}></div>
+                </TableStyles>
             </TableContainer>
         </FiltersContext.Provider>
     )

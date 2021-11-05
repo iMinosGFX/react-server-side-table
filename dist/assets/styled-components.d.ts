@@ -1,6 +1,7 @@
 import { FiltersPosition } from '../ServerSideTable';
 declare const TableStyles: import("styled-components").StyledComponent<"div", any, {
     lineSpacing: string;
+    darkMode: boolean;
 }, never>;
 declare const ListItem: import("styled-components").StyledComponent<"div", any, any, never>;
 declare const FieldItem: import("styled-components").StyledComponent<"div", any, {
@@ -12,6 +13,7 @@ declare const FilterContainer: import("styled-components").StyledComponent<"div"
 }, never>;
 declare const CheckContainer: import("styled-components").StyledComponent<"div", any, {
     filtersPosition: FiltersPosition;
+    darkMode: boolean;
 }, never>;
 declare const FieldContainer: import("styled-components").StyledComponent<"div", any, {
     darkMode: boolean;
