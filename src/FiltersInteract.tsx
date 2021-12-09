@@ -1,12 +1,11 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import styled  from 'styled-components';
 import ItemFilter from './ItemFilter';
 import _ from "lodash";
-import { FiltersPosition, filtersType} from './ServerSideTable';
+import { filtersType} from './ServerSideTable';
 import FiltersContext from './context/filterscontext';
 import { Translations } from './types/props';
 import {translations} from "./assets/translations"
-import { BiChevronDown, BiChevronUp, BiSearchAlt } from 'react-icons/bi';
 
 export type FilterItem = {
     name: string, 
@@ -16,6 +15,7 @@ export type FilterItem = {
     radioValues?: {value:string, label:string}[],
     defaultOpen?:boolean
     widthPercentage?: number
+    idAccessor?:string
 }
 
 type Props = {
@@ -23,7 +23,6 @@ type Props = {
     onSubmit(e: any): void
     filterParsedType: filtersType
     translationsProps?: Translations
-    filtersPosition?: FiltersPosition
     darkMode: boolean
     isMobile?:boolean
 }
@@ -119,34 +118,33 @@ const SearchContainer = styled('div')<{darkMode: boolean}>`
 
 const FiltersInteract = (props: Props) => {
 
-    const {filters, translationsProps, filtersPosition, darkMode, isMobile} = props
+    const {filters, translationsProps, darkMode, isMobile} = props
 
-    const [isFilterOpen, setIsFilterOpen] = useState<boolean>(!isMobile) 
+    const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
 
     return(
         <FiltersContext.Consumer>
             {filterContext => (
-                filtersPosition === "list" ? 
-                    <ListContainer className="SST_list_filters_container">
-                        {/* @ts-ignore */}
-                        {filters.map(filter => (
-                            <ItemFilter 
-                                key={filter.name} 
-                                filter={filter} 
-                                filterParsedType={props.filterParsedType}
-                                translationsProps={translationsProps}
-                                filtersPosition={filtersPosition}
-                                darkMode={darkMode}/>
-                        ))}
-                        <div style={{display: "flex", justifyContent: 'center', alignItems: 'center'}}>
-                            <span className="primary" onClick={() => filterContext.onClearAll()} style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
-                                {translationsProps?.clearAll ?? translations.clearAll}
-                            </span>
-                        </div>
-                    </ListContainer>
-                : 
+                // <ListContainer className="SST_list_filters_container">
+                //     {/* @ts-ignore */}
+                //     {filters.map(filter => (
+                //         <ItemFilter 
+                //             key={filter.name} 
+                //             filter={filter} 
+                //             filterParsedType={props.filterParsedType}
+                //             translationsProps={translationsProps}
+                //             darkMode={darkMode}/>
+                //     ))}
+                //     <div style={{display: "flex", justifyContent: 'center', alignItems: 'center'}}>
+                //         <span className="primary" onClick={() => filterContext.onClearAll()} style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
+                //             {translationsProps?.clearAll ?? translations.clearAll}
+                //         </span>
+                //     </div>
+                // </ListContainer>
+                // filtersPosition === "list" ? 
+                // : 
                 <SectionFilters className="SST_field_filters_container">
-                    {isMobile && <p onClick={() => setIsFilterOpen(!isFilterOpen)}>Filtres {isFilterOpen ? <BiChevronUp /> : <BiChevronDown />}</p>}
+                    {isMobile && <p onClick={() => setIsFilterOpen(!isFilterOpen)}>Filtres {isFilterOpen ? <i className="ri-arrow-up-s-line" /> : <i className="ri-arrow-down-s-line" />}</p>}
                     {isFilterOpen && 
                         <>
                         <FieldContainer className="SST_field_filters">
@@ -156,12 +154,12 @@ const FiltersInteract = (props: Props) => {
                                     filter={filter} 
                                     filterParsedType={props.filterParsedType}
                                     translationsProps={translationsProps}
-                                    filtersPosition={filtersPosition}
+                                    isField
                                     darkMode={darkMode}/>
                             ))}
                         </FieldContainer>
                         <SearchContainer darkMode={darkMode} className="SST_submit_filters_btn">
-                            <span onClick={() => filterContext.onClickApply()}> <BiSearchAlt /> <label>Rechercher</label></span>
+                            <span onClick={() => filterContext.onClickApply()}> <i className="ri-search-2-line"/> <label>Rechercher</label></span>
                         </SearchContainer>
                         </>
                     }

@@ -1,13 +1,66 @@
 import styled from 'styled-components'
-import { FiltersPosition } from '../ServerSideTable'
+import {transparentize} from "polished"
+import { filtersType } from '../ServerSideTable'
 
 const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
+    input[type="checkbox"]{
+        position: relative !important;
+        left: initial !important;
+    }
   table {
     border-spacing: 0;
     width:100%;
       thead{
+        border-top: 1px solid ${props => props.darkMode ? "#141b24" : "#E7EAF3"} !important;
+        border-bottom: 1px solid #E7EAF3 !important;
+        height: 50px;
         text-align:left;
         padding:0 40px;
+        background: ${props => props.darkMode ? "#272d3a" : "#F8FAFD"};
+        color: #8497B1;
+        .SST_header_cell{
+            position: relative;
+            .SST_header_container{
+                display: flex;
+                align-items: center;
+                justify-content: left;
+                & > * {
+                    margin:0 2px;
+                }
+                .SST_header_title{
+                    text-transform: uppercase;
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+                    span{
+                        font-weight: 600;
+                    }
+                }
+                i{
+                    &.fitler_icon{
+                        cursor: pointer;
+                        margin-left: 3px;
+                        padding: 2px 5px;
+                        border-radius: 3px;
+                        transition: .2s;
+                        transform:translateY(-1px);
+                        &.SST_filter_active{
+                            color: #3498db;
+                            background: rgba(0,0,0,.05);
+                        }
+                    }
+                    &.sorter_icon{
+                        font-size: 20px;
+                    }
+                }
+            }
+            .SST_header_filter_modal{
+                position:absolute;
+                bottom:0;
+                left:0;
+                z-index: 999;
+            }
+        }
       }
     }
     tbody{
@@ -17,6 +70,9 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
           border-bottom: 1px solid #F0F0F0;
           &:hover{
             background: #F5F5F5 !important;
+          }
+          td{
+              border-right: 1px solid #F0F0F0;
           }
       }
     }
@@ -33,13 +89,18 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
       }
   }
   @media only screen and (max-width: 540px){
-    th{
-      white-space: nowrap;
+    table {
+        th{
+          white-space: nowrap;
+        }
+        tbody{
+          td{
+            white-space: nowrap;
+          }
+        }
     }
-    tbody{
-      td{
-        white-space: nowrap;
-      }
+    .footerTable{
+        flex-direction: column;
     }
   }
   .table-settings-dropdown{
@@ -47,8 +108,10 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
     top: 30px;
     width: 300px;
     transform: translateX(-90%);
+    color: #435F71;
     background-color: #fff;
-    box-shadow: $shadow-xl;
+    border: 1px solid #E7EAF3;
+    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);
     border-radius: 3px;
     overflow: hidden;
     z-index: 999;
@@ -62,12 +125,12 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
         align-items: center;
         border-radius: 3px;
         padding: 0.5rem;
-        color: $gray-medium;
+        color: #435F71;
         width: 300px;
         font-size: 14px;
         cursor: pointer;
         &:hover{
-            background-color: transparentize($primary, 0.8)
+            background-color: ${transparentize(.95, "#000")};
         }
     }
     .icon-button{
@@ -144,8 +207,8 @@ const ListItem = styled('div')<any>`
         /* border: ${props => props.type === "top" && "1px solid #216A9A"}; */
         color: #216A9A;
     }
-    .filterPopup{
-        width: 300px;
+    .SST_list_filter_item_popup{
+        width: ${props => props.filterParsedType==="rsql" ? "400px" : "300px"};
         background-color: #fff;
         border-radius: 2px;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -185,8 +248,7 @@ const ListItem = styled('div')<any>`
     }
 `
 
-const FieldItem = styled('div')<{widthPercentage?: number}>`
-    width: ${props => !!props.widthPercentage ? `${props.widthPercentage}%`: "33%"};
+const FieldItem = styled('div')`
     padding: 0px 5px;
     @media (max-width: 1230px){
         width: 33% !important;
@@ -202,11 +264,10 @@ const FieldItem = styled('div')<{widthPercentage?: number}>`
     } 
 `
 
-const FilterContainer = styled('div')<{filtersPosition:FiltersPosition, darkMode?: boolean}>`
+const FilterContainer = styled('div')<{darkMode?: boolean, filterParsedType: filtersType}>`
     width: 100%;
     box-sizing: border-box;
-    padding: ${props => props.filtersPosition === "list" ? "8px 5px" : "0"};
-    margin:  ${props => props.filtersPosition === "list" ? "10px 0" : "0 0 10px 0"};
+    margin: 10px 0;
     .title{
         display: flex;
         justify-content: space-between;
@@ -221,57 +282,67 @@ const FilterContainer = styled('div')<{filtersPosition:FiltersPosition, darkMode
         }
     }
     .inputs{
-        display: ${props => props.filtersPosition === "list" ? "block" : "flex"};
+        display: flex;
+        justify-content: space-between;
         input[type='text'], input[type='date'], input[type="number"]{
-            background: ${props => props.darkMode ? "#272d3a" : "#ECECEC"};
-            height: ${props => props.filtersPosition === "list" ? "35px" : "38px"};
-            line-height: ${props => props.filtersPosition === "list" ? "35px" : "38px"};
-            border: ${props => props.filtersPosition === "list" ? "1px solid #E0E0E0" : "initial"};
-            width: ${props => props.filtersPosition === "list" ? "70%" : "100%"};
+            height: ${props => props.filterParsedType === "rsql" ? "38px" : "35px"};
+            line-height: ${props => props.filterParsedType === "rsql" ? "38px" : "35px"};
+            width: ${props => props.filterParsedType=== "rsql" ? "350px" : "70%"};
             padding-left: 5px;
             float: right;
-            margin-bottom: ${props => props.filtersPosition === "list" ? "10px" : "initial"};
+            margin-bottom: 10px;
             color: #435F71 !important;
         }
 
         .filterSelectChoice__control{
-            border: none;
-            margin-bottom: ${props => props.filtersPosition === "list" ? "10px" : "initial"};
-            width: ${props => props.filtersPosition === "field" ? "155px" : "initial"};
-            background: ${props => props.darkMode ? "#141b24" : "#e3e3e3"};
-            border-radius: 2px 0 0 2px;
+            width: 150px;
+            border: .09rem solid #dbdee7;
+            max-height: 35px;
+        }
+        .filterSelectChoice__value-container{
+            max-height: 35px;
+            overflow: hidden;
+            flex-wrap: nowrap;
+        }
+        .filterSelectChoice__input{
+            input{
+                max-height: 25px !important;
+                max-height: 25px !important;
+                color: ${props => props.darkMode ? "#bccde0" : "initial"};
+                margin-bottom: 0;
+            }
         }
         .filterSelectChoice__control--is-focused{
-            border:none;
-            box-shadow: none;
+
         }
         .filterSelectChoice__indicator-separator{
             display: none;
         }
         .filterSelectChoice__single-value{
             color: ${props => props.darkMode ? "#bccde0" : "#initial"};
+            font-size: 13px;
+            font-weight: 500;
         }
-        .filterSelectChoice__input{
-            input{
-                color: ${props => props.darkMode ? "#bccde0" : "#initial"};
-                height: 1.2rem !important;
-                font-size: 15px !important;
-            }
+        .filterSelectChoice__option{
+            font-weight: 400;
         }
     }
 `
 
-const CheckContainer = styled('div')<{filtersPosition: FiltersPosition, darkMode: boolean}>`
+const CheckContainer = styled('div')<{darkMode: boolean}>`
     max-height: 200px;
     overflow: auto;
     position: relative;
     z-index: 99;
-    background:${props => props.filtersPosition === "field" ? props.darkMode ? "#272d3a" : "#ECECEC" : "initial"};
-    box-shadow: ${props => props.filtersPosition === "field" ? "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" : "initial"};
+    label{
+        font-weight: 400;
+    }
     .check-group{
         label{
+            font-weight: 400;
             color: #435F71 !important;
             &:after{
+
                 top: 2px;
             }
         }

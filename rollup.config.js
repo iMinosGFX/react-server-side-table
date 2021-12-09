@@ -26,7 +26,8 @@ export default {
         'react-table': [
           'useTable',
           'useSortBy',
-          'useExpanded'
+          'useExpanded',
+          'useRowSelect'
         ],
         'react-select': [
           'components',

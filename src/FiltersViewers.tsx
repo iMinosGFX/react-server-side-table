@@ -4,36 +4,40 @@ import FiltersContext from "./context/filterscontext"
 import styled from 'styled-components';
 import {translations} from "./assets/translations"
 import { Translations } from './types/props';
-import { FaTimes } from 'react-icons/fa';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
+import { transparentize } from 'polished';
 
 const Container = styled('div')<{darkMode: boolean}>`
     height: 60px;
     width: 100%;
     border-radius: 3px 3px 0 0;
     display: flex;
+    align-items: center;
     padding: 0 10px;
     box-sizing: border-box;
-    border-top: 1px solid #e8e8e8;
-    border-bottom: 1px solid #e8e8e8;
     span{
         line-height: 60px;
         color: ${props => props.darkMode ? "#e6e6e6" : "#435F71"};
     }
     .filters-label{
-        background: rgba(33, 106, 154, .2);
-        color: #216A9A;
+        background: ${transparentize(.8, "#2F80ED")};
         padding: 0px 8px;
         margin: auto 5px;
-        border-radius: 20px;
+        border-radius: 5px;
         height: 25px;
         font-size: 12px;
+        display: flex;
+        align-items: center;
         span{
             line-height: 25px;
+            color: #2F80ED;
+            &:nth-of-type(1){ padding-right: 3px;}
+            &:nth-of-type(2){padding-right: 6px; }
         }
-        svg{
-            color: #216A9A;
+        i{
+            font-size: 14px;
+            color: #2F80ED;
         }
     }
     @media (max-width: 540px){
@@ -124,10 +128,10 @@ const FiltersViewers: React.FC<Props> = (props) => {
                             if(!!value["main"].value && value["main"].value !== ""){
                                 _array.push(
                                     <div className="filters-label" key={i}>
-                                        <span>{value["label"]}</span> : 
+                                        <span>{value["label"]}:</span> 
                                         <span className="font-italic font-light"> {translateOption(value["main"]["option"])} </span> 
                                         <span className="font-heavy"> {Array.isArray(value["main"]["value"]) ? value["main"]["value"].join(",") : value["main"]["value"]}</span>
-                                        <FaTimes style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearMain(key)}/>
+                                        <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearMain(key)}/>
                                     </div>
                                 )
                             }
@@ -135,10 +139,10 @@ const FiltersViewers: React.FC<Props> = (props) => {
                                 if(!!value["optionals"][keyOption]["value"] && value["optionals"][keyOption]["value"] !==""){
                                     _array.push(
                                         <div className="filters-label" key={i}>
-                                            <span>{value["label"]}</span> : 
+                                            <span>{value["label"]}:</span>
                                             <span className="font-italic font-light"> {translateOption(value["optionals"][keyOption]["option"])}</span> 
                                             <span className="font-heavy"> {value["optionals"][keyOption]["value"]}</span>
-                                            <FaTimes style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearOptional(key, i)}/>
+                                            <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearOptional(key, i)}/>
                                         </div>
                                     )
                                 }
@@ -148,10 +152,10 @@ const FiltersViewers: React.FC<Props> = (props) => {
                                 if(radio.status !== "NA"){
                                     _array.push(
                                         <div className="filters-label" key={i}>
-                                            <span>{value["label"]}</span> : 
+                                            <span>{value["label"]}:</span> 
                                             <span className="font-italic font-light">{radio.label} </span>
                                             <span className="font-heavy"> {radio.status === "NO" ? "Non" : "Oui"}</span>
-                                            <FaTimes style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearRadio(key, i)}/>
+                                            <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearRadio(key, i)}/>
                                         </div>
                                     )
                                 }
@@ -160,10 +164,10 @@ const FiltersViewers: React.FC<Props> = (props) => {
                             if(value["main"]["value"]["lat"] !== 0 && value["main"]["value"]["lng"] !== 0){
                                 _array.push(
                                     <div className="filters-label" key={"geoloc_filter"}>
-                                        <span>{value["label"]}</span> : 
+                                        <span>{value["label"]}:</span> 
                                         <span className="font-italic font-light"> {value["main"]["option"]}{translationsProps?.filtersViewer?.kmAroundOf ?? translations.filtersViewer.kmAroundOf}</span>
                                         <span className="font-heavy"> {value["main"]["value"]["display"]} </span>
-                                        <FaTimes style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearGeoloc(key)}/>
+                                        <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearGeoloc(key)}/>
                                     </div>
                                 )
                             }

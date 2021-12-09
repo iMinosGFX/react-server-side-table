@@ -5,7 +5,7 @@ import NumberFilter from './filters/NumberFilter';
 import CheckboxFilter from './filters/CheckboxFilter';
 import DateFilter from './filters/DateFilter';
 import _ from "lodash"
-import {FiltersPosition, filtersType} from "./ServerSideTable";
+import {filtersType} from "./ServerSideTable";
 import BooleanRadioFilter from './filters/BooleanRadioFilter';
 import FiltersContext from "./context/filterscontext"
 import { Translations } from './types/props';
@@ -17,8 +17,8 @@ type Props = {
     ref?: any
     filterParsedType: filtersType
     translationsProps?: Translations
-    filtersPosition?: FiltersPosition
     darkMode: boolean
+    isField?: boolean
 }
 
 function getOptionsByType(type: string): string{
@@ -38,7 +38,7 @@ const ItemFilter = (props: Props) => {
     const [open, setOpen] = useState<boolean>(false)
     const node = useRef()
     const filtersState = useContext(FiltersContext)
-    const {translationsProps,filtersPosition, darkMode} = props
+    const {translationsProps, darkMode} = props
 
     /**
      * useRef pour remove sidebar info au clic exterieur
@@ -105,7 +105,6 @@ const ItemFilter = (props: Props) => {
                         onEnterPress={() => filtersState.onClickApply()}
                         filterParsedType={props.filterParsedType} 
                         translationsProps={translationsProps}
-                        filtersPosition={filtersPosition}
                         darkMode={darkMode}/>
                 )
             case 'number':
@@ -116,7 +115,6 @@ const ItemFilter = (props: Props) => {
                         onEnterPress={() => filtersState.onClickApply()}
                         filterParsedType={props.filterParsedType}
                         translationsProps={translationsProps}
-                        filtersPosition={filtersPosition}
                         darkMode={darkMode}/>
                 )
             case 'date': 
@@ -127,14 +125,12 @@ const ItemFilter = (props: Props) => {
                         onEnterPress={() => filtersState.onClickApply()}
                         filterParsedType={props.filterParsedType}
                         translationsProps={translationsProps}
-                        filtersPosition={filtersPosition}
                         darkMode={darkMode}/>
                     )
             case 'checkbox':
                 return(
                     <CheckboxFilter 
                         filter={filter}
-                        filtersPosition={filtersPosition}
                         darkMode={darkMode}/>
                 )
             case 'booleanRadio':
@@ -142,59 +138,57 @@ const ItemFilter = (props: Props) => {
                     <BooleanRadioFilter 
                         filter={filter}
                         translationsProps={translationsProps}
-                        filtersPosition={filtersPosition}
                         darkMode={darkMode}/>
                 )
         }
     }
 
-    if(filtersPosition === "field"){
+    if(!!props.isField){
         return(
-            <>
-            <FieldItem widthPercentage={props.filter.widthPercentage} className="SST_field_filter_item">
-                <label>{props.filter.label} {props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && <span className="addFilter" style={{cursor: "pointer"}} onClick={handleAddFilters}>+</span>}</label>
-                {FilterRender(props.filter, "main")}
-            </FieldItem>
-            {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (
-                <FieldItem widthPercentage={props.filter.widthPercentage} key={i} className="SST_field_filter_item SST_field_filter_optional_item">
-                    <label>{props.filter.label} <span style={{cursor: "pointer"}} onClick={() => handleRemoveOptionalFilter(i)}>-</span></label>
-                    {FilterRender(props.filter, i)}
+                <>
+                <FieldItem className="SST_field_filter_item">
+                    <label>{props.filter.label} {props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && <span className="addFilter" style={{cursor: "pointer"}} onClick={handleAddFilters}>+</span>}</label>
+                    {FilterRender(props.filter, "main")}
                 </FieldItem>
-            ))}
-            </>
-        )
-      
-    } else {
-        return(
-            <ListItem ref={node} onClick={() => {setOpen(true)}} className="SST_list_filter_item">
-                <span className="filterName">{props.filter.label}</span>
-                {open && 
-                    <div className="filterPopup SST_list_filter_item_popup">
-                        <h4>{translationsProps?.filterFor ?? translations.filterFor} {props.filter.label}</h4>
-                        {FilterRender(props.filter, "main")}
-                        {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (
-                            <React.Fragment key={i}>
-                                <span className="addFilter">{translationsProps?.and ?? translations.and} <span onClick={() => handleRemoveOptionalFilter(i)}>-</span></span>
-                                {FilterRender(props.filter, i)}
-                            </React.Fragment>
-                        ))}
-    
-                        {props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && <span className="addFilter" onClick={handleAddFilters}>+</span>}
-                        
-                        <div style={{display: "flex", justifyContent: 'center', alignItems: 'center', width: "inherit", margin: "auto", paddingTop: 5, fontSize: 14}}>
-                            <span 
-                                className="primary" 
-                                onClick={() => props.filter.type === "checkbox" ? handleClearCheckboxFilter() : props.filter.type === "booleanRadio" ? handleClearRadioFilter() : props.filter.type === "geoloc" ? handleClearGeolocFilter() : handleClear()}  
-                                style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
-                                    {translationsProps?.clear ?? translations.clear}
-                            </span>
-                            <button className="btn align bg-primary light validBtn" onClick={() => filtersState.onClickApply()}>{translationsProps?.apply ?? translations.apply}</button>
+                {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (
+                    <FieldItem key={i} className="SST_field_filter_item SST_field_filter_optional_item">
+                        <label>{props.filter.label} <span style={{cursor: "pointer"}} onClick={() => handleRemoveOptionalFilter(i)}>-</span></label>
+                        {FilterRender(props.filter, i)}
+                    </FieldItem>
+                ))}
+                </>
+            )
+        } else {
+            return(
+                <ListItem ref={node} onClick={() => {setOpen(true)}} className="SST_list_filter_item" filterParsedType={props.filterParsedType}>
+                    {/* <span className="filterName">{props.filter.label}</span> */}
+                    {/* {open &&  */}
+                        <div className="filterPopup SST_list_filter_item_popup">
+                            {/* <h4>{translationsProps?.filterFor ?? translations.filterFor} {props.filter.label}</h4> */}
+                            {FilterRender(props.filter, "main")}
+                            {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (
+                                <React.Fragment key={i}>
+                                    <span className="addFilter">{translationsProps?.and ?? translations.and} <span onClick={() => handleRemoveOptionalFilter(i)}>-</span></span>
+                                    {FilterRender(props.filter, i)}
+                                </React.Fragment>
+                            ))}
+        
+                            {props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && <span className="addFilter" onClick={handleAddFilters}>+</span>}
+                            
+                            <div style={{display: "flex", justifyContent: 'right', alignItems: 'center', margin: "auto", paddingTop: 5, fontSize: 14}}>
+                                <span 
+                                    className="primary" 
+                                    onClick={() => props.filter.type === "checkbox" ? handleClearCheckboxFilter() : props.filter.type === "booleanRadio" ? handleClearRadioFilter() : props.filter.type === "geoloc" ? handleClearGeolocFilter() : handleClear()}  
+                                    style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
+                                        {translationsProps?.clear ?? translations.clear}
+                                </span>
+                                <button className="btn align bg-primary light validBtn" onClick={() => filtersState.onClickApply()}>{translationsProps?.apply ?? translations.apply}</button>
+                            </div>
                         </div>
-                    </div>
-                }
-            </ListItem>
-        )
-    }
+                    {/* } */}
+                </ListItem>
+            )
+        }
 }
 
 export default ItemFilter

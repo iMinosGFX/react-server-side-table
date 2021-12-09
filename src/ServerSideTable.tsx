@@ -11,11 +11,11 @@ import FiltersViewers from './FiltersViewers';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
 import FiltersContext from './context/filterscontext';
-import { getLineSpacing, getFilterType, getTableFilters, registerTableFilters, destroyTableFiltersStorage } from './helpers/SSTlocalStorageManagement';
+import { getLineSpacing, getTableFilters, registerTableFilters, destroyTableFiltersStorage } from './helpers/SSTlocalStorageManagement';
 import {translations} from "./assets/translations"
 import { Translations } from './types/props';
-import {FaChevronRight, FaChevronLeft, FaAngleUp, FaAngleDown} from "react-icons/fa"
 import { isMobile } from 'react-device-detect';
+import { TableHandler } from './Table';
 
 const PerPageContainer = styled.div`
 	float: right;
@@ -83,20 +83,17 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
         .SST_actions_buttons{
             display: flex;
             align-items: center;
-            .SST_optional_button{
-                margin-left: 10px;
-                background: none;
-                border: none;
-                color: ${props => props.darkMode ? "#bccde0" : "#2a3c4e" };
-                span{
-                    display: flex;
-                    align-items: center;
-                    font-size: 1rem;
-                    svg{
-                        margin-right: 5px;
-                    }
-                }
+            & > * {
+                margin: 0 5px;
             }
+        }
+    }
+    .SST_selected_rows_buttons{
+        padding: .4rem;
+        display: flex;
+        align-items: center;
+        & > * {
+            margin: 0 5px;
         }
     }
     @media only screen and (max-width: 540px){
@@ -115,8 +112,7 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
     }
 `
 
-const FiltersContainer = styled('div')<{darkMode: boolean, filterPosition: string}>`
-    /* background: ${props => props.filterPosition === "list" ? "initial" : props.darkMode ? "#272d3a" : "#f0f0f0"}; */
+const FiltersContainer = styled('div')<{darkMode: boolean}>`
     padding: 0 10px;
 `
 
@@ -156,9 +152,13 @@ export interface Data extends PaginationObject {
     content: any[]
 }
 
-type optionalIconContent = {
-    icon: ReactElement,
-    text: string
+export type Sorter = {
+    attribut: string,
+    value:string
+}
+
+export interface SorterRecord {
+    [key:string]: Sorter
 }
 
 type Props = {
@@ -175,9 +175,6 @@ type Props = {
     onDataChange({offset, perPage, filters}: {offset: number, perPage: number, filters: string | object, sorter?:string}):void
     showAddBtn?: boolean
     onAddClick?(): void
-    showOptionalBtn?:boolean
-    optionalIconContent?: optionalIconContent
-    onOptionalBtnClick?():void
     filterParsedType?: filtersType
     darkMode?: boolean
     withoutHeader?:boolean
@@ -188,6 +185,11 @@ type Props = {
     containerClassName?:string
     filtersContainerClassName?:string
     tableId?: string // Only for save filter & sort
+    optionnalsHeaderContent?: JSX.Element[]
+    selectableRows?: boolean
+    selectedRowsAction?: JSX.Element[]
+    asyncLoading?: boolean
+    showVerticalBorders?: boolean
 }
 
 function getOptionsByType(type: string): string{
@@ -207,16 +209,21 @@ function getOptionsByType(type: string): string{
 
 FiltersContext.displayName = "ServerSideTableContext";
 
-const ServerSideTable = forwardRef((props: Props, ref: any) => {
+export type SSTHandler = {
+    reloadData: () => void,
+    getSelectedRows: () => any[]
+}
+
+const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
 
     const {translationsProps} = props
 
     useEffect(() => {
-        if(!!props.isFilter && !!props.filtersList && props.filtersList.length > 0)
+        if(!!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
             if(!!props.tableId && !_.isEmpty(getTableFilters(props.tableId))) {
                 setFiltersState(getTableFilters(props.tableId))
             } else {
-                let _initialFilters = {}
+                let _initialFilters = {};
                 props.filtersList.map(filter => {
                     _initialFilters[filter.name] = {
                         type: filter.type,
@@ -233,20 +240,34 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                 })
                 setFiltersState(_initialFilters)
             }
+
+        }
+        let  _initialSorter: SorterRecord = {};
+        props.columns.map(column => {
+            if(!!column.sorterAttribut){
+                _initialSorter[column.accessor] = {
+                    attribut: column.sorterAttribut,
+                    value: undefined
+                }
+            }
+        })
+        setSorterState(_initialSorter)  
     }, [])
 
     const [filters, setFilters] = useState<any>({})
     const [filtersState, setFiltersState] = useState({})
+    const [sorterState, setSorterState] = useState<SorterRecord>(null)
     const [submitFiltersState, setSubmitFilterState] = useState(!!props.tableId ? getTableFilters(props.tableId) : {})
 	const [offset, setOffset] = useState<number>(0);
     const [perPage, setPerPage] = useState<number>(props.perPageItems ? props.perPageItems : 10);
     const [sorterOptions, setSorterOptions] = useState<{value:string, label:string, icon:any}[]>([])
     const [sorterValue, setSorterValue] = useState<{value:string, label:string, icon:any}>(null)
     const [lineSpacing, setLineSpacing] = useState<string>(getLineSpacing())
-    const [filterType, setFilterType] = useState<string>(getFilterType())
     const [hiddenColumns, setHiddenColumns] = useState<string[]>([])
     const { Option } = components
     const [parsedFilters, setParsedFilters] = useState<any>(null)
+    const [submitSorter, setSubmitSorter] = useState<string>("")
+    const tableRef = useRef<TableHandler>(null)
 
     const isInitialMount = useRef(true);
 
@@ -259,7 +280,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         if(isInitialMount.current)
         isInitialMount.current = false
         else {
-            props.onDataChange({offset,perPage,filters: parsedFilters, sorter: sorterValue?.value})
+            props.onDataChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
         }
     }, [offset, perPage])
 
@@ -268,7 +289,8 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             isInitialMount.current = false
         else {
             if(!!sorterValue){
-                props.onDataChange({offset,perPage,filters: parsedFilters, sorter: sorterValue?.value})
+                setSubmitSorter(sorterValue?.value)
+                // props.onDataChange({offset,perPage,filters: parsedFilters, sorter: sorterValue?.value})
             }
         }
     }, [sorterValue])
@@ -289,7 +311,10 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
 
     useImperativeHandle(ref, () => ({
         reloadData() {
-            props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+            props.onDataChange({offset,perPage,filters, sorter: submitSorter})
+        },
+        getSelectedRows(): any[] {
+            return tableRef.current.getSelectedRows()
         }
     }))
 
@@ -301,12 +326,12 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                         {
                             value: filter.value+",asc",
                             label: filter.label,
-                            icon: <FaAngleUp style={{paddingLeft: 5}} color="#57606f" />
+                            icon: <i className="ri-arrow-up-s-line" style={{paddingLeft: 5}} color="#57606f" />
                         },
                         {
                             value: filter.value+",desc",
                             label: filter.label,
-                            icon: <FaAngleDown style={{paddingLeft: 5}} color="#57606f"/>,
+                            icon: <i className="ri-arrow-down-s-line" style={{paddingLeft: 5}} color="#57606f"/>,
                         }])
                     }))
         } catch {
@@ -335,7 +360,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
             if(props.filterParsedType === "rsql" || props.filterParsedType === "fuzzy"){
                 setParsedFilters(filters)
                 setOffset(0)
-                props.onDataChange({offset,perPage,filters, sorter: sorterValue?.value})
+                props.onDataChange({offset,perPage,filters, sorter: submitSorter})
             }  
         }
     }, [submitFiltersState])
@@ -344,7 +369,7 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         setOffset(0)
         setFilters(filters)
         setParsedFilters(filters)
-        props.onDataChange({offset,perPage,filters,sorter: sorterValue?.value})
+        props.onDataChange({offset,perPage,filters,sorter: submitSorter})
     }
     
     const changeMainFilter = (name: string, content: {option:string, value:string}) => {
@@ -393,10 +418,37 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
         return;
     }
 
+    const onHeaderClick = (e: any) => {
+        //DO SOMETHING ?
+    };
+
+    useEffect(() => {
+        if(!!sorterState){
+            let _stringSort = "";
+            Object.values(sorterState).map(e => {
+                if(!!e.value){
+                    _stringSort += e.attribut+","+e.value
+                }
+            }) 
+            setSubmitSorter(_stringSort)
+            // props.onDataChange({offset,perPage,filters, sorter: _stringSort})
+        }
+    },[sorterState])
+
+    useEffect(() => {
+        if((!!sorterState || !!sorterValue) && !!submitSorter){
+            props.onDataChange({offset,perPage,filters, sorter: submitSorter})
+        }
+    }, [submitSorter])
+
+    const [haveSelectedRows, setHaveSelectedRows] = useState<boolean>(false)
+
     return(
         <FiltersContext.Provider value={{
             filtersState: filtersState,
             submitFiltersState: submitFiltersState,
+            sorterState: sorterState,
+            changeSort: setSorterState,
             changeMainFilter: changeMainFilter,
             changeOptionalsFilters: changeOptionalsFilters,
             onClearAll: onClearAll,
@@ -407,14 +459,11 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                     {!props.withoutHeader && 
                         <div className="SST_HEADER">
                             <div className="SST_actions_buttons">
-                                    {props.showAddBtn && 
-                                        <button className="btn bg-primary sst_main_button"  onClick={props.onAddClick}>
-                                                {translationsProps?.add ?? translations.add}
-                                        </button>}
-                                    {props.showOptionalBtn && !!props.optionalIconContent && !!props.onOptionalBtnClick && 
-                                        <button className="SST_optional_button"  onClick={props.onOptionalBtnClick}>
-                                            <span>{props.optionalIconContent.icon} {props.optionalIconContent.text}</span>
-                                        </button>}
+                                {props.showAddBtn && 
+                                    <button className="btn bg-plain-primary sst_main_button"  onClick={props.onAddClick}>
+                                            {translationsProps?.add ?? translations.add}
+                                    </button>}
+                                {!!props.optionnalsHeaderContent && props.optionnalsHeaderContent}
                             </div>
                             <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
                             {props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0 && 
@@ -428,9 +477,9 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                                 props.onDataChange({offset,perPage,filters})
                                                 setSorterValue(null)
                                             }
-                                            else {
+                                            else 
                                                 setSorterValue(e)
-                                            }
+                                            
                                         }}
                                         value={sorterValue}
                                         classNamePrefix="ServerSideTableFilterSelect"
@@ -438,49 +487,62 @@ const ServerSideTable = forwardRef((props: Props, ref: any) => {
                                 </div>
                             }
                             <div className="icons">
-                                <SettingsInteractor 
-                                    columns={props.columns}
-                                    hiddenColumns={hiddenColumns}
-                                    onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
-                                    onLineSpacingChange={e => setLineSpacing(e)}
-                                    onFilterTypeChange={e => setFilterType(e)}
-                                    filterType={filterType}
-                                    translationsProps={translationsProps}
-                                    enabledExport={props.enabledExport}
-                                    onExportClick={props.onExportClick}
-                                    darkMode={props.darkMode}/>
+                                {!isMobile &&
+                                    <SettingsInteractor 
+                                        columns={props.columns}
+                                        hiddenColumns={hiddenColumns}
+                                        onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
+                                        onLineSpacingChange={e => setLineSpacing(e)}
+                                        translationsProps={translationsProps}
+                                        enabledExport={props.enabledExport}
+                                        onExportClick={props.onExportClick}
+                                        darkMode={props.darkMode}/>
+                                }
                                 </div>
                             </div>
                         </div>
                     }
-                    {props.data &&
                         <>
-                            {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
-                                <>
-                                    <FiltersContainer darkMode={props.darkMode} filterPosition={filterType} className={`${props.filtersContainerClassName ?? ""} SST_filters_container`}>
-                                        <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode}/>
+                        {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
+                            <>
+                                <FiltersContainer darkMode={props.darkMode} className={`${props.filtersContainerClassName ?? ""} SST_filters_container`}>
+                                    <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode}/>
+                                    {isMobile && 
                                         <FiltersInteract 
                                             filters={props.filtersList} 
                                             onSubmit={e => handleFilterSubmit(e)} 
                                             filterParsedType={props.filterParsedType}
                                             translationsProps={translationsProps}
-                                            filtersPosition={filterType}
                                             darkMode={props.darkMode}
                                             isMobile={isMobile}/>
-                                    </FiltersContainer>
-                                </>
-                            }
-                            <Table 
-                                data={props.data.content} 
-                                columns={isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns} 
-                                renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
-                                hiddenColumns={hiddenColumns}/>
+                                    }
+                                </FiltersContainer>
+                            </>
+                        }
+                        {!!props.selectableRows && !!props.selectedRowsAction && haveSelectedRows &&
+                            <div className="SST_selected_rows_buttons">
+                                {props.selectedRowsAction}
+                            </div>
+                        }
+                        <Table 
+                            ref={tableRef}
+                            data={props.data?.content ?? []} 
+                            clickableHeader={onHeaderClick}
+                            columns={isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns} 
+                            renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
+                            hiddenColumns={hiddenColumns}
+                            filters={props.filtersList}
+                            filterParsedType={props.filterParsedType} 
+                            translationsProps={translationsProps}
+                            selectableRows={props.selectableRows}
+                            setHaveSelectedRows={setHaveSelectedRows}
+                            showVerticalBorders={props.showVerticalBorders}
+                            asyncLoading={props.asyncLoading}/>
                         </>
-                    }
                     <div className="footerTable">
                         <ReactPaginate
-                            previousLabel={<FaChevronLeft style={{transform: "translateY(2px)"}}/>}
-                            nextLabel={<FaChevronRight style={{transform: "translateY(2px)"}}/>}
+                            previousLabel={<i className="ri-arrow-left-s-line" style={{transform: "translateY(2px)"}}/>}
+                            nextLabel={<i className="ri-arrow-right-s-line" style={{transform: "translateY(2px)"}}/>}
                             breakLabel={"..."}
                             breakClassName={"break-me"}
                             pageCount={props.data?.totalPages}

@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { FilterItem } from './FiltersInteract';
 import { Translations } from './types/props';
 export declare type filtersType = "rsql" | "fuzzy";
@@ -31,10 +31,13 @@ export declare type PaginationObject = {
 export interface Data extends PaginationObject {
     content: any[];
 }
-declare type optionalIconContent = {
-    icon: ReactElement;
-    text: string;
+export declare type Sorter = {
+    attribut: string;
+    value: string;
 };
+export interface SorterRecord {
+    [key: string]: Sorter;
+}
 declare type Props = {
     columns: any[];
     data: Data;
@@ -57,9 +60,6 @@ declare type Props = {
     }): void;
     showAddBtn?: boolean;
     onAddClick?(): void;
-    showOptionalBtn?: boolean;
-    optionalIconContent?: optionalIconContent;
-    onOptionalBtnClick?(): void;
     filterParsedType?: filtersType;
     darkMode?: boolean;
     withoutHeader?: boolean;
@@ -70,6 +70,15 @@ declare type Props = {
     containerClassName?: string;
     filtersContainerClassName?: string;
     tableId?: string;
+    optionnalsHeaderContent?: JSX.Element[];
+    selectableRows?: boolean;
+    selectedRowsAction?: JSX.Element[];
+    asyncLoading?: boolean;
+    showVerticalBorders?: boolean;
 };
-declare const ServerSideTable: React.ForwardRefExoticComponent<Props & React.RefAttributes<unknown>>;
+export declare type SSTHandler = {
+    reloadData: () => void;
+    getSelectedRows: () => any[];
+};
+declare const ServerSideTable: React.ForwardRefExoticComponent<Props & React.RefAttributes<SSTHandler>>;
 export default ServerSideTable;

@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import { FilterItem } from '../FiltersInteract';
 import Select from 'react-select';
 import _ from "lodash"
-import {FiltersPosition, filtersType} from "../ServerSideTable"
+import {filtersType} from "../ServerSideTable"
 import FiltersContext from "../context/filterscontext"
 import { Translations } from '../types/props';
 import { translations } from '../assets/translations';
@@ -14,13 +14,12 @@ type Props = {
     index: "main" | number
     filterParsedType: filtersType
     translationsProps: Translations
-    filtersPosition?: FiltersPosition
     darkMode: boolean
 }
 
 const DateFilter = (props: Props) => {
 
-    const {filter, index, translationsProps, filtersPosition, darkMode} = props
+    const {filter, index, translationsProps, darkMode} = props
     const filtersState = useContext(FiltersContext)
 
     const options = [
@@ -58,7 +57,7 @@ const DateFilter = (props: Props) => {
     }
 
     return(
-        <FilterContainer filtersPosition={filtersPosition} darkMode={darkMode}>
+        <FilterContainer darkMode={darkMode} filterParsedType={props.filterParsedType}>
             <div className="inputs">
                 {props.filterParsedType === "rsql" ? 
                     <Select 
@@ -69,7 +68,7 @@ const DateFilter = (props: Props) => {
                         onChange={e => handleSelectChange(e)}
                         classNamePrefix="filterSelectChoice"/>
                     : 
-                    filtersPosition === "list" && <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.atDay ?? translations.filtersViewer.atDay}</span> 
+                    <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.atDay ?? translations.filtersViewer.atDay}</span> 
                 }
                 <input 
                     name={filter.name} 

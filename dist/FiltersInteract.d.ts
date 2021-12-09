@@ -1,4 +1,4 @@
-import { FiltersPosition, filtersType } from './ServerSideTable';
+import { filtersType } from './ServerSideTable';
 import { Translations } from './types/props';
 export declare type FilterItem = {
     name: string;
@@ -14,13 +14,13 @@ export declare type FilterItem = {
     }[];
     defaultOpen?: boolean;
     widthPercentage?: number;
+    idAccessor?: string;
 };
 declare type Props = {
     filters?: FilterItem[];
     onSubmit(e: any): void;
     filterParsedType: filtersType;
     translationsProps?: Translations;
-    filtersPosition?: FiltersPosition;
     darkMode: boolean;
     isMobile?: boolean;
 };
