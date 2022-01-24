@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useImperativeHandle, forwardRef, ReactElement } from 'react'
+import React, {useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
 import Table from './Table'
 import ReactPaginate from 'react-paginate';
 import { TableStyles } from './assets/styled-components';
@@ -219,11 +219,16 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
     const {translationsProps} = props
 
     useEffect(() => {
+        console.log("COUCOU")
+        console.log(!!props.isFilter)
+        console.log(!!props.filtersList)
+        console.log(props.filtersList.length > 0)
         if(!!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
             if(!!props.tableId && !_.isEmpty(getTableFilters(props.tableId))) {
                 setFiltersState(getTableFilters(props.tableId))
             } else {
                 let _initialFilters = {};
+                console.log(props.filtersList)
                 props.filtersList.map(filter => {
                     _initialFilters[filter.name] = {
                         type: filter.type,
@@ -238,6 +243,7 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
                         optionals: []
                     }
                 })
+                console.log(_initialFilters)
                 setFiltersState(_initialFilters)
             }
 
@@ -252,7 +258,7 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
             }
         })
         setSorterState(_initialSorter)  
-    }, [])
+    }, [props.filtersList])
 
     const [filters, setFilters] = useState<any>({})
     const [filtersState, setFiltersState] = useState({})

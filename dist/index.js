@@ -22331,7 +22331,7 @@ var Table = React.forwardRef(function (props, ref) {
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement("table", __assign({}, getTableProps(), { className: "table no-border" }),
             React__default.createElement("thead", { className: props.showVerticalBorders ? "" : "no-border" }, headerGroups.map(function (headerGroup, i) { return (React__default.createElement("tr", __assign({}, headerGroup.getHeaderGroupProps(), { ref: node, key: i }), headerGroup.headers.map(function (column, j) {
-                var _a, _b;
+                var _a, _b, _c, _d, _e;
                 var filter = filters.filter(function (f) { return f.idAccessor === column.id; })[0];
                 return (React__default.createElement("th", __assign({}, column.getHeaderProps(), { className: "SST_header_cell", key: j }),
                     React__default.createElement("div", { className: "SST_header_container noselect" },
@@ -22340,12 +22340,16 @@ var Table = React.forwardRef(function (props, ref) {
                                     toggleSorterValue(column.id, SstState.sorterState[column.id]);
                                 }
                             } }), column.render('Header')),
+                        React__default.createElement("span", null, !!column.id && !!((_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]) && !!((_b = SstState.sorterState) === null || _b === void 0 ? void 0 : _b[column.id]["value"])
+                            ? ((_c = SstState.sorterState) === null || _c === void 0 ? void 0 : _c[column.id]["value"]) === "desc"
+                                ? React__default.createElement("i", { className: "ri-arrow-down-s-fill sorter_icon" })
+                                : React__default.createElement("i", { className: "ri-arrow-up-s-fill sorter_icon" })
+                            : ''),
                         !!filter &&
-                            React__default.createElement("i", { onClick: function () { return setOpenedFilter(openedFilter === column.id ? null : column.id); }, className: "ri-filter-line fitler_icon " + (filter.idAccessor === openedFilter ? "SST_filter_active" : "") }),
-                        React__default.createElement("span", null)),
+                            React__default.createElement("i", { onClick: function () { return setOpenedFilter(openedFilter === column.id ? null : column.id); }, className: "ri-filter-line fitler_icon " + (filter.idAccessor === openedFilter ? "SST_filter_active" : "") })),
                     !!filter && filter.idAccessor === openedFilter &&
                         React__default.createElement("div", { className: "SST_header_filter_modal" },
-                            React__default.createElement(ItemFilter, { key: (_a = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) === null || _a === void 0 ? void 0 : _a.name, filter: (_b = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) !== null && _b !== void 0 ? _b : null, filterParsedType: filterParsedType, translationsProps: translationsProps, darkMode: false }))));
+                            React__default.createElement(ItemFilter, { key: (_d = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) === null || _d === void 0 ? void 0 : _d.name, filter: (_e = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) !== null && _e !== void 0 ? _e : null, filterParsedType: filterParsedType, translationsProps: translationsProps, darkMode: false }))));
             }))); })),
             asyncLoading ?
                 React__default.createElement("p", null, "Chargement...")

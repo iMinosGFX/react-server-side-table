@@ -176,7 +176,7 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
               {headerGroup.headers.map((column,j) => {
 
                 const filter = filters.filter(f => f.idAccessor === column.id)[0]
-
+                
                 return(
                   <th {...column.getHeaderProps()} className="SST_header_cell" key={j}>
                     <div className="SST_header_container noselect">
@@ -192,17 +192,17 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
                         }}>
                           {column.render('Header')}
                       </span>
+                      <span>
+                        {!!column.id && !!SstState.sorterState?.[column.id] && !!SstState.sorterState?.[column.id]["value"]
+                          ? SstState.sorterState?.[column.id]["value"] === "desc"
+                          ? <i className="ri-arrow-down-s-fill sorter_icon" />
+                          : <i className="ri-arrow-up-s-fill sorter_icon" />
+                          : ''}
+                      </span>
                       {!!filter && 
                         <i 
                         onClick={() => setOpenedFilter(openedFilter === column.id ? null : column.id)} 
                         className={`ri-filter-line fitler_icon ${filter.idAccessor === openedFilter ? "SST_filter_active" : ""}`} />}
-                      <span>
-                        {/* {!!column.id && !!SstState.sorterState[column.id] && !!SstState.sorterState?.[column.id]["value"]
-                          ? SstState.sorterState[column.id].value === "desc"
-                          ? <i className="ri-arrow-down-s-fill sorter_icon" />
-                          : <i className="ri-arrow-up-s-fill sorter_icon" />
-                          : ''} */}
-                      </span>
                     </div>
                     {!!filter && filter.idAccessor === openedFilter &&
                       <div className="SST_header_filter_modal">
