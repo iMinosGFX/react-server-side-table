@@ -3,10 +3,11 @@ import { useExpanded } from 'react-table';
 import { useTable, useRowSelect } from 'react-table'
 import _ from "lodash"
 import { FilterItem } from './FiltersInteract'
-import { filtersType, Sorter } from './ServerSideTable';
 import { Translations } from './types/props'
 import ItemFilter from './ItemFilter'
 import FiltersContext from "./context/filterscontext"
+import { filtersType, Sorter } from './types/entities';
+import { translations } from './assets/translations';
 
 type Props = {
   columns: any
@@ -21,7 +22,6 @@ type Props = {
   showVerticalBorders?: boolean
   asyncLoading?: boolean
   setHaveSelectedRows?: (e: boolean) => void
-  // onFiltersChange(filters: any): void
 }
 
 const IndeterminateCheckbox = React.forwardRef(
@@ -53,7 +53,6 @@ export type TableHandler = {
 // const Table = ({ columns, data, renderRowSubComponent, filters, onFiltersChange}: Props) => {
 const Table = forwardRef<TableHandler, Props>((props, ref) => {
 
-
   const { 
     columns, data, 
     renderRowSubComponent, hiddenColumns, 
@@ -69,7 +68,7 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
   function toggleSorterValue(columnId: string, sorter: Sorter){
     let _newValue = "";
     // @ts-ignore
-    let _oldObject = Object.assign({}, SstState.sorterState);
+    let _newSorterState = Object.assign({}, SstState.sorterState);
     switch(sorter.value){
       case "desc": 
       _newValue = "asc";
@@ -80,11 +79,12 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
       case undefined: 
       _newValue = "desc";
     }
-    _oldObject[columnId] = {
+    _newSorterState[columnId] = {
       attribut: sorter.attribut,
       value: _newValue
     }
-    SstState.changeSort(_oldObject)
+
+    SstState.changeSort(_newSorterState)
   }
   
   useImperativeHandle(ref, () => ({
@@ -113,20 +113,17 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
       },
       useExpanded,
       useRowSelect,
+      // useResizeColumns,
+      // useFlexLayout,
       hooks => {
         !!selectableRows && hooks.visibleColumns.push(columns => [
-          // Let's make a column for selection
           {
             id: 'selection',
-            // The header can use the table's getToggleAllRowsSelectedProps method
-            // to render a checkbox
             Header: ({ getToggleAllRowsSelectedProps }) => (
               <div>
                 <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
               </div>
             ),
-            // The cell can use the individual row's getToggleRowSelectedProps method
-            // to the render a checkbox
             Cell: ({ row }) => (
               <div>
                 <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
@@ -168,15 +165,13 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
       }, []);
 
     return(
-      <>
+    <>
       <table {...getTableProps()} className="table no-border">
         <thead className={props.showVerticalBorders ? "" : "no-border"}>
           {headerGroups.map((headerGroup,i) => (
             <tr {...headerGroup.getHeaderGroupProps()} ref={node} key={i}>
               {headerGroup.headers.map((column,j) => {
-
                 const filter = filters.filter(f => f.idAccessor === column.id)[0]
-                
                 return(
                   <th {...column.getHeaderProps()} className="SST_header_cell" key={j}>
                     <div className="SST_header_container noselect">
@@ -190,7 +185,7 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
                             //
                           }
                         }}>
-                          {column.render('Header')}
+                        {column.render('Header')}
                       </span>
                       <span>
                         {!!column.id && !!SstState.sorterState?.[column.id] && !!SstState.sorterState?.[column.id]["value"]
@@ -221,7 +216,7 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
           ))}
         </thead>
         {asyncLoading ? 
-          <p>Chargement...</p>
+          <p style={{textAlign: "center", display: 'flex', alignItems: "center"}}>{translationsProps?.loading ?? translations.loading} <i className="ri-loader-4-fill spinner rotate"/></p>
           : 
           <tbody {...getTableBodyProps()} className={props.showVerticalBorders ? "" : "no-border"}>
             {rows.map((row, i) => {

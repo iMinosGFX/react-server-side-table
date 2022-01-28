@@ -39,6 +39,12 @@ const Container = styled('div')<{darkMode: boolean}>`
             font-size: 14px;
             color: #2F80ED;
         }
+        &.locked-label{
+            background: ${transparentize(.8, "#435F71")};
+            span{
+                color: #435F71;
+            }
+        }
     }
     @media (max-width: 540px){
         display: none !important;
@@ -48,12 +54,13 @@ const Container = styled('div')<{darkMode: boolean}>`
 type Props = {
     translationsProps?: Translations
     darkMode: boolean
+    lockedFilters?:string[]
 }
 
 
 const FiltersViewers: React.FC<Props> = (props) => {
 
-    const {translationsProps, darkMode} = props
+    const {translationsProps, darkMode, lockedFilters} = props
 
     function translateOption(opt: string): string{
         switch(opt){
@@ -122,16 +129,19 @@ const FiltersViewers: React.FC<Props> = (props) => {
             {parseFilterRSQL(filtersState.submitFiltersState).length > 0 &&  !_.isEmpty(parseFilterFuzzy(filtersState.submitFiltersState)) ?
                 <Container darkMode={darkMode}>
                     <span className="main">{translationsProps?.appliedFilters ?? translations.appliedFilters}</span>
-                    {!!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).flatMap(([key, value], i) => { //Render of all not boolean / geoloc
+                    {!!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).sort(([k1,v1],[k2,v2]) =>{return v1.hasOwnProperty("locked") ? -1 : v2.hasOwnProperty("locked") ? 1 : 0}).flatMap(([key, value], i) => {
                         let _array = []
                         if(value["type"] !== "booleanRadio" && value["type"] !== "geoloc"){
                             if(!!value["main"].value && value["main"].value !== ""){
+
+                                let _isLocked = lockedFilters?.includes(key)
+                                
                                 _array.push(
-                                    <div className="filters-label" key={i}>
+                                    <div className={`filters-label ${_isLocked ? "locked-label" : ""}`} key={i}>
                                         <span>{value["label"]}:</span> 
                                         <span className="font-italic font-light"> {translateOption(value["main"]["option"])} </span> 
-                                        <span className="font-heavy"> {Array.isArray(value["main"]["value"]) ? value["main"]["value"].join(",") : value["main"]["value"]}</span>
-                                        <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearMain(key)}/>
+                                        <span className="font-heavy"> {Array.isArray(value["main"]["value"]) ? value["main"]["value"].join(",") : !!value["parsedValue"] ? value["parsedValue"] : value["main"]["value"]}</span>
+                                        {!_isLocked && <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearMain(key)}/>}
                                     </div>
                                 )
                             }

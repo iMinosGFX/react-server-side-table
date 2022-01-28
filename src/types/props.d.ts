@@ -11,6 +11,7 @@ export type Translations = {
     yes?:string
     no?:string
     na?:string
+    loading?: string
     filtersViewer?: {
         contain?: string
         startWith?: string
@@ -35,5 +36,6 @@ export type Translations = {
         filterType:string,
         filterList: string,
         filterField: string
+        clearCache?: string
     }
 }

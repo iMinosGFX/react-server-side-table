@@ -1,5 +1,5 @@
-import { filtersType } from './ServerSideTable';
 import { Translations } from './types/props';
+import { filtersType } from './types/entities';
 export declare type FilterItem = {
     name: string;
     label: string;

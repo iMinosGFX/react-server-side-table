@@ -1,7 +1,18 @@
 import React from 'react';
-import { SorterRecord } from '../ServerSideTable';
+import { SorterRecord } from '../types/entities';
 
-const FiltersContext = React.createContext({
+type Context = {
+    filtersState: any,
+    submitFiltersState: any,
+    sorterState: any,
+    changeMainFilter(name: string, content: {option:string, value:string | any}): void,
+    changeOptionalsFilters(name: string, content: {option:string, value:string}[]): void,
+    changeSort(e: SorterRecord): void,
+    onClearAll(): void,
+    onClickApply(): void,
+}
+
+const FiltersContext = React.createContext<Context>({
     filtersState: {},
     submitFiltersState: null,
     sorterState: null,

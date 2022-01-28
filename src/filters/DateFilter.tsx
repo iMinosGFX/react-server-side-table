@@ -2,11 +2,11 @@ import React, {useContext} from 'react'
 import { FilterItem } from '../FiltersInteract';
 import Select from 'react-select';
 import _ from "lodash"
-import {filtersType} from "../ServerSideTable"
 import FiltersContext from "../context/filterscontext"
 import { Translations } from '../types/props';
 import { translations } from '../assets/translations';
 import { FilterContainer } from '../assets/styled-components';
+import { filtersType } from '../types/entities';
 
 type Props = {
     filter: FilterItem

@@ -10,8 +10,8 @@ export function saveLineSpacing(space: string): void{
     localStorage.setItem('line-spacing-table', space)
 }
 
-export function getTableFilters(tableId: string): any{
-    return !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId)) : {}
+export function getTableFilters(tableId?: string): any{
+    return !!tableId && !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId)) : {}
 }
 
 export function registerTableFilters(tableId: string, filters: any): void {

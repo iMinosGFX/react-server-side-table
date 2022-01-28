@@ -1,6 +1,85 @@
 import styled from 'styled-components'
 import {transparentize} from "polished"
-import { filtersType } from '../ServerSideTable'
+import { filtersType } from '../types/entities'
+
+const TableContainer = styled("div")<{darkMode: boolean}>`
+    padding-top: 10px;
+    margin: 0 5px;
+    .extender{
+        position: absolute; 
+        top: -25px;
+        left:0;
+        width: 40px;
+        height: 25px;
+        line-height: 25px;
+        font-size: 18px;
+        text-align: center; 
+        background-color: #E0E0E0;
+        color: #606060;
+        border-radius: 5px 5px 0 0;
+        cursor: pointer;
+    }
+    .selectContainer{
+        display: inline-block !important;
+        width: 250px;
+        text-align: left;
+        padding-right: 20px;
+        .ServerSideTableFilterSelect__control{
+            background: ${props => props.darkMode ? "#2a3c4e" : "#fff"};
+            border:1px solid ${props => props.darkMode ? "#272d3a" : "#E0E0E0"};
+            .ServerSideTableFilterSelect__placeholder{
+                color: ${props => props.darkMode ? "#bccde0" : "#2a3c4e" };
+            }
+        }
+        .ServerSideTableFilterSelect__menu{
+            background: ${props => props.darkMode ? "#2a3c4e" : "#fff;"};
+            color: ${props => props.darkMode ? "#bccde0" : "#435F71"};
+        }
+        .ServerSideTableFilterSelect__input{
+            input{
+                height: 1rem !important;
+            }
+
+        }   
+    } 
+    .SST_HEADER{
+        padding: .4rem;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-right: 10px;
+        .SST_actions_buttons{
+            display: flex;
+            align-items: center;
+            & > * {
+                margin: 0 5px;
+            }
+        }
+    }
+    .SST_selected_rows_buttons{
+        padding: .4rem;
+        display: flex;
+        align-items: center;
+        & > * {
+            margin: 0 5px;
+        }
+    }
+    @media only screen and (max-width: 540px){
+        .SST_HEADER{
+            display: contents;
+            button{
+                float: right;
+                margin-bottom: 10px;
+            }
+            .table-actions-container{
+                clear: both;
+                justify-content: space-between;
+                margin-bottom: 10px;
+            }
+        }
+    }
+`
 
 const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
     input[type="checkbox"]{
@@ -87,7 +166,7 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
         background: none !important;
         min-width: fit-content;
       }
-  }
+    }
   @media only screen and (max-width: 540px){
     table {
         th{
@@ -172,6 +251,13 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
         transition: all 300ms ease;
     }
   }
+
+    @keyframes rotate{to{ transform: rotate(360deg); } }
+    .spinner{ 
+      display: inline-block;
+      animation: rotate 1.5s linear infinite; 
+      font-size: 20px;
+    }
 `
 
 const ListItem = styled('div')<any>`
@@ -363,11 +449,35 @@ const FieldContainer = styled('div')<{darkMode: boolean}>`
     }
 `
 
+const PerPageContainer = styled.div`
+	float: right;
+    transform: translateY(3px);
+    padding-right: 10px;
+	label{
+		padding-right: 10px;
+	}
+	select{
+		height: 40px;
+		width: 20px;
+	}
+    .perPageSelect {
+        color: #A3A6C0;
+    }
+`
+
+
+const FiltersContainer = styled('div')<{darkMode: boolean}>`
+    padding: 0 10px;
+`
+
 export {
-  TableStyles,
-  ListItem,
-  FieldItem,
-  FilterContainer,
-  CheckContainer,
-  FieldContainer
+    TableContainer,
+    TableStyles,
+    ListItem,
+    FieldItem,
+    FilterContainer,
+    CheckContainer,
+    FieldContainer,
+    PerPageContainer,
+    FiltersContainer
 }

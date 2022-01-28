@@ -5,12 +5,12 @@ import NumberFilter from './filters/NumberFilter';
 import CheckboxFilter from './filters/CheckboxFilter';
 import DateFilter from './filters/DateFilter';
 import _ from "lodash"
-import {filtersType} from "./ServerSideTable";
 import BooleanRadioFilter from './filters/BooleanRadioFilter';
 import FiltersContext from "./context/filterscontext"
 import { Translations } from './types/props';
 import { translations } from './assets/translations';
 import { FieldItem, ListItem } from './assets/styled-components';
+import { filtersType } from './types/entities';
 
 type Props = {
     filter: FilterItem

@@ -1,6 +1,6 @@
 import { FilterItem } from '../FiltersInteract';
-import { filtersType } from "../ServerSideTable";
 import { Translations } from '../types/props';
+import { filtersType } from '../types/entities';
 declare type Props = {
     filter: FilterItem;
     onEnterPress(): void;

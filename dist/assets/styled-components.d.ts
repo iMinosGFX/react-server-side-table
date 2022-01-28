@@ -1,4 +1,7 @@
-import { filtersType } from '../ServerSideTable';
+import { filtersType } from '../types/entities';
+declare const TableContainer: import("styled-components").StyledComponent<"div", any, {
+    darkMode: boolean;
+}, never>;
 declare const TableStyles: import("styled-components").StyledComponent<"div", any, {
     lineSpacing: string;
     darkMode: boolean;
@@ -15,4 +18,8 @@ declare const CheckContainer: import("styled-components").StyledComponent<"div",
 declare const FieldContainer: import("styled-components").StyledComponent<"div", any, {
     darkMode: boolean;
 }, never>;
-export { TableStyles, ListItem, FieldItem, FilterContainer, CheckContainer, FieldContainer };
+declare const PerPageContainer: import("styled-components").StyledComponent<"div", any, {}, never>;
+declare const FiltersContainer: import("styled-components").StyledComponent<"div", any, {
+    darkMode: boolean;
+}, never>;
+export { TableContainer, TableStyles, ListItem, FieldItem, FilterContainer, CheckContainer, FieldContainer, PerPageContainer, FiltersContainer };

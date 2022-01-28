@@ -1,9 +1,7 @@
 import React, {useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
 import Table from './Table'
 import ReactPaginate from 'react-paginate';
-import { TableStyles } from './assets/styled-components';
-import styled from 'styled-components';
-import Select, {components} from 'react-select';
+import { FiltersContainer, PerPageContainer, TableContainer, TableStyles } from './assets/styled-components';
 import _ from 'lodash';
 import FiltersInteract, { FilterItem } from './FiltersInteract';
 import SettingsInteractor from './SettingsInteractor';
@@ -11,168 +9,25 @@ import FiltersViewers from './FiltersViewers';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
 import FiltersContext from './context/filterscontext';
-import { getLineSpacing, getTableFilters, registerTableFilters, destroyTableFiltersStorage } from './helpers/SSTlocalStorageManagement';
+import { getLineSpacing, registerTableFilters, destroyTableFiltersStorage, getTableFilters } from './helpers/SSTlocalStorageManagement';
 import {translations} from "./assets/translations"
 import { Translations } from './types/props';
 import { isMobile } from 'react-device-detect';
 import { TableHandler } from './Table';
-
-const PerPageContainer = styled.div`
-	float: right;
-    transform: translateY(3px);
-    padding-right: 10px;
-	label{
-		padding-right: 10px;
-	}
-	select{
-		height: 40px;
-		width: 20px;
-	}
-    .perPageSelect {
-        color: #A3A6C0;
-    }
-`
-
-const TableContainer = styled("div")<{darkMode: boolean}>`
-    padding-top: 10px;
-    margin: 0 5px;
-    .extender{
-        position: absolute; 
-        top: -25px;
-        left:0;
-        width: 40px;
-        height: 25px;
-        line-height: 25px;
-        font-size: 18px;
-        text-align: center; 
-        background-color: #E0E0E0;
-        color: #606060;
-        border-radius: 5px 5px 0 0;
-        cursor: pointer;
-    }
-    .selectContainer{
-        display: inline-block !important;
-        width: 250px;
-        text-align: left;
-        padding-right: 20px;
-        .ServerSideTableFilterSelect__control{
-            background: ${props => props.darkMode ? "#2a3c4e" : "#fff"};
-            border:1px solid ${props => props.darkMode ? "#272d3a" : "#E0E0E0"};
-            .ServerSideTableFilterSelect__placeholder{
-                color: ${props => props.darkMode ? "#bccde0" : "#2a3c4e" };
-            }
-        }
-        .ServerSideTableFilterSelect__menu{
-            background: ${props => props.darkMode ? "#2a3c4e" : "#fff;"};
-            color: ${props => props.darkMode ? "#bccde0" : "#435F71"};
-        }
-        .ServerSideTableFilterSelect__input{
-            input{
-                height: 1rem !important;
-            }
-
-        }   
-    } 
-    .SST_HEADER{
-        padding: .4rem;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-right: 10px;
-        .SST_actions_buttons{
-            display: flex;
-            align-items: center;
-            & > * {
-                margin: 0 5px;
-            }
-        }
-    }
-    .SST_selected_rows_buttons{
-        padding: .4rem;
-        display: flex;
-        align-items: center;
-        & > * {
-            margin: 0 5px;
-        }
-    }
-    @media only screen and (max-width: 540px){
-        .SST_HEADER{
-            display: contents;
-            button{
-                float: right;
-                margin-bottom: 10px;
-            }
-            .table-actions-container{
-                clear: both;
-                justify-content: space-between;
-                margin-bottom: 10px;
-            }
-        }
-    }
-`
-
-const FiltersContainer = styled('div')<{darkMode: boolean}>`
-    padding: 0 10px;
-`
-
-export type filtersType = "rsql" | "fuzzy"
-
-export type FiltersPosition = string
-
-export type Sort = {
-    sorted: boolean,
-    unsorted: boolean,
-    empty: boolean
-}
-
-export type Pageable = {
-    sort: Sort
-    pageNumber: number,
-    pageSize: number,
-    offset: number,
-    unpaged: boolean,
-    paged: boolean
-}
-
-export type PaginationObject = {
-    pageable: Pageable
-    last: boolean,
-    totalPages: number,
-    totalElements: number,
-    sort: Sort
-    numberOfElements: number,
-    first: boolean,
-    size: number,
-    number: number,
-    empty: boolean
-}
-
-export interface Data extends PaginationObject {
-    content: any[]
-}
-
-export type Sorter = {
-    attribut: string,
-    value:string
-}
-
-export interface SorterRecord {
-    [key:string]: Sorter
-}
+import { GPaginationObject } from './types/entities';
+import { DataRequestParam, DefaultFiltersOptions, FilterStateItem, filtersType, SorterRecord } from './types/entities';
+import { createDefaultFilter, cleanFilterOnlyWithLocked, createDefaultSorter } from './helpers/createDefaultFilters';
 
 type Props = {
     columns: any[]
-    data: Data
     isFilter?: boolean
     filtersList?: FilterItem[]
     isSorter?:boolean
-    sorterSelect?:  {value:string, label:string}[]
     defaultSorter?: string
     perPageItems?: 5 | 10 | 20 | 50
     isRenderSubComponent?:boolean
     renderSubComponent?: any
-    onDataChange({offset, perPage, filters}: {offset: number, perPage: number, filters: string | object, sorter?:string}):void
+    onDataChange(requestParam: DataRequestParam): Promise<GPaginationObject<any>>
     showAddBtn?: boolean
     onAddClick?(): void
     filterParsedType?: filtersType
@@ -188,23 +43,8 @@ type Props = {
     optionnalsHeaderContent?: JSX.Element[]
     selectableRows?: boolean
     selectedRowsAction?: JSX.Element[]
-    asyncLoading?: boolean
     showVerticalBorders?: boolean
-}
-
-function getOptionsByType(type: string): string{
-    switch(type){
-        case 'text':
-            return 'contains'
-        case 'number':
-            return 'equal'
-        case 'date':
-            return 'atDay'
-        case 'geoloc':
-            return '1'
-        default: 
-            return ''
-    }
+    defaultFilters?: FilterStateItem
 }
 
 FiltersContext.displayName = "ServerSideTableContext";
@@ -216,64 +56,48 @@ export type SSTHandler = {
 
 const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
 
-    const {translationsProps} = props
+    const {translationsProps} = props     
 
     useEffect(() => {
-        console.log("COUCOU")
-        console.log(!!props.isFilter)
-        console.log(!!props.filtersList)
-        console.log(props.filtersList.length > 0)
-        if(!!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
-            if(!!props.tableId && !_.isEmpty(getTableFilters(props.tableId))) {
-                setFiltersState(getTableFilters(props.tableId))
-            } else {
-                let _initialFilters = {};
-                console.log(props.filtersList)
-                props.filtersList.map(filter => {
-                    _initialFilters[filter.name] = {
-                        type: filter.type,
-                        label: filter.label,
-                        parsedValue: '',
-                        main: {
-                            option: getOptionsByType(filter.type), 
-                            value: filter.type === "booleanRadio" ? 
-                                filter.radioValues.map(value => ({name: value.value, status: "NA", label: value.label})) :
-                                filter.type === "geoloc" ? {lat:0, lng: 0, display: ""} : ""
-                        },                
-                        optionals: []
-                    }
-                })
-                console.log(_initialFilters)
-                setFiltersState(_initialFilters)
-            }
-
+        if(!props.defaultFilters && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
+            setFiltersState(createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filterParsedType))
         }
-        let  _initialSorter: SorterRecord = {};
-        props.columns.map(column => {
-            if(!!column.sorterAttribut){
-                _initialSorter[column.accessor] = {
-                    attribut: column.sorterAttribut,
-                    value: undefined
-                }
-            }
-        })
-        setSorterState(_initialSorter)  
+        setSorterState(createDefaultSorter(props.columns))
     }, [props.filtersList])
 
-    const [filters, setFilters] = useState<any>({})
-    const [filtersState, setFiltersState] = useState({})
+
+    // const [filters, setFilters] = useState<any>({})
+    const [filtersState, setFiltersState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) : 
+                                                                    !!props.tableId ? getTableFilters(props.tableId) : 
+                                                                    !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) : {})
+    const [submitFiltersState, setSubmitFilterState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) :
+                                                                    !!props.tableId ? getTableFilters(props.tableId)  : 
+                                                                    !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) : {})
     const [sorterState, setSorterState] = useState<SorterRecord>(null)
-    const [submitFiltersState, setSubmitFilterState] = useState(!!props.tableId ? getTableFilters(props.tableId) : {})
+    const [submitSorter, setSubmitSorter] = useState<string>("")
 	const [offset, setOffset] = useState<number>(0);
     const [perPage, setPerPage] = useState<number>(props.perPageItems ? props.perPageItems : 10);
-    const [sorterOptions, setSorterOptions] = useState<{value:string, label:string, icon:any}[]>([])
-    const [sorterValue, setSorterValue] = useState<{value:string, label:string, icon:any}>(null)
     const [lineSpacing, setLineSpacing] = useState<string>(getLineSpacing())
     const [hiddenColumns, setHiddenColumns] = useState<string[]>([])
-    const { Option } = components
     const [parsedFilters, setParsedFilters] = useState<any>(null)
-    const [submitSorter, setSubmitSorter] = useState<string>("")
     const tableRef = useRef<TableHandler>(null)
+    const [data, setData] = useState<GPaginationObject<any>>(null)
+    const [lockedFilters, setLockedFiltersTest] = useState<string[]>()
+    const [loading, setLoading] = useState<boolean>(false)
+
+    useEffect(() => {
+        if(!!props.defaultFilters)
+            setLockedFiltersTest(Object.keys(props?.defaultFilters).filter(f => props?.defaultFilters[f]["locked"]).map(v => v))
+    }, [props.defaultFilters])
+
+    const updateDataOnChange = (requestParam: DataRequestParam) => {
+        setLoading(true)
+        props.onDataChange(requestParam)
+            .then(data => {
+                setData(data)
+                setLoading(false)
+            })
+    }
 
     const isInitialMount = useRef(true);
 
@@ -286,73 +110,18 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
         if(isInitialMount.current)
         isInitialMount.current = false
         else {
-            props.onDataChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
+            updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
         }
     }, [offset, perPage])
 
-    useEffect(() => {
-        if(isInitialMount.current)
-            isInitialMount.current = false
-        else {
-            if(!!sorterValue){
-                setSubmitSorter(sorterValue?.value)
-                // props.onDataChange({offset,perPage,filters: parsedFilters, sorter: sorterValue?.value})
-            }
-        }
-    }, [sorterValue])
-    
-    const CustomSelectOption = props => (
-        <Option {...props}>
-          {props.data.label}
-          {props.data.icon}
-        </Option>
-      )
-
-    const CustomSelectValue = props => (
-        <div>
-          {props.data.label}
-          {props.data.icon}
-        </div>
-    )
-
     useImperativeHandle(ref, () => ({
         reloadData() {
-            props.onDataChange({offset,perPage,filters, sorter: submitSorter})
+            updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
         },
         getSelectedRows(): any[] {
             return tableRef.current.getSelectedRows()
         }
     }))
-
-    useEffect(() => {
-        try{
-            if(props.isSorter && !!props.sorterSelect)
-                setSorterOptions(props.sorterSelect.flatMap(filter => {
-                    return ([
-                        {
-                            value: filter.value+",asc",
-                            label: filter.label,
-                            icon: <i className="ri-arrow-up-s-line" style={{paddingLeft: 5}} color="#57606f" />
-                        },
-                        {
-                            value: filter.value+",desc",
-                            label: filter.label,
-                            icon: <i className="ri-arrow-down-s-line" style={{paddingLeft: 5}} color="#57606f"/>,
-                        }])
-                    }))
-        } catch {
-            console.log("Error when try to create sorter array")
-        }
-    }, [props.sorterSelect]) 
-
-    useEffect(() => {
-        if(props.isSorter && !!props.sorterSelect){
-            if(props.defaultSorter)
-                setSorterValue(sorterOptions.find(el => el.value === props.defaultSorter))
-        } else {
-            setSorterValue(null)
-        }
-    }, [sorterOptions])
 
     useEffect(() => {
         if(isInitialMount.current)
@@ -366,19 +135,19 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
             if(props.filterParsedType === "rsql" || props.filterParsedType === "fuzzy"){
                 setParsedFilters(filters)
                 setOffset(0)
-                props.onDataChange({offset,perPage,filters, sorter: submitSorter})
+                updateDataOnChange({offset,perPage,filters, sorter: submitSorter})
             }  
         }
     }, [submitFiltersState])
 
     const handleFilterSubmit = (filters: any) => {
         setOffset(0)
-        setFilters(filters)
+        // setFilters(filters)
         setParsedFilters(filters)
-        props.onDataChange({offset,perPage,filters,sorter: submitSorter})
+        updateDataOnChange({offset,perPage,filters,sorter: submitSorter})
     }
     
-    const changeMainFilter = (name: string, content: {option:string, value:string}) => {
+    const changeMainFilter = (name: string, content: {option:DefaultFiltersOptions, value:string}) => {
         let _filter = filtersState[name]
         _filter["main"] = {option: content.option, value:content.value}
         setFiltersState({
@@ -387,7 +156,7 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
         })
     }
 
-    const changeOptionalsFilters = (name: string, content: {option:string, value:string}[]) => {
+    const changeOptionalsFilters = (name: string, content: {option:DefaultFiltersOptions, value:string}[]) => {
         let _filter = filtersState[name]
         _filter["optionals"] = content
         setFiltersState({
@@ -403,23 +172,9 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
     }
 
     const onClearAll = () => {
-        let _initialFilters = {}
-        props.filtersList.map(filter => {
-            _initialFilters[filter.name] = {
-                type: filter.type,
-                label: filter.label,
-                parsedValue: '',
-                main: {
-                    option: getOptionsByType(filter.type), 
-                    value: filter.type === "booleanRadio" ? 
-                        filter.radioValues.map(value => ({name: value.value, status: "NA", label: value.label})) :
-                        filter.type === "geoloc" ? {lat:0, lng: 0, display: ""} : ""
-                },                
-                optionals: []
-            }
-        })
-        setFiltersState(_initialFilters)
-        setSubmitFilterState({})
+        let _initialFilters = cleanFilterOnlyWithLocked(props.filtersList, props.defaultFilters, lockedFilters)
+        setFiltersState(_.cloneDeep(_initialFilters))
+        setSubmitFilterState(!!lockedFilters ? _.cloneDeep(_initialFilters) : {})
         destroyTableFiltersStorage(props.tableId)
         return;
     }
@@ -430,20 +185,18 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
 
     useEffect(() => {
         if(!!sorterState){
-            let _stringSort = "";
-            Object.values(sorterState).map(e => {
-                if(!!e.value){
-                    _stringSort += e.attribut+","+e.value
-                }
-            }) 
-            setSubmitSorter(_stringSort)
-            // props.onDataChange({offset,perPage,filters, sorter: _stringSort})
+            setSubmitSorter(
+                Object.values(sorterState)
+                .filter(sorter => !!sorter.value)
+                .map(sorter => sorter.attribut + ',' + sorter.value)
+                .join(',')
+            )
         }
     },[sorterState])
 
     useEffect(() => {
-        if((!!sorterState || !!sorterValue) && !!submitSorter){
-            props.onDataChange({offset,perPage,filters, sorter: submitSorter})
+        if(!!sorterState && !!submitSorter){
+            updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
         }
     }, [submitSorter])
 
@@ -472,38 +225,19 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
                                 {!!props.optionnalsHeaderContent && props.optionnalsHeaderContent}
                             </div>
                             <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
-                            {props.isSorter && !!props.sorterSelect && props.sorterSelect.length > 0 && 
-                                <div className="selectContainer">
-                                    <Select 
-                                        options={sorterOptions}
-                                        components={{ Option: CustomSelectOption, SingleValue: CustomSelectValue }}
-                                        isClearable
-                                        onChange={(e, triggeredAction) => {
-                                            if(triggeredAction.action === "clear") {
-                                                props.onDataChange({offset,perPage,filters})
-                                                setSorterValue(null)
-                                            }
-                                            else 
-                                                setSorterValue(e)
-                                            
-                                        }}
-                                        value={sorterValue}
-                                        classNamePrefix="ServerSideTableFilterSelect"
-                                        placeholder={translationsProps?.sortBy ?? translations.sortBy}/>
-                                </div>
-                            }
-                            <div className="icons">
-                                {!isMobile &&
-                                    <SettingsInteractor 
-                                        columns={props.columns}
-                                        hiddenColumns={hiddenColumns}
-                                        onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
-                                        onLineSpacingChange={e => setLineSpacing(e)}
-                                        translationsProps={translationsProps}
-                                        enabledExport={props.enabledExport}
-                                        onExportClick={props.onExportClick}
-                                        darkMode={props.darkMode}/>
-                                }
+                                <div className="icons">
+                                    {!isMobile &&
+                                        <SettingsInteractor 
+                                            columns={props.columns}
+                                            hiddenColumns={hiddenColumns}
+                                            onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
+                                            onLineSpacingChange={e => setLineSpacing(e)}
+                                            translationsProps={translationsProps}
+                                            enabledExport={props.enabledExport}
+                                            onExportClick={props.onExportClick}
+                                            darkMode={props.darkMode}
+                                            tableId={props.tableId}/>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -512,7 +246,7 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
                         {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
                             <>
                                 <FiltersContainer darkMode={props.darkMode} className={`${props.filtersContainerClassName ?? ""} SST_filters_container`}>
-                                    <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode}/>
+                                    <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode} lockedFilters={lockedFilters}/>
                                     {isMobile && 
                                         <FiltersInteract 
                                             filters={props.filtersList} 
@@ -532,7 +266,7 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
                         }
                         <Table 
                             ref={tableRef}
-                            data={props.data?.content ?? []} 
+                            data={!data ? [] : data.content} 
                             clickableHeader={onHeaderClick}
                             columns={isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns} 
                             renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
@@ -543,7 +277,7 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
                             selectableRows={props.selectableRows}
                             setHaveSelectedRows={setHaveSelectedRows}
                             showVerticalBorders={props.showVerticalBorders}
-                            asyncLoading={props.asyncLoading}/>
+                            asyncLoading={loading}/>
                         </>
                     <div className="footerTable">
                         <ReactPaginate
@@ -551,7 +285,7 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
                             nextLabel={<i className="ri-arrow-right-s-line" style={{transform: "translateY(2px)"}}/>}
                             breakLabel={"..."}
                             breakClassName={"break-me"}
-                            pageCount={props.data?.totalPages}
+                            pageCount={data?.totalPages}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={2}
                             onPageChange={handlePageClick}
@@ -576,3 +310,4 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
 })
 
 export default ServerSideTable
+

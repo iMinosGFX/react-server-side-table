@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import styled from 'styled-components';
 import {CSSTransition} from "react-transition-group"
 import ColumnsSelector from './ColumnsSelector';
-import { saveLineSpacing, getLineSpacing } from './helpers/SSTlocalStorageManagement';
+import { saveLineSpacing, getLineSpacing, destroyTableFiltersStorage } from './helpers/SSTlocalStorageManagement';
 import { Translations } from './types/props';
 import { translations } from './assets/translations';
 
@@ -35,15 +35,31 @@ type Props = {
     enabledExport?: boolean
     onExportClick?(): void
     darkMode: boolean
+    tableId?:string
 }
 
 const SettingsInteractor = (props: Props) => { 
 
-    const {translationsProps, enabledExport, onExportClick, darkMode} = props
+    const node = React.useRef()
+    const {translationsProps, enabledExport, onExportClick, darkMode, tableId} = props
     const [open, setOpen] = useState<boolean>(false)
 
+
+    const handleClick = e => {
+      //@ts-ignore
+      if (node.current && node.current.contains(e.target)) {
+          return;
+      }
+      setOpen(false)
+    };
+
+    React.useEffect(() => {
+        document.addEventListener("mousedown", handleClick);
+        return () => document.removeEventListener("mousedown", handleClick);
+    }, []);
+
     return(
-        <Container>
+        <Container ref={node}>
             <i className="ri-equalizer-line" style={{fontSize: 18, color: "#828282", cursor: "pointer"}} onClick={() => setOpen(!open)}/>
             {open && <DropdownMenu 
                 columns={props.columns} 
@@ -53,7 +69,8 @@ const SettingsInteractor = (props: Props) => {
                 translationsProps={translationsProps}
                 enabledExport={enabledExport}
                 onExportClick={onExportClick}
-                darkMode={darkMode}/>}
+                darkMode={darkMode}
+                tableId={tableId}/>}
         </Container>
     )
 }
@@ -68,11 +85,12 @@ type PropsDropdown = {
     enabledExport?: boolean
     onExportClick?(): void
     darkMode: boolean
+    tableId?:string
 }
 
 const DropdownMenu = (props: PropsDropdown) => {
 
-    const {translationsProps, enabledExport, onExportClick, darkMode} = props
+    const {translationsProps, enabledExport, onExportClick, darkMode, tableId} = props
     const [activeMenu, setActiveMenu] = useState<string>('main')
     const [menuHeight, setMenuHeight] = useState<any>(null)
     const [lineSpacing, setLineSpacing] = useState<string>(getLineSpacing())
@@ -97,6 +115,11 @@ const DropdownMenu = (props: PropsDropdown) => {
         )
     }
 
+    const clearCache = () => {
+        destroyTableFiltersStorage(props.tableId)
+        location.reload();
+    }
+
     return(
         <div className={`table-settings-dropdown ${darkMode ? "dark" : ""}`}style={{height: menuHeight}}>
             <CSSTransition in={activeMenu === "main"} unmountOnExit timeout={200} classNames="menu-primary" onEnter={calcHeight}>
@@ -112,6 +135,10 @@ const DropdownMenu = (props: PropsDropdown) => {
                         rightIcon={<i className="ri-arrow-right-s-line" />}
                         goToMenu="lineSpacing">
                             {translationsProps?.settings?.lineSpacing ?? translations.settings.lineSpacing}
+                    </DropdownItem>
+                    <DropdownItem
+                            leftIcon={<i className="ri-delete-back-2-line" />}>
+                            <span onClick={clearCache}>{translationsProps?.settings?.clearCache ?? translations.settings.clearCache} </span>
                     </DropdownItem>
                     {enabledExport && 
                         <DropdownItem

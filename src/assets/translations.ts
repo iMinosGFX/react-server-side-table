@@ -13,6 +13,7 @@ export const translations: Translations = {
     yes: "Oui",
     no: "Non",
     na: "N/A",
+    loading: "Chargement...",
     filtersViewer: {
         contain: "Contient",
         startWith: "Commence par",
@@ -36,6 +37,7 @@ export const translations: Translations = {
         smallHeight: "Petite hauteur",
         filterType:"Affichage des filtres",
         filterList: "Liste",
-        filterField: "Champs"
+        filterField: "Champs",
+        clearCache: "Vider le cache"
     }
 }

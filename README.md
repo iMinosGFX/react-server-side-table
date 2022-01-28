@@ -19,64 +19,58 @@ Then you can call him in the renderer, here an example :
 <ServerSideTable 
     ref={SSTRef}
     columns={columns}
-    data={data}
     perPageItems={10}
     isFilter
     filtersList={filterColumns}
     filterParsedType="fuzzy"
     isSorter
-    sorterSelect={sorterSelect}
-    onDataChange={(e) => getData(e)} 
+    onDataChange={getData} 
     showAddBtn
     onAddClick={() => history.push('/app/users/new')}/>
 ```
 ---
 
 #### Props : 
-|           Props           |                                           Type                                          |                                                                                        Examples                                                                                        |                                 Notes                                 |
-|:-------------------------:|:---------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------:|
-| ref                       | Ref                                                                                     | const SSTRef = useRef() ... ref={SSTRef}                                                                                                                                               | use to call reloadData() function                                     |
-| columns                   | {Header:string, accessor: string, ...}[]                                                |                                                                                                                                                                                        |                                                                       |
-| data                      | Pageable Object                                                                         |                                                                                                                                                                                        |                                                                       |
-| onDataChange()            | function({offset: number, perPage: number, filters: string \| object, sorter?: string}) | ```` onDataChange={e => getData(e)} ```                                                                                                                                                |                                                                       |
-| filterParsedType          | "rsql" \| "fuzzy"                                                                       |                                                                                                                                                                                        | Change for RSQL Or Fuzzy parser after every actions                   |
-| isFilter?                 | boolean                                                                                 |                                                                                                                                                                                        | default: false                                                        |
-| filtersList?              | FilterItem[] details below                                                              |                                                                                                                                                                                        |                                                                       |
-| isSorter?                 | boolean                                                                                 | const filtersList = [ {name: "firstname", label: "Prénom", type: "text"}, {name:"enabled", label: "Statut", type:"booleanRadio", radioValues: [{value: "enabled", label: "Actif"}}]} ] | default: false                                                        |
-| sorterSelect?             | {value: string, label:string}[]                                                         |                                                                                                                                                                                        |                                                                       |
-| defaultSorter?            | string                                                                                  |                                                                                                                                                                                        |                                                                       |
-| perPageItems?             | 5 \| 10 \| 20 \| 50                                                                     |                                                                                                                                                                                        | default: 5 Default per page item in first call api                    |
-| isRenderSubComponent?     | boolean                                                                                 |                                                                                                                                                                                        | default: false Enabled expanded rows                                  |
-| renderSubComponent?       | JSX Component                                                                           |                                                                                                                                                                                        |                                                                       |
-| showAddBtn?               | boolean                                                                                 |                                                                                                                                                                                        | default: false                                                        |
-| onAddClick()?             | void                                                                                    |                                                                                                                                                                                        |                                                                       |
-| darkMode?                 | boolean                                                                                 |                                                                                                                                                                                        | default: false                                                        |
-| withoutHeader             | boolean                                                                                 |                                                                                                                                                                                        | default: false Remove all header of array (settings, filters, etc...) |
-| translationsProps         | Translations details below                                                              |                                                                                                                                                                                        |                                                                       |
-| filtersPosition           | "field" \| "list"                                                                       |                                                                                                                                                                                        | default: list Use to change filter view type.                         |
-| tableId                   | string                                                                                  |                                                                                                                                                                                        | use to save filter after each submit                                  |
-| optionnalsHeaderContent   | ReactElement[]                                                                          |                                                                                                                                                                                        |                                                                       |
-| enabledExport             | boolean                                                                                 |                                                                                                                                                                                        | Define custom objects for mobile only                                 |
-| mobileColumns             | {Header:string, accessor: string, ...}[]                                                |                                                                                                                                                                                        |                                                                       |
-| containerClassName        | string                                                                                  |                                                                                                                                                                                        |                                                                       |
-| filtersContainerClassName | string                                                                                  |                                                                                                                                                                                        |                                                                       |
-
+|            Props           |                                        Type                                        |                                                                                        Examples                                                                                        |                                 Notes                                 |
+|:--------------------------:|:----------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------:|
+| ref                        | Ref                                                                                | const SSTRef = useRef() ... ref={SSTRef}                                                                                                                                               | use to call reloadData() function                                     |
+| columns                    | {Header:string, accessor: string, sorterAttribut,...}[] => More informations below |                                                                                                                                                                                        |                                                                       |
+| onDataChange()             | function(requestParams: DataRequestParams): Promise<GPaginationObject<any>>        | ```` onDataChange={getData} ```                                                                                                                                                        |                                                                       |
+| filterParsedType           | "rsql" \| "fuzzy"                                                                  |                                                                                                                                                                                        | Change for RSQL Or Fuzzy parser after every actions                   |
+| isFilter?                  | boolean                                                                            |                                                                                                                                                                                        | default: false                                                        |
+| filtersList?               | FilterItem[] details below                                                         |                                                                                                                                                                                        |                                                                       |
+| isSorter?                  | boolean                                                                            | const filtersList = [ {name: "firstname", label: "Prénom", type: "text"}, {name:"enabled", label: "Statut", type:"booleanRadio", radioValues: [{value: "enabled", label: "Actif"}}]} ] | default: false                                                        |
+| defaultSorter?             | string                                                                             |                                                                                                                                                                                        |                                                                       |
+| perPageItems?              | 5 \| 10 \| 20 \| 50                                                                |                                                                                                                                                                                        | default: 5 Default per page item in first call api                    |
+| isRenderSubComponent?      | boolean                                                                            |                                                                                                                                                                                        | default: false Enabled expanded rows                                  |
+| renderSubComponent?        | JSX Component                                                                      |                                                                                                                                                                                        |                                                                       |
+| showAddBtn?                | boolean                                                                            |                                                                                                                                                                                        | default: false                                                        |
+| onAddClick()?              | void                                                                               |                                                                                                                                                                                        |                                                                       |
+| darkMode?                  | boolean                                                                            |                                                                                                                                                                                        | default: false                                                        |
+| withoutHeader              | boolean                                                                            |                                                                                                                                                                                        | default: false Remove all header of array (settings, filters, etc...) |
+| translationsProps          | Translations details below                                                         |                                                                                                                                                                                        |                                                                       |
+| filtersPosition            | "field" \| "list"                                                                  |                                                                                                                                                                                        | default: list Use to change filter view type.                         |
+| tableId?                   | string                                                                             |                                                                                                                                                                                        | use to save filter after each submit                                  |
+| optionnalsHeaderContent?   | ReactElement[]                                                                     |                                                                                                                                                                                        |                                                                       |
+| enabledExport?             | boolean                                                                            |                                                                                                                                                                                        | Define custom objects for mobile only                                 |
+| mobileColumns?             | {Header:string, accessor: string, ...}[]                                           |                                                                                                                                                                                        |                                                                       |
+| containerClassName?        | string                                                                             |                                                                                                                                                                                        |                                                                       |
+| filtersContainerClassName? | string                                                                             |                                                                                                                                                                                        |                                                                       |
+| selectableRows?            | boolean                                                                            |                                                                                                                                                                                        |                                                                       |
+| selectedRowsAction?        | JSX.Element[]                                                                      |                                                                                                                                                                                        |                                                                       |
+| showVerticalBorders?       | boolean                                                                            |                                                                                                                                                                                        |                                                                       |
+| defaultFilters?            | FilterStateItem                                                                    | If you want to use default filters, you need to use useSST hooks, see more below                                                                                                       |                                                                       |
 ##### GetData
-The getData function must call the api using the parameters returned by onDataChange, and returning a Fuzzy object (content & pageabe). 
+The getData function must call the api using the parameters returned by onDataChange, and returning a PaginationObject object (content & pageabe). 
 Here is an example: 
 ``` typescript
     const getData = e => {
         const {offset, perPage, filters, sorter} = e
-        setLoading(true)
-        ProfilesAPI.getStaffWithAccount({
+        return ProfilesAPI.getStaffWithAccount({
             ...filters, //For fuzzy filter use "...filters", for RSQL filter use only "filters"
             size: perPage,
             page: offset,
             sort: !!sorter ? sorter : "enabled,asc"
-        })
-        .then(data => {
-            setData(data)
-            setLoading(false)
         })
     }
 ```
@@ -95,12 +89,102 @@ accessor:'name',
 sorterAttribut: 'name', //api field
 ```
 
+---
 #### Filter
 Filters are defined via an object, it will be automatically parsed according to the filter type of the api, by defining "rsql" or "fuzzy" in FilterParsedType. 
 The Filter object is an array of FilterItem (see reference below)
 
-##### Sub component
+Here example of filterItem : 
+```
+const fitlers: FilterItem[] = [
+    {name:'createdAt', label: "Date", type:"date", idAccessor:"createdAt"},
+    {name:"createdByService", label:"Service", type:"text", idAccessor:"createdByService"},
+    {name:"action", label:"Action", type:"text", idAccessor:"action"},
+    {name:"actor", label:"Actor", type:"text", idAccessor:"actor"},
+]
+```
 
+###### Saved Filters
+You can enable filter saving by choosing a unique "tableId", usually the pattern is: `[project-name]-[entity]-table`
+
+###### Defaults Filters
+You also have the possibility to create default filters, for that you have to do several things: 
+- Import useSST 
+- Create a filter variable
+- Transform this variable ready to use by SST
+- import this variable into SST. 
+
+Here is an example: 
+```
+import {ServerSideTable, useSST} from '@optalp/react-server-side-table';
+
+const defaultFilters: FilterStateItem  = {
+    createdAt: {
+        type: "date",
+        label: "Date",
+        parsedValue: "",
+        main: {option: "atDay", value: moment().format("YYYY-MM-DD")},
+        optionals: []
+    },
+}
+const tableId = "tv2-logger-table"
+const filters: FilterItem[] = []
+
+const createdFilters = createFilters(fitlers, defaultFilters, tableId, "rsql")
+
+<ServerSideTable 
+    ref={ServerSideTableRef}
+    columns={columns}
+    onDataChange={getData}
+    isFilter
+    filtersList={fitlers}
+    filterParsedType="rsql"
+    defaultFilters={createdFilters}
+    tableId={tableId}/>
+```
+
+###### Locked Filters
+In addition to that, you can add locked Filters, useful to create a default filter untouchable by the user, just add the attribute `locked: true` in the defaultFilter object. 
+
+```
+const defaultFilters: FilterStateItem = {
+    actionId: {
+        type: "text",
+        label: "ID",
+        parsedValue: "",
+        main: {option: "equal", value:"3496164921410732033"},
+        optionals: [],
+        locked: true
+    }
+}
+```
+
+---
+
+##### Sub component
+To activate the subComponent, you just have to add the boolean isRenderSubComponent and the props renderRowSubComponent which expects a JSX element. 
+
+Here an example : 
+```
+const renderRowSubComponent = React.useCallback(
+    ({row}) => ( // All data in a row send by SST
+        <div style={{width: "100%", margin: "0 auto"}}>
+            <p>{row.original.name}</p>
+        </div>
+    ),
+    []
+)
+
+[...]
+
+<ServerSideTable
+    {...}
+    isRenderSubComponent
+    renderSubComponent={renderRowSubComponent}/>
+    
+```
+
+---
 
 ##### Select Rows
 Just add the `selectableRows` attribute and a set of JSX.Element in a `selectedRowsAction` attribute which will be displayed only when at least one row is selected. 
@@ -110,8 +194,8 @@ Then you just have to use the `getSelectedRows` function (accessible via the ref
 ##### API Functions
 There are APIs to interact with the data in the array, which are accessible to it. 
 
-SSTRef.current.reloadData()` : Reload the data manually.
-SSTRef.current.getSelectedRows()` : Retrieves the selected rows.
+`SSTRef.current.reloadData()` : Reload the data manually.
+`SSTRef.current.getSelectedRows()` : Retrieves the selected rows.
 
 
 ---
@@ -122,16 +206,51 @@ type RefHandler = {
     reloadData: () => void,
     getSelectedRows: () => any[]
 } 
+```
 
 ``` typescript
-type FilterItem = {
-    name: string //api filter name
-    label: string, //use for phone 
-    type: "text" | "number" | "date" | "checkbox" | "booleanRadio" | "geoloc", 
-    idAccesor: string // Refer to column to place him
-    checkboxValues?: {value: string, label:string}[],
-    radioValues?: {value:string, label:string}[],
-} 
+interface DataRequestParam {
+    offset: number, 
+    perPage: number, 
+    filters: string | object, 
+    sorter?:string
+}
+```
+
+``` typescript
+type FilterType = "text" | "number" | "date" 
+type TextFilter = "contains" | "equal" | "startWith" | "finishWith"
+type NumberFilter = "equal" | "moreThan" | "lessThan" | "between"
+type DateFilter = "atDay" | "minDay" | "maxDay"
+
+type DefaultFiltersOptions = TextFilter | NumberFilter | DateFilter
+
+type FilterStateItemValue = {
+    option: DefaultFiltersOptions,
+    value: string
+}
+
+interface FilterStateItem {
+    [key:string]: {
+        type?: FilterType,
+        label?: string,
+        parsedValue?: string,
+        main?: FilterStateItemValue              
+        optionals?: FilterStateItemValue[]
+        locked?: boolean
+    }
+}
+```
+
+``` typescript
+type Sorter = {
+    attribut: string,
+    value: "asc" | "desc"
+}
+
+interface SorterRecord {
+    [key:string]: Sorter
+}
 ```
 
 ``` typescript
@@ -150,6 +269,7 @@ type Translations = {
     yes?:string
     no?:string
     na?:string
+    loading?: string
     filtersViewer?: {
         contain?: string
         startWith?: string
@@ -171,9 +291,27 @@ type Translations = {
         highHeight?: string,
         mediumHeight?:  string,
         smallHeight?: string,
+        filterType:string,
+        filterList: string,
+        filterField: string
+        clearCache?: string
     }
 }
+```
 
-
-***
+``` typescript
+type GPaginationObject<T> = {
+    pageable: Pageable
+    last: boolean,
+    totalPages: number,
+    totalElements: number,
+    sort: Sort
+    numberOfElements: number,
+    first: boolean,
+    size: number,
+    number: number,
+    empty: boolean
+    content: T[]
+}
+```
 

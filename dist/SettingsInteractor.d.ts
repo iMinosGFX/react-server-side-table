@@ -8,6 +8,7 @@ declare type Props = {
     enabledExport?: boolean;
     onExportClick?(): void;
     darkMode: boolean;
+    tableId?: string;
 };
 declare const SettingsInteractor: (props: Props) => JSX.Element;
 export default SettingsInteractor;

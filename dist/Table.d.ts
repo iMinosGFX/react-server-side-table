@@ -1,7 +1,7 @@
 import React from 'react';
 import { FilterItem } from './FiltersInteract';
-import { filtersType } from './ServerSideTable';
 import { Translations } from './types/props';
+import { filtersType } from './types/entities';
 declare type Props = {
     columns: any;
     data: any;
