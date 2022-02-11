@@ -18,6 +18,7 @@ type Props = {
     filterParsedType: filtersType
     translationsProps?: Translations
     darkMode: boolean
+    isOnRightOfViewport?: boolean
     isField?: boolean
 }
 
@@ -35,28 +36,10 @@ function getOptionsByType(type: string): string{
 
 const ItemFilter = (props: Props) => {
 
-    const [open, setOpen] = useState<boolean>(false)
     const node = useRef()
     const filtersState = useContext(FiltersContext)
-    const {translationsProps, darkMode} = props
-
-    /**
-     * useRef pour remove sidebar info au clic exterieur
-     */
-    const handleClick = e => {
-        //@ts-ignore
-        if (node.current && node.current.contains(e.target)) {
-            return;
-        } else {
-            setOpen(false)
-        }
-    };
-    
-    useEffect(() => {
-        document.addEventListener("mousedown", handleClick);
-        return () => document.removeEventListener("mousedown", handleClick);
-    }, []);
-
+    const {translationsProps, darkMode, isOnRightOfViewport} = props
+  
     const handleClear = () => {
         filtersState.changeMainFilter(props.filter.name, {option: getOptionsByType(props.filter.type), value:""})
         filtersState.changeOptionalsFilters(props.filter.name, [])
@@ -160,11 +143,9 @@ const ItemFilter = (props: Props) => {
             )
         } else {
             return(
-                <ListItem ref={node} onClick={() => {setOpen(true)}} className="SST_list_filter_item" filterParsedType={props.filterParsedType}>
-                    {/* <span className="filterName">{props.filter.label}</span> */}
-                    {/* {open &&  */}
+                <ListItem ref={node} className="SST_list_filter_item" filterParsedType={props.filterParsedType} isOnRightOfViewport={isOnRightOfViewport}>
+
                         <div className="filterPopup SST_list_filter_item_popup">
-                            {/* <h4>{translationsProps?.filterFor ?? translations.filterFor} {props.filter.label}</h4> */}
                             {FilterRender(props.filter, "main")}
                             {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (
                                 <React.Fragment key={i}>
@@ -185,7 +166,6 @@ const ItemFilter = (props: Props) => {
                                 <button className="btn align bg-primary light validBtn" onClick={() => filtersState.onClickApply()}>{translationsProps?.apply ?? translations.apply}</button>
                             </div>
                         </div>
-                    {/* } */}
                 </ListItem>
             )
         }

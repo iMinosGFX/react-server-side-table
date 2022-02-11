@@ -63,7 +63,7 @@ function parseBooleanRadios(filter: any): string{
     let parse = ''
     filter["main"].value.map(boolean => {
         if(boolean.status !== "NA"){
-            parse += `${boolean.name}=${boolean.status === "YES" ? "true" : "false"};`
+            parse += `${boolean.name}==${boolean.status === "YES" ? "true" : "false"};`
         }
     })
     return parse

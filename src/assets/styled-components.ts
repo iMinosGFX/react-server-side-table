@@ -300,7 +300,7 @@ const ListItem = styled('div')<any>`
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         position: absolute;
         top: ${props => props.type === "left" ? "0px" : "110%"};
-        left: ${props => props.type === "left" ? "105%" : "0"};
+        left: ${props => props.isOnRightOfViewport ? "-310px" : props.type === "left" ? "105%" : "0"};
         z-index: 9999;
         padding: 10px;
         h4{

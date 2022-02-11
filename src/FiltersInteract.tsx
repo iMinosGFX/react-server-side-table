@@ -4,7 +4,6 @@ import ItemFilter from './ItemFilter';
 import _ from "lodash";
 import FiltersContext from './context/filterscontext';
 import { Translations } from './types/props';
-import {translations} from "./assets/translations"
 import { filtersType } from './types/entities';
 
 export type FilterItem = {

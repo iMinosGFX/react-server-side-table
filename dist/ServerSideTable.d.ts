@@ -2,7 +2,7 @@ import React from 'react';
 import { FilterItem } from './FiltersInteract';
 import { Translations } from './types/props';
 import { GPaginationObject } from './types/entities';
-import { DataRequestParam, FilterStateItem, filtersType, SorterRecord } from './types/entities';
+import { DataRequestParam, FilterStateItem, filtersType } from './types/entities';
 declare type Props = {
     columns: any[];
     isFilter?: boolean;
@@ -30,7 +30,6 @@ declare type Props = {
     selectedRowsAction?: JSX.Element[];
     showVerticalBorders?: boolean;
     defaultFilters?: FilterStateItem;
-    defaultSorters?: SorterRecord;
 };
 export declare type SSTHandler = {
     reloadData: () => void;

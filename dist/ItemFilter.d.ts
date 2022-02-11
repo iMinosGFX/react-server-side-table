@@ -7,6 +7,7 @@ declare type Props = {
     filterParsedType: filtersType;
     translationsProps?: Translations;
     darkMode: boolean;
+    isOnRightOfViewport?: boolean;
     isField?: boolean;
 };
 declare const ItemFilter: (props: Props) => JSX.Element;

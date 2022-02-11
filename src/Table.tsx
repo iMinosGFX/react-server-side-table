@@ -206,6 +206,7 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
                           filter={filters.filter(f => f.idAccessor === column.id)[0] ?? null} 
                           filterParsedType={filterParsedType}
                           translationsProps={translationsProps}
+                          isOnRightOfViewport={j >= headerGroup.headers.length - 2}
                           darkMode={false}/>
                       </div>
                     }
