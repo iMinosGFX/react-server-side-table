@@ -94,8 +94,10 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
         setLoading(true)
         props.onDataChange(requestParam)
             .then(data => {
-                setData(data)
-                setLoading(false)
+                if(!!data){
+                    setData(data)
+                    setLoading(false)
+                }
             })
     }
 
