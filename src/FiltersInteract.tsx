@@ -15,6 +15,7 @@ export type FilterItem = {
     defaultOpen?:boolean
     widthPercentage?: number
     idAccessor?:string
+    parsedValue?: string | Object
 }
 
 type Props = {

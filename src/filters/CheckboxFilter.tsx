@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext } from 'react'
 import { FilterItem } from '../FiltersInteract';
 import styled  from 'styled-components';
 import _ from "lodash"
 import FiltersContext from "../context/filterscontext"
 import { CheckContainer } from '../assets/styled-components';
+import { Checkbox } from '@optalp/react-optalp-pantheon';
 
 type Props = {
     filter: FilterItem
@@ -63,19 +64,19 @@ const CheckboxFilter = (props: Props) => {
     //         </FieldContainer>
     //     )
     // } else {
-        return(
+
+    return(
             <ListContainer>
                 <CheckContainer darkMode={darkMode}>
                     {props.filter.checkboxValues.map((check,i) => (
-                        <div className="check-group" style={{paddingTop: 10}} key={i}>
-                            <input 
-                                type="checkbox" 
-                                name={check.value} 
-                                id={check.value}  
-                                onChange={() => handleChange(check.value)} 
-                                checked={filtersState.filtersState[props.filter.name]["main"].value.includes(check.value)}/>
-                            <label htmlFor={check.value}>{check.label}</label>
-                        </div>
+                        <Checkbox 
+                            name={check.value} 
+                            label={check.label}
+                            id={check.value}  
+                            onChange={() => handleChange(check.value)} 
+                            checked={filtersState.filtersState[props.filter.name]["main"].value.includes(check.value)} />
+
+                      
                     ))}
                 </CheckContainer>
             </ListContainer>

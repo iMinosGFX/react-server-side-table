@@ -39,7 +39,7 @@ const ItemFilter = (props: Props) => {
     const node = useRef()
     const filtersState = useContext(FiltersContext)
     const {translationsProps, darkMode, isOnRightOfViewport} = props
-  
+
     const handleClear = () => {
         filtersState.changeMainFilter(props.filter.name, {option: getOptionsByType(props.filter.type), value:""})
         filtersState.changeOptionalsFilters(props.filter.name, [])

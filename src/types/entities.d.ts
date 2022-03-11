@@ -47,24 +47,24 @@ export interface DataRequestParam {
     sorter?:string
 }
 
-export type FilterType = "text" | "number" | "date" 
+export type FilterType = "text" | "number" | "date" | "checkbox"
 export type TextFilter = "contains" | "equal" | "startWith" | "finishWith"
 export type NumberFilter = "equal" | "moreThan" | "lessThan" | "between"
 export type DateFilter = "atDay" | "minDay" | "maxDay"
 
-export type DefaultFiltersOptions = TextFilter | NumberFilter | DateFilter
+export type DefaultFiltersOptions = TextFilter | NumberFilter | DateFilter | ""
 
 
 export type FilterStateItemValue = {
     option: DefaultFiltersOptions,
-    value: string
+    value: string | string[]
 }
 
 export interface FilterStateItem {
     [key:string]: {
         type?: FilterType,
         label?: string,
-        parsedValue?: string,
+        parsedValue?: string | Object,
         main?: FilterStateItemValue              
         optionals?: FilterStateItemValue[]
         locked?: boolean

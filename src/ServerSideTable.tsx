@@ -45,6 +45,7 @@ type Props = {
     selectedRowsAction?: JSX.Element[]
     showVerticalBorders?: boolean
     defaultFilters?: FilterStateItem
+    counterColumnToItemGoLeft?: number
 }
 
 FiltersContext.displayName = "ServerSideTableContext";
@@ -94,7 +95,7 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
         setLoading(true)
         props.onDataChange(requestParam)
             .then(data => {
-                if(!!data){
+                if(!!data && !!data?.content){
                     setData(data)
                     setLoading(false)
                 }
@@ -226,7 +227,7 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
                                     </button>}
                                 {!!props.optionnalsHeaderContent && props.optionnalsHeaderContent}
                             </div>
-                            <div style={{display: 'flex', alignItems: 'center'}} className="table-actions-container">
+                            <div style={{display: 'flex', alignItems: 'center', width: "100%", justifyContent: "space-between", flexDirection: "row-reverse"}} className="table-actions-container">
                                 <div className="icons">
                                     {!isMobile &&
                                         <SettingsInteractor 
@@ -241,26 +242,26 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
                                             tableId={props.tableId}/>
                                     }
                                 </div>
+                                {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
+                                <>
+                                    <FiltersContainer darkMode={props.darkMode} className={`${props.filtersContainerClassName ?? ""} SST_filters_container`}>
+                                        <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode} lockedFilters={lockedFilters}/>
+                                        {isMobile && 
+                                            <FiltersInteract 
+                                                filters={props.filtersList} 
+                                                onSubmit={e => handleFilterSubmit(e)} 
+                                                filterParsedType={props.filterParsedType}
+                                                translationsProps={translationsProps}
+                                                darkMode={props.darkMode}
+                                                isMobile={isMobile}/>
+                                        }
+                                    </FiltersContainer>
+                                </>
+                        }
                             </div>
                         </div>
                     }
                         <>
-                        {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
-                            <>
-                                <FiltersContainer darkMode={props.darkMode} className={`${props.filtersContainerClassName ?? ""} SST_filters_container`}>
-                                    <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode} lockedFilters={lockedFilters}/>
-                                    {isMobile && 
-                                        <FiltersInteract 
-                                            filters={props.filtersList} 
-                                            onSubmit={e => handleFilterSubmit(e)} 
-                                            filterParsedType={props.filterParsedType}
-                                            translationsProps={translationsProps}
-                                            darkMode={props.darkMode}
-                                            isMobile={isMobile}/>
-                                    }
-                                </FiltersContainer>
-                            </>
-                        }
                         {!!props.selectableRows && !!props.selectedRowsAction && haveSelectedRows &&
                             <div className="SST_selected_rows_buttons">
                                 {props.selectedRowsAction}
@@ -279,7 +280,8 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
                             selectableRows={props.selectableRows}
                             setHaveSelectedRows={setHaveSelectedRows}
                             showVerticalBorders={props.showVerticalBorders}
-                            asyncLoading={loading}/>
+                            asyncLoading={loading}
+                            counterColumnToItemGoLeft={props.counterColumnToItemGoLeft}/>
                         </>
                     <div className="footerTable">
                         <ReactPaginate

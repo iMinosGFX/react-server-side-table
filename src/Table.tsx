@@ -21,6 +21,7 @@ type Props = {
   selectableRows?: boolean
   showVerticalBorders?: boolean
   asyncLoading?: boolean
+  counterColumnToItemGoLeft?: number
   setHaveSelectedRows?: (e: boolean) => void
 }
 
@@ -58,7 +59,7 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
     renderRowSubComponent, hiddenColumns, 
     filters, filterParsedType, 
     translationsProps, selectableRows,
-    asyncLoading
+    asyncLoading, counterColumnToItemGoLeft = 2
   } = props
 
   const [openedFilter, setOpenedFilter] = useState<string>(null)
@@ -172,9 +173,10 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
             <tr {...headerGroup.getHeaderGroupProps()} ref={node} key={i}>
               {headerGroup.headers.map((column,j) => {
                 const filter = filters.filter(f => f.idAccessor === column.id)[0]
+                const isRight = (j >= (headerGroup.headers.length - 3))
                 return(
                   <th {...column.getHeaderProps()} className="SST_header_cell" key={j}>
-                    <div className="SST_header_container noselect">
+                    <div className="SST_header_container noselect" style={{justifyContent: !!column.alignment ? column.alignment : "left"}}>
                       <span 
                         className="SST_header_title" 
                         {...column.getHeaderProps()}
@@ -206,7 +208,7 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
                           filter={filters.filter(f => f.idAccessor === column.id)[0] ?? null} 
                           filterParsedType={filterParsedType}
                           translationsProps={translationsProps}
-                          isOnRightOfViewport={j >= headerGroup.headers.length - 2}
+                          isOnRightOfViewport={j >= (headerGroup.headers.length - counterColumnToItemGoLeft)}
                           darkMode={false}/>
                       </div>
                     }
@@ -226,7 +228,7 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
                 <React.Fragment key={row.getRowProps().key}>
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell,k) => {
-                    return <td {...cell.getCellProps()} key={k}>{cell.render('Cell')}</td>
+                    return <td {...cell.getCellProps()} key={k} style={{textAlign: cell.column.alignment}}>{cell.render('Cell')}</td>
                   })}
                 </tr>
                 {row.isExpanded ? (

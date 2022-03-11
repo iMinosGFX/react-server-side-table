@@ -30,6 +30,7 @@ declare type Props = {
     selectedRowsAction?: JSX.Element[];
     showVerticalBorders?: boolean;
     defaultFilters?: FilterStateItem;
+    counterColumnToItemGoLeft?: number;
 };
 export declare type SSTHandler = {
     reloadData: () => void;

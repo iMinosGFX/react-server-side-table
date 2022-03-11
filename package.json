@@ -1,6 +1,6 @@
 {
   "name": "@optalp/react-server-side-table",
-  "version": "1.8.22",
+  "version": "1.8.27",
   "description": "ServerSideTable React Component",
   "author": "ovieokeh",
   "license": "Apache-2.0",
@@ -14,6 +14,7 @@
     "start": "rollup -c -w"
   },
   "dependencies": {
+    "@optalp/react-optalp-pantheon": "^0.2.73",
     "@rollup/plugin-json": "^4.1.0",
     "@types/react-transition-group": "^4.4.1",
     "@types/styled-components": "^5.1.9",

@@ -26,6 +26,7 @@ Then you can call him in the renderer, here an example :
     isSorter
     onDataChange={getData} 
     showAddBtn
+    counterColumnToItemGoLeft={3}
     onAddClick={() => history.push('/app/users/new')}/>
 ```
 ---

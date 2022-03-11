@@ -35,7 +35,7 @@ export function createDefaultFilter (filtersList: FilterItem[], defaultFilters?:
             _initialFilters[filter.name] = {
                 type: filter.type,
                 label: filter.label,
-                parsedValue: '',
+                parsedValue: filter.parsedValue,
                 main: {
                     option: getOptionsByType(filter.type), 
                     value: filter.type === "booleanRadio" ? 

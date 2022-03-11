@@ -15,6 +15,7 @@ export declare type FilterItem = {
     defaultOpen?: boolean;
     widthPercentage?: number;
     idAccessor?: string;
+    parsedValue?: string | Object;
 };
 declare type Props = {
     filters?: FilterItem[];

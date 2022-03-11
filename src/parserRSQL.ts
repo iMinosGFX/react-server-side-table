@@ -50,7 +50,7 @@ function parseCommons(name: string, filter: any): string{
 function parseCheckbox(name:string, filter: any): string{
     let parse = ''
     if(filter["main"].value.length > 0){
-        parse += `${name}=ct=(${filter["main"].value.join(',')});`
+        parse += `${name}=in=(${filter["main"].value.join(',')});`
     }
     return parse
 }

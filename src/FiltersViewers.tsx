@@ -9,15 +9,15 @@ import { parseFilterFuzzy } from './parserFuzzy';
 import { transparentize } from 'polished';
 
 const Container = styled('div')<{darkMode: boolean}>`
-    height: 60px;
     width: 100%;
     border-radius: 3px 3px 0 0;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     padding: 0 10px;
     box-sizing: border-box;
     span{
-        line-height: 60px;
+        line-height: 40px;
         color: ${props => props.darkMode ? "#e6e6e6" : "#435F71"};
     }
     .filters-label{
@@ -131,11 +131,9 @@ const FiltersViewers: React.FC<Props> = (props) => {
                     <span className="main">{translationsProps?.appliedFilters ?? translations.appliedFilters}</span>
                     {!!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).sort(([k1,v1],[k2,v2]) =>{return v1.hasOwnProperty("locked") ? -1 : v2.hasOwnProperty("locked") ? 1 : 0}).flatMap(([key, value], i) => {
                         let _array = []
-                        if(value["type"] !== "booleanRadio" && value["type"] !== "geoloc"){
+                        if(["text", "number", "date"].includes(value["type"])){
                             if(!!value["main"].value && value["main"].value !== ""){
-
                                 let _isLocked = lockedFilters?.includes(key)
-                                
                                 _array.push(
                                     <div className={`filters-label ${_isLocked ? "locked-label" : ""}`} key={i}>
                                         <span>{value["label"]}:</span> 
@@ -145,7 +143,7 @@ const FiltersViewers: React.FC<Props> = (props) => {
                                     </div>
                                 )
                             }
-                            Object.entries(value["optionals"]).map(([keyOption, valueOptions], i) => {
+                            Object.entries(value["optionals"]).map(([keyOption], i) => {
                                 if(!!value["optionals"][keyOption]["value"] && value["optionals"][keyOption]["value"] !==""){
                                     _array.push(
                                         <div className="filters-label" key={i}>
@@ -157,6 +155,15 @@ const FiltersViewers: React.FC<Props> = (props) => {
                                     )
                                 }
                             })
+                        } else if (value["type"] === "checkbox") {
+                            if(!!value["main"]["value"] && value["main"]["value"].length > 0)
+                                _array.push(
+                                    <div className="filters-label" key={i}>
+                                        <span>{value["label"]}:</span> 
+                                        <span className="font-heavy"> {value["main"]["value"]?.map(e => !!value["parsedValue"][e] ? value["parsedValue"][e] : e).join(",")}</span>
+                                        <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearMain(key)}/>
+                                    </div>
+                                )
                         } else if(value["type"] === "booleanRadio") { //Render of booleanRadio
                             value["main"]["value"].map((radio,i) => {
                                 if(radio.status !== "NA"){

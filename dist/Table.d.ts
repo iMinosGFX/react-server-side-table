@@ -14,6 +14,7 @@ declare type Props = {
     selectableRows?: boolean;
     showVerticalBorders?: boolean;
     asyncLoading?: boolean;
+    counterColumnToItemGoLeft?: number;
     setHaveSelectedRows?: (e: boolean) => void;
 };
 export declare type TableHandler = {
