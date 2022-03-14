@@ -3,7 +3,7 @@ import Table from './Table'
 import ReactPaginate from 'react-paginate';
 import { FiltersContainer, PerPageContainer, TableContainer, TableStyles } from './assets/styled-components';
 import _ from 'lodash';
-import FiltersInteract, { FilterItem } from './FiltersInteract';
+import FiltersInteract from './FiltersInteract';
 import SettingsInteractor from './SettingsInteractor';
 import FiltersViewers from './FiltersViewers';
 import { parseFilterRSQL } from './parserRSQL';
@@ -11,63 +11,19 @@ import { parseFilterFuzzy } from './parserFuzzy';
 import FiltersContext from './context/filterscontext';
 import { getLineSpacing, registerTableFilters, destroyTableFiltersStorage, getTableFilters } from './helpers/SSTlocalStorageManagement';
 import {translations} from "./assets/translations"
-import { Translations } from './types/props';
 import { isMobile } from 'react-device-detect';
 import { TableHandler } from './Table';
 import { GPaginationObject } from './types/entities';
-import { DataRequestParam, DefaultFiltersOptions, FilterStateItem, filtersType, SorterRecord } from './types/entities';
+import { DataRequestParam, DefaultFiltersOptions, FilterStateItem, SorterRecord } from './types/entities';
 import { createDefaultFilter, cleanFilterOnlyWithLocked, createDefaultSorter } from './helpers/createDefaultFilters';
-
-type Props = {
-    columns: any[]
-    isFilter?: boolean
-    filtersList?: FilterItem[]
-    isSorter?:boolean
-    defaultSorter?: string
-    perPageItems?: 5 | 10 | 20 | 50
-    isRenderSubComponent?:boolean
-    renderSubComponent?: any
-    onDataChange(requestParam: DataRequestParam): Promise<GPaginationObject<any>>
-    showAddBtn?: boolean
-    onAddClick?(): void
-    filterParsedType?: filtersType
-    darkMode?: boolean
-    withoutHeader?:boolean
-    translationsProps?: Translations
-    enabledExport?: boolean
-    onExportClick?(): void
-    mobileColumns?: any[] 
-    containerClassName?:string
-    filtersContainerClassName?:string
-    tableId?: string // Only for save filter & sort
-    optionnalsHeaderContent?: JSX.Element[]
-    selectableRows?: boolean
-    selectedRowsAction?: JSX.Element[]
-    showVerticalBorders?: boolean
-    defaultFilters?: FilterStateItem
-    counterColumnToItemGoLeft?: number
-}
+import { SSTHandler, SSTProps } from './types/components-props';
 
 FiltersContext.displayName = "ServerSideTableContext";
 
-export type SSTHandler = {
-    reloadData: () => void,
-    getSelectedRows: () => any[]
-}
-
-const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
+const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 
     const {translationsProps} = props     
 
-    useEffect(() => {
-        if(!props.defaultFilters && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
-            setFiltersState(createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filterParsedType))
-        }
-        setSorterState(createDefaultSorter(props.columns))
-    }, [props.filtersList])
-
-
-    // const [filters, setFilters] = useState<any>({})
     const [filtersState, setFiltersState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) : 
                                                                     !!props.tableId ? getTableFilters(props.tableId) : 
                                                                     !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) : {})
@@ -85,6 +41,13 @@ const ServerSideTable = forwardRef<SSTHandler, Props>((props, ref) => {
     const [data, setData] = useState<GPaginationObject<any>>(null)
     const [lockedFilters, setLockedFiltersTest] = useState<string[]>()
     const [loading, setLoading] = useState<boolean>(false)
+
+    useEffect(() => {
+        if(!props.defaultFilters && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
+            setFiltersState(createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filterParsedType))
+        }
+        setSorterState(createDefaultSorter(props.columns))
+    }, [props.filtersList])
 
     useEffect(() => {
         if(!!props.defaultFilters)

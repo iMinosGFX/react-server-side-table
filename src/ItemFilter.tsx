@@ -20,6 +20,7 @@ type Props = {
     darkMode: boolean
     isOnRightOfViewport?: boolean
     isField?: boolean
+    onClose?():void
 }
 
 function getOptionsByType(type: string): string{
@@ -38,7 +39,7 @@ const ItemFilter = (props: Props) => {
 
     const node = useRef()
     const filtersState = useContext(FiltersContext)
-    const {translationsProps, darkMode, isOnRightOfViewport} = props
+    const {translationsProps, darkMode, isOnRightOfViewport, onClose} = props
 
     const handleClear = () => {
         filtersState.changeMainFilter(props.filter.name, {option: getOptionsByType(props.filter.type), value:""})
@@ -85,7 +86,7 @@ const ItemFilter = (props: Props) => {
                     <TextFilter 
                         filter={filter} 
                         index={index === "main" ? "main" : index} 
-                        onEnterPress={() => filtersState.onClickApply()}
+                        onEnterPress={() => {filtersState.onClickApply(); onClose()}}
                         filterParsedType={props.filterParsedType} 
                         translationsProps={translationsProps}
                         darkMode={darkMode}/>
@@ -95,7 +96,7 @@ const ItemFilter = (props: Props) => {
                     <NumberFilter 
                         filter={filter} 
                         index={index === "main" ? "main" : index} 
-                        onEnterPress={() => filtersState.onClickApply()}
+                        onEnterPress={() => {filtersState.onClickApply(); onClose()}}
                         filterParsedType={props.filterParsedType}
                         translationsProps={translationsProps}
                         darkMode={darkMode}/>
@@ -105,7 +106,7 @@ const ItemFilter = (props: Props) => {
                     <DateFilter
                         filter={filter} 
                         index={index === "main" ? "main" : index} 
-                        onEnterPress={() => filtersState.onClickApply()}
+                        onEnterPress={() => {filtersState.onClickApply(); onClose()}}
                         filterParsedType={props.filterParsedType}
                         translationsProps={translationsProps}
                         darkMode={darkMode}/>
@@ -163,7 +164,7 @@ const ItemFilter = (props: Props) => {
                                     style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
                                         {translationsProps?.clear ?? translations.clear}
                                 </span>
-                                <button className="btn align bg-primary light validBtn" onClick={() => filtersState.onClickApply()}>{translationsProps?.apply ?? translations.apply}</button>
+                                <button className="btn align bg-primary light validBtn" onClick={() => {filtersState.onClickApply(); onClose()}}>{translationsProps?.apply ?? translations.apply}</button>
                             </div>
                         </div>
                 </ListItem>

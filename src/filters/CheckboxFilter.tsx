@@ -1,15 +1,10 @@
 import React, { useContext } from 'react'
-import { FilterItem } from '../FiltersInteract';
 import styled  from 'styled-components';
 import _ from "lodash"
 import FiltersContext from "../context/filterscontext"
 import { CheckContainer } from '../assets/styled-components';
 import { Checkbox } from '@optalp/react-optalp-pantheon';
-
-type Props = {
-    filter: FilterItem
-    darkMode: boolean
-}
+import { CheckboxFilterProps } from '../types/components-props';
 
 const ListContainer = styled.div`
     width: 100%;
@@ -30,7 +25,7 @@ const ListContainer = styled.div`
         }
     }
 `
-const CheckboxFilter = (props: Props) => {
+const CheckboxFilter = (props: CheckboxFilterProps) => {
     
     const {darkMode} = props
     const filtersState = useContext(FiltersContext)

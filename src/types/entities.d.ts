@@ -84,3 +84,15 @@ export type GPaginationObject<T> = {
     empty: boolean
     content: T[]
 }
+
+export type FilterItem = {
+    name: string, 
+    label: string, 
+    type: "text" | "number" | "date" | "checkbox" | "booleanRadio" | "geoloc", 
+    checkboxValues?: {value: string, label:string}[],
+    radioValues?: {value:string, label:string}[],
+    defaultOpen?:boolean
+    widthPercentage?: number
+    idAccessor?:string
+    parsedValue?: string | Object
+}

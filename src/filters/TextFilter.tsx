@@ -1,23 +1,12 @@
 import React, {useContext} from 'react'
-import { FilterItem } from '../FiltersInteract';
 import Select from 'react-select';
 import _ from "lodash"
 import FiltersContext from "../context/filterscontext"
-import { Translations } from '../types/props';
 import { translations } from '../assets/translations';
 import { FilterContainer } from '../assets/styled-components';
-import { filtersType } from '../types/entities';
+import { TextFilterProps } from '../types/components-props';
 
-type Props = {
-    filter: FilterItem
-    onEnterPress(): void
-    index: "main" | number
-    filterParsedType: filtersType
-    translationsProps: Translations
-    darkMode: boolean
-}
-
-const TextFilter = (props: Props) => {
+const TextFilter = (props: TextFilterProps) => {
 
     const {filter, index, translationsProps, darkMode} = props
     const filtersState = useContext(FiltersContext)

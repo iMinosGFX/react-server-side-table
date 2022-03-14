@@ -1,13 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import _ from "lodash"
+import { ColumnsSelectorProps } from './types/components-props';
 
-type Props = {
-    columns: any[]
-    hiddenColumns:string[]
-    onChange(e: string[]): void
-}
-
-const ColumnsSelector = (props: Props) => {
+const ColumnsSelector = (props: ColumnsSelectorProps) => {
 
     const [checkedColumns, setCheckedColumns] = useState<string[]>(props.columns.filter(column => !!column.Header && column.Header.length > 0).map(column => column.accessor).filter(column => !props.hiddenColumns.includes(column)))
     const [uncheckedColumns, setUncheckedColumns] = useState<string[]>(props.hiddenColumns)

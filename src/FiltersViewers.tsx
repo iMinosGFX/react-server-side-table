@@ -7,6 +7,7 @@ import { Translations } from './types/props';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
 import { transparentize } from 'polished';
+import { FiltersViewersProps } from './types/components-props';
 
 const Container = styled('div')<{darkMode: boolean}>`
     width: 100%;
@@ -51,14 +52,7 @@ const Container = styled('div')<{darkMode: boolean}>`
     }
 `
 
-type Props = {
-    translationsProps?: Translations
-    darkMode: boolean
-    lockedFilters?:string[]
-}
-
-
-const FiltersViewers: React.FC<Props> = (props) => {
+const FiltersViewers: React.FC<FiltersViewersProps> = (props) => {
 
     const {translationsProps, darkMode, lockedFilters} = props
 
@@ -128,7 +122,7 @@ const FiltersViewers: React.FC<Props> = (props) => {
         <>
             {parseFilterRSQL(filtersState.submitFiltersState).length > 0 &&  !_.isEmpty(parseFilterFuzzy(filtersState.submitFiltersState)) ?
                 <Container darkMode={darkMode}>
-                    <span className="main">{translationsProps?.appliedFilters ?? translations.appliedFilters}</span>
+                    <span className="main font-italic font-light">{translationsProps?.appliedFilters ?? translations.appliedFilters}</span>
                     {!!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).sort(([k1,v1],[k2,v2]) =>{return v1.hasOwnProperty("locked") ? -1 : v2.hasOwnProperty("locked") ? 1 : 0}).flatMap(([key, value], i) => {
                         let _array = []
                         if(["text", "number", "date"].includes(value["type"])){

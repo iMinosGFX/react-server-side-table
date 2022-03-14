@@ -1,17 +1,10 @@
 import React, {useContext, useEffect, useRef, useState} from 'react'
-import { FilterItem } from '../FiltersInteract';
 import styled  from 'styled-components';
 import _ from "lodash"
 import FiltersContext from "../context/filterscontext"
-import { Translations } from '../types/props';
 import { translations } from '../assets/translations';
-import { CheckContainer, FieldContainer } from '../assets/styled-components';
-
-type Props = {
-    filter: FilterItem
-    translationsProps: Translations
-    darkMode: boolean
-}
+import { CheckContainer} from '../assets/styled-components';
+import { BooleanRadioFilterProps } from '../types/components-props';
 
 const FilterContainer = styled.div`
 width: 100%;
@@ -43,7 +36,7 @@ margin: 10px 0;
 }
 `
 
-const BooleanRadioFilter = (props: Props) => {
+const BooleanRadioFilter = (props: BooleanRadioFilterProps) => {
 
     const filtersState = useContext(FiltersContext)
     const {translationsProps, darkMode} = props

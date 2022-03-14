@@ -9,6 +9,7 @@ declare type Props = {
     darkMode: boolean;
     isOnRightOfViewport?: boolean;
     isField?: boolean;
+    onClose?(): void;
 };
 declare const ItemFilter: (props: Props) => JSX.Element;
 export default ItemFilter;

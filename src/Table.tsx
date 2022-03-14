@@ -2,28 +2,11 @@ import React, {useContext, useEffect, useRef, useState, forwardRef, useImperativ
 import { useExpanded } from 'react-table';
 import { useTable, useRowSelect } from 'react-table'
 import _ from "lodash"
-import { FilterItem } from './FiltersInteract'
-import { Translations } from './types/props'
 import ItemFilter from './ItemFilter'
 import FiltersContext from "./context/filterscontext"
-import { filtersType, Sorter } from './types/entities';
+import { Sorter } from './types/entities';
 import { translations } from './assets/translations';
-
-type Props = {
-  columns: any
-  data: any
-  renderRowSubComponent: any
-  filters?: FilterItem[]
-  hiddenColumns: string[]
-  clickableHeader(e: any): void
-  filterParsedType: filtersType
-  translationsProps?: Translations
-  selectableRows?: boolean
-  showVerticalBorders?: boolean
-  asyncLoading?: boolean
-  counterColumnToItemGoLeft?: number
-  setHaveSelectedRows?: (e: boolean) => void
-}
+import { TableProps } from './types/components-props';
 
 const IndeterminateCheckbox = React.forwardRef(
   // @ts-ignore
@@ -52,7 +35,7 @@ export type TableHandler = {
 }
 
 // const Table = ({ columns, data, renderRowSubComponent, filters, onFiltersChange}: Props) => {
-const Table = forwardRef<TableHandler, Props>((props, ref) => {
+const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
 
   const { 
     columns, data, 
@@ -209,7 +192,8 @@ const Table = forwardRef<TableHandler, Props>((props, ref) => {
                           filterParsedType={filterParsedType}
                           translationsProps={translationsProps}
                           isOnRightOfViewport={j >= (headerGroup.headers.length - counterColumnToItemGoLeft)}
-                          darkMode={false}/>
+                          darkMode={false}
+                          onClose={() => setOpenedFilter(null)}/>
                       </div>
                     }
                   </th>

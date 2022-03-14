@@ -4,28 +4,8 @@ import ItemFilter from './ItemFilter';
 import _ from "lodash";
 import FiltersContext from './context/filterscontext';
 import { Translations } from './types/props';
-import { filtersType } from './types/entities';
-
-export type FilterItem = {
-    name: string, 
-    label: string, 
-    type: "text" | "number" | "date" | "checkbox" | "booleanRadio" | "geoloc", 
-    checkboxValues?: {value: string, label:string}[],
-    radioValues?: {value:string, label:string}[],
-    defaultOpen?:boolean
-    widthPercentage?: number
-    idAccessor?:string
-    parsedValue?: string | Object
-}
-
-type Props = {
-    filters?: FilterItem[]
-    onSubmit(e: any): void
-    filterParsedType: filtersType
-    translationsProps?: Translations
-    darkMode: boolean
-    isMobile?:boolean
-}
+import { FilterItem, filtersType } from './types/entities';
+import { FiltersInteractProps } from './types/components-props';
 
 const ListContainer = styled.div`
     display: flex;
@@ -116,7 +96,7 @@ const SearchContainer = styled('div')<{darkMode: boolean}>`
 `
 
 
-const FiltersInteract = (props: Props) => {
+const FiltersInteract = (props: FiltersInteractProps) => {
 
     const {filters, translationsProps, darkMode, isMobile} = props
 

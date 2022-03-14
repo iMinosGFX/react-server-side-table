@@ -47,8 +47,9 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
         width: 100%;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         padding-right: 10px;
+        flex-direction: column;
         .SST_actions_buttons{
             display: flex;
             align-items: center;

@@ -1,7 +1,6 @@
-import { FilterStateItem, SorterRecord } from "../types/entities"
+import { FilterItem, FilterStateItem, SorterRecord } from "../types/entities"
 import { getTableFilters } from './SSTlocalStorageManagement';
 import _ from 'lodash';
-import { FilterItem } from "../FiltersInteract";
 import { parseFilterRSQL } from "../parserRSQL";
 import { parseFilterFuzzy } from "../parserFuzzy";
 
@@ -29,7 +28,7 @@ export function createDefaultFilter (filtersList: FilterItem[], defaultFilters?:
     ? parseFilterRSQL(savedFilters)
     : parseFilterFuzzy(savedFilters)
 
-    if(!tableId || (!filters && _.isEmpty(filters))){
+    if((filtersParsedType === "fuzzy" && !(!tableId || (!filters && _.isEmpty(filters)))) || (filtersParsedType === "rsql" && (!tableId || (!filters && _.isEmpty(filters))))){
         let _initialFilters = {};
         filtersList.forEach(filter => {
             _initialFilters[filter.name] = {
