@@ -50,8 +50,9 @@ export async function createDefaultFilter (filtersList: FilterItem[], defaultFil
     } else {
         if(!!defaultFilters)
             concatFilters = defaultFilters;
-        if(!!tableId && !_.isEmpty(savedFilters))
-            concatFilters = {...defaultFilters, ...savedFilters}
+        if(!!tableId && !_.isEmpty(savedFilters)){
+            concatFilters = {...savedFilters,...defaultFilters}
+        }
     }
     return concatFilters
 }
@@ -77,7 +78,6 @@ export function cleanFilterOnlyWithLocked(filtersList: FilterItem[], defaultFilt
     })
 
     if(!!lockedFilters){
-        // let _test: any = Object.keys(defaultFilters).filter(a => lockedFilters?.includes(a)).map(v => v) //Get Array of lockedFilters id attribut
         let clonedDefaultsWithProperties = defaultFilters //Clone Default filters
         Object.keys(defaultFilters).forEach(p => {      //Loop & create all lockeds objects ready to concat
             if(!lockedFilters.includes(p))
