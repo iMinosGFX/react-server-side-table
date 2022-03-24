@@ -60,7 +60,8 @@ Then you can call him in the renderer, here an example :
 | selectableRows?            | boolean                                                                            |                                                                                                                                                                                        |                                                                       |
 | selectedRowsAction?        | JSX.Element[]                                                                      |                                                                                                                                                                                        |                                                                       |
 | showVerticalBorders?       | boolean                                                                            |                                                                                                                                                                                        |                                                                       |
-| defaultFilters?            | FilterStateItem                                                                    | If you want to use default filters, you need to use useSST hooks, see more below                                                                                                       |                                                                       |
+| defaultProps?              | FilterStateItem                                                                    | If you want to use default props (filters, sort, hidden columns), you need to use useSST hooks, see more below                                                                         |                                                                       |
+| counterColumnToItemGoLeft  | number                                                                             | Add this if filters is on right of viewport                                                                                                                                            |                                                                       |
 ##### GetData
 The getData function must call the api using the parameters returned by onDataChange, and returning a PaginationObject object (content & pageabe). 
 Here is an example: 
@@ -105,10 +106,10 @@ const fitlers: FilterItem[] = [
 ]
 ```
 
-###### Saved Filters
+###### Saved and use Defaults Props
+
 You can enable filter saving by choosing a unique "tableId", usually the pattern is: `[project-name]-[entity]-table`
 
-###### Defaults Filters
 You also have the possibility to create default filters, for that you have to do several things: 
 - Import useSST 
 - Create a filter variable
@@ -118,6 +119,12 @@ You also have the possibility to create default filters, for that you have to do
 Here is an example: 
 ```
 import {ServerSideTable, useSST} from '@optalp/react-server-side-table';
+const TABLE_ID = "tv2-logger-table"
+
+const {createDefaultProps} = useSST()
+const [defaultsProps, setDefaultsProps] = useState<any>(null)
+
+const filters: FilterItem[] = [...]
 
 const defaultFilters: FilterStateItem  = {
     createdAt: {
@@ -128,10 +135,35 @@ const defaultFilters: FilterStateItem  = {
         optionals: []
     },
 }
-const tableId = "tv2-logger-table"
-const filters: FilterItem[] = []
 
-const createdFilters = createFilters(fitlers, defaultFilters, tableId, "rsql")
+useEffect(() => {
+    createDefaultProps({
+        filtersList: filters,
+        defaultFilters: defaultFilters
+        tableId: TABLE_ID,
+        filtersParsedType: "rsql",
+        columns: columns
+    })
+    .then(setDefaultsProps)
+}, [])
+
+return(
+    <>
+      {!!defaultsProps && 
+        <ServerSideTable
+            ref={ServerSideTableRef}
+            columns={columns}
+            isFilter
+            filtersList={filterColumns}
+            filterParsedType="rsql"
+            isSorter
+            onDataChange={getData}
+            defaultProps={defaultsProps}
+            tableId={TABLE_ID}/>
+    }
+    </>
+)
+```
 
 <ServerSideTable 
     ref={ServerSideTableRef}
@@ -240,6 +272,12 @@ interface FilterStateItem {
         optionals?: FilterStateItemValue[]
         locked?: boolean
     }
+}
+
+type DefaultProps = {
+    filters: FilterStateItem,
+    sort: SorterRecord,
+    hideColumns: string[] 
 }
 ```
 

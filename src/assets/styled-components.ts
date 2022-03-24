@@ -111,7 +111,7 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
                     text-transform: uppercase;
                     display: flex;
                     align-items: center;
-                    font-size: 14px;
+                    font-size: 13px;
                     span{
                         font-weight: 600;
                     }

@@ -44,7 +44,7 @@ export interface DataRequestParam {
     offset: number, 
     perPage: number, 
     filters: string | object, 
-    sorter?:string
+    sorter?:string[]
 }
 
 export type FilterType = "text" | "number" | "date" | "checkbox"
@@ -96,3 +96,5 @@ export type FilterItem = {
     idAccessor?:string
     parsedValue?: string | Object
 }
+
+export type LineSpacing = "high" | "medium" | "small"

@@ -1,4 +1,4 @@
-import { DataRequestParam, FilterItem, FilterStateItem, filtersType, GPaginationObject } from "./entities"
+import { DataRequestParam, FilterItem, FilterStateItem, filtersType, GPaginationObject, LineSpacing, SorterRecord } from "./entities"
 import { Translations } from "./props"
 
 export type TextFilterProps = {
@@ -25,6 +25,7 @@ export type ColumnsSelectorProps = {
     columns: any[]
     hiddenColumns:string[]
     onChange(e: string[]): void
+    tableId: string
 }
 
 export type FiltersInteractProps = {
@@ -68,7 +69,7 @@ export type SSTProps = {
     selectableRows?: boolean
     selectedRowsAction?: JSX.Element[]
     showVerticalBorders?: boolean
-    defaultFilters?: FilterStateItem
+    defaultProps?: DefaultProps
     counterColumnToItemGoLeft?: number
 }
 
@@ -91,4 +92,12 @@ export type TableProps = {
     asyncLoading?: boolean
     counterColumnToItemGoLeft?: number
     setHaveSelectedRows?: (e: boolean) => void
+}
+
+type DefaultProps = {
+    filters: FilterStateItem,
+    sort: SorterRecord,
+    hideColumns: string[] 
+    showVerticalBorders: boolean
+    lineSpacing: LineSpacing
 }

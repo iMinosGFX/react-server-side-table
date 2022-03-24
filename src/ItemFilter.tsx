@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useRef, useContext} from 'react'
-import { FilterItem } from './FiltersInteract';
+import React, {useRef, useContext} from 'react'
 import TextFilter from './filters/TextFilter';
 import NumberFilter from './filters/NumberFilter';
 import CheckboxFilter from './filters/CheckboxFilter';
@@ -10,7 +9,7 @@ import FiltersContext from "./context/filterscontext"
 import { Translations } from './types/props';
 import { translations } from './assets/translations';
 import { FieldItem, ListItem } from './assets/styled-components';
-import { filtersType } from './types/entities';
+import { FilterItem, filtersType } from './types/entities';
 
 type Props = {
     filter: FilterItem

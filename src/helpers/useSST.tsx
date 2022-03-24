@@ -1,6 +1,6 @@
 import {useContext} from 'react';
 import FiltersContext from '../context/filterscontext';
-import { createDefaultFilter } from './createDefaultFilters';
+import { createDefaultFilter, createDefaultProps } from './createDefaultFilters';
 
 export const useSST = () => {
 
@@ -8,11 +8,12 @@ export const useSST = () => {
 
     if (!filtersState) {
         throw Error(
-          'The `useSST` hook must be called from a descendent of the `MithraProvider`.'
+          'The `useSST` hook must be called from a descendent of the `SSTProvider`.'
         );
       }
 
     return{
         createFilters: createDefaultFilter,
+        createDefaultProps: createDefaultProps
     }
 }

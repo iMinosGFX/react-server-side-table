@@ -156,19 +156,15 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
             <tr {...headerGroup.getHeaderGroupProps()} ref={node} key={i}>
               {headerGroup.headers.map((column,j) => {
                 const filter = filters.filter(f => f.idAccessor === column.id)[0]
-                const isRight = (j >= (headerGroup.headers.length - 3))
                 return(
                   <th {...column.getHeaderProps()} className="SST_header_cell" key={j}>
                     <div className="SST_header_container noselect" style={{justifyContent: !!column.alignment ? column.alignment : "left"}}>
                       <span 
-                        className="SST_header_title" 
+                        className={`SST_header_title ${!!SstState.sorterState?.[column.id] ? "pointer" : ""}`}
                         {...column.getHeaderProps()}
                         onClick={() => {
-                          if(!!SstState.sorterState[column.id]){
-                            toggleSorterValue(column.id, SstState.sorterState[column.id])
-                            //Triger change sorterState ASC / DESC / UNDEFINED
-                            //
-                          }
+                          if(!!SstState.sorterState[column.id])
+                            toggleSorterValue(column.id, SstState.sorterState?.[column.id])
                         }}>
                         {column.render('Header')}
                       </span>
@@ -203,7 +199,13 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
           ))}
         </thead>
         {asyncLoading ? 
-          <p style={{textAlign: "center", display: 'flex', alignItems: "center"}}>{translationsProps?.loading ?? translations.loading} <i className="ri-loader-4-fill spinner rotate"/></p>
+          <tbody style={{textAlign: "center", display: 'flex', alignItems: "center"}}>
+            <tr>
+              <td>
+                {translationsProps?.loading ?? translations.loading} <i className="ri-loader-4-fill spinner rotate"/>
+              </td>
+            </tr>
+          </tbody>
           : 
           <tbody {...getTableBodyProps()} className={props.showVerticalBorders ? "" : "no-border"}>
             {rows.map((row, i) => {

@@ -1,6 +1,5 @@
-import { FilterItem } from './FiltersInteract';
 import { Translations } from './types/props';
-import { filtersType } from './types/entities';
+import { FilterItem, filtersType } from './types/entities';
 declare type Props = {
     filter: FilterItem;
     ref?: any;

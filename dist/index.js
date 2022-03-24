@@ -38,6 +38,7 @@ var framerMotion = _interopDefault(require('framer-motion'));
 var reactErrorBoundary = _interopDefault(require('react-error-boundary'));
 var moment = _interopDefault(require('moment'));
 var reactTransitionGroup = require('react-transition-group');
+var path = require('path');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -75,6 +76,44 @@ function __rest(s, e) {
                 t[p[i]] = s[p[i]];
         }
     return t;
+}
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
 }
 
 function __spreadArray(to, from) {
@@ -21931,7 +21970,7 @@ var translations = {
 };
 
 var TableContainer = styled("div")(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    padding-top: 10px;\n    margin: 0 5px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .SST_HEADER{\n        padding: .4rem;\n        width: 100%;\n        display: flex;\n        justify-content: space-between;\n        align-items: flex-start;\n        padding-right: 10px;\n        flex-direction: column;\n        .SST_actions_buttons{\n            display: flex;\n            align-items: center;\n            & > * {\n                margin: 0 5px;\n            }\n        }\n    }\n    .SST_selected_rows_buttons{\n        padding: .4rem;\n        display: flex;\n        align-items: center;\n        & > * {\n            margin: 0 5px;\n        }\n    }\n    @media only screen and (max-width: 540px){\n        .SST_HEADER{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"], ["\n    padding-top: 10px;\n    margin: 0 5px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .SST_HEADER{\n        padding: .4rem;\n        width: 100%;\n        display: flex;\n        justify-content: space-between;\n        align-items: flex-start;\n        padding-right: 10px;\n        flex-direction: column;\n        .SST_actions_buttons{\n            display: flex;\n            align-items: center;\n            & > * {\n                margin: 0 5px;\n            }\n        }\n    }\n    .SST_selected_rows_buttons{\n        padding: .4rem;\n        display: flex;\n        align-items: center;\n        & > * {\n            margin: 0 5px;\n        }\n    }\n    @media only screen and (max-width: 540px){\n        .SST_HEADER{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"])), function (props) { return props.darkMode ? "#2a3c4e" : "#fff"; }, function (props) { return props.darkMode ? "#272d3a" : "#E0E0E0"; }, function (props) { return props.darkMode ? "#bccde0" : "#2a3c4e"; }, function (props) { return props.darkMode ? "#2a3c4e" : "#fff;"; }, function (props) { return props.darkMode ? "#bccde0" : "#435F71"; });
-var TableStyles = styled("div")(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 14px;\n                    span{\n                        font-weight: 600;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"], ["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 14px;\n                    span{\n                        font-weight: 600;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"])), function (props) { return props.darkMode ? "#141b24" : "#E7EAF3"; }, function (props) { return props.darkMode ? "#272d3a" : "#F8FAFD"; }, function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; }, polished.transparentize(.95, "#000"));
+var TableStyles = styled("div")(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"], ["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"])), function (props) { return props.darkMode ? "#141b24" : "#E7EAF3"; }, function (props) { return props.darkMode ? "#272d3a" : "#F8FAFD"; }, function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; }, polished.transparentize(.95, "#000"));
 var ListItem = styled('div')(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .SST_list_filter_item_popup{\n        width: ", ";\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"], ["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .SST_list_filter_item_popup{\n        width: ", ";\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"])), function (props) { return props.type === "top" && "1px solid #E1E1E1"; }, function (props) { return props.type === "top" && "#FFF"; }, function (props) { return props.type === "left" && "rgba(33, 106, 154,.1)"; }, function (props) { return props.type === "top" && "1px solid #216A9A"; }, function (props) { return props.filterParsedType === "rsql" ? "400px" : "300px"; }, function (props) { return props.type === "left" ? "0px" : "110%"; }, function (props) { return props.isOnRightOfViewport ? "-310px" : props.type === "left" ? "105%" : "0"; });
 var FieldItem = styled('div')(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    padding: 0px 5px;\n    @media (max-width: 1230px){\n        width: 33% !important;\n    }\n    @media (max-width: 1150px){\n        width: 50% !important;\n    }\n    @media (max-width: 820px){\n        width: 100% !important;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"], ["\n    padding: 0px 5px;\n    @media (max-width: 1230px){\n        width: 33% !important;\n    }\n    @media (max-width: 1150px){\n        width: 50% !important;\n    }\n    @media (max-width: 820px){\n        width: 100% !important;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"])));
 var FilterContainer = styled('div')(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: flex;\n        justify-content: space-between;\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            height: ", ";\n            line-height: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            width: 150px;\n            border: .09rem solid #dbdee7;\n            max-height: 35px;\n        }\n        .filterSelectChoice__value-container{\n            max-height: 35px;\n            overflow: hidden;\n            flex-wrap: nowrap;\n        }\n        .filterSelectChoice__input{\n            input{\n                max-height: 25px !important;\n                max-height: 25px !important;\n                color: ", ";\n                margin-bottom: 0;\n            }\n        }\n        .filterSelectChoice__control--is-focused{\n\n        }\n        .filterSelectChoice__indicator-separator{\n            display: none;\n        }\n        .filterSelectChoice__single-value{\n            color: ", ";\n            font-size: 13px;\n            font-weight: 500;\n        }\n        .filterSelectChoice__option{\n            font-weight: 400;\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: flex;\n        justify-content: space-between;\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            height: ", ";\n            line-height: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            width: 150px;\n            border: .09rem solid #dbdee7;\n            max-height: 35px;\n        }\n        .filterSelectChoice__value-container{\n            max-height: 35px;\n            overflow: hidden;\n            flex-wrap: nowrap;\n        }\n        .filterSelectChoice__input{\n            input{\n                max-height: 25px !important;\n                max-height: 25px !important;\n                color: ", ";\n                margin-bottom: 0;\n            }\n        }\n        .filterSelectChoice__control--is-focused{\n\n        }\n        .filterSelectChoice__indicator-separator{\n            display: none;\n        }\n        .filterSelectChoice__single-value{\n            color: ", ";\n            font-size: 13px;\n            font-weight: 500;\n        }\n        .filterSelectChoice__option{\n            font-weight: 400;\n        }\n    }\n"])), function (props) { return props.filterParsedType === "rsql" ? "38px" : "35px"; }, function (props) { return props.filterParsedType === "rsql" ? "38px" : "35px"; }, function (props) { return props.filterParsedType === "rsql" ? "350px" : "70%"; }, function (props) { return props.darkMode ? "#bccde0" : "initial"; }, function (props) { return props.darkMode ? "#bccde0" : "#initial"; });
@@ -23522,18 +23561,17 @@ var Table = React.forwardRef(function (props, ref) {
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement("table", __assign({}, getTableProps(), { className: "table no-border" }),
             React__default.createElement("thead", { className: props.showVerticalBorders ? "" : "no-border" }, headerGroups.map(function (headerGroup, i) { return (React__default.createElement("tr", __assign({}, headerGroup.getHeaderGroupProps(), { ref: node, key: i }), headerGroup.headers.map(function (column, j) {
-                var _a, _b, _c, _d, _e;
+                var _a, _b, _c, _d, _e, _f;
                 var filter = filters.filter(function (f) { return f.idAccessor === column.id; })[0];
-                var isRight = (j >= (headerGroup.headers.length - 3));
                 return (React__default.createElement("th", __assign({}, column.getHeaderProps(), { className: "SST_header_cell", key: j }),
                     React__default.createElement("div", { className: "SST_header_container noselect", style: { justifyContent: !!column.alignment ? column.alignment : "left" } },
-                        React__default.createElement("span", __assign({ className: "SST_header_title" }, column.getHeaderProps(), { onClick: function () {
-                                if (!!SstState.sorterState[column.id]) {
-                                    toggleSorterValue(column.id, SstState.sorterState[column.id]);
-                                }
+                        React__default.createElement("span", __assign({ className: "SST_header_title " + (!!((_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]) ? "pointer" : "") }, column.getHeaderProps(), { onClick: function () {
+                                var _a;
+                                if (!!SstState.sorterState[column.id])
+                                    toggleSorterValue(column.id, (_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]);
                             } }), column.render('Header')),
-                        React__default.createElement("span", null, !!column.id && !!((_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]) && !!((_b = SstState.sorterState) === null || _b === void 0 ? void 0 : _b[column.id]["value"])
-                            ? ((_c = SstState.sorterState) === null || _c === void 0 ? void 0 : _c[column.id]["value"]) === "desc"
+                        React__default.createElement("span", null, !!column.id && !!((_b = SstState.sorterState) === null || _b === void 0 ? void 0 : _b[column.id]) && !!((_c = SstState.sorterState) === null || _c === void 0 ? void 0 : _c[column.id]["value"])
+                            ? ((_d = SstState.sorterState) === null || _d === void 0 ? void 0 : _d[column.id]["value"]) === "desc"
                                 ? React__default.createElement("i", { className: "ri-arrow-down-s-fill sorter_icon" })
                                 : React__default.createElement("i", { className: "ri-arrow-up-s-fill sorter_icon" })
                             : ''),
@@ -23541,12 +23579,14 @@ var Table = React.forwardRef(function (props, ref) {
                             React__default.createElement("i", { onClick: function () { return setOpenedFilter(openedFilter === column.id ? null : column.id); }, className: "ri-filter-line fitler_icon " + (filter.idAccessor === openedFilter ? "SST_filter_active" : "") })),
                     !!filter && filter.idAccessor === openedFilter &&
                         React__default.createElement("div", { className: "SST_header_filter_modal" },
-                            React__default.createElement(ItemFilter, { key: (_d = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) === null || _d === void 0 ? void 0 : _d.name, filter: (_e = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) !== null && _e !== void 0 ? _e : null, filterParsedType: filterParsedType, translationsProps: translationsProps, isOnRightOfViewport: j >= (headerGroup.headers.length - counterColumnToItemGoLeft), darkMode: false, onClose: function () { return setOpenedFilter(null); } }))));
+                            React__default.createElement(ItemFilter, { key: (_e = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) === null || _e === void 0 ? void 0 : _e.name, filter: (_f = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) !== null && _f !== void 0 ? _f : null, filterParsedType: filterParsedType, translationsProps: translationsProps, isOnRightOfViewport: j >= (headerGroup.headers.length - counterColumnToItemGoLeft), darkMode: false, onClose: function () { return setOpenedFilter(null); } }))));
             }))); })),
             asyncLoading ?
-                React__default.createElement("p", { style: { textAlign: "center", display: 'flex', alignItems: "center" } }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.loading) !== null && _a !== void 0 ? _a : translations.loading,
-                    " ",
-                    React__default.createElement("i", { className: "ri-loader-4-fill spinner rotate" }))
+                React__default.createElement("tbody", { style: { textAlign: "center", display: 'flex', alignItems: "center" } },
+                    React__default.createElement("tr", null,
+                        React__default.createElement("td", null, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.loading) !== null && _a !== void 0 ? _a : translations.loading,
+                            " ",
+                            React__default.createElement("i", { className: "ri-loader-4-fill spinner rotate" }))))
                 :
                     React__default.createElement("tbody", __assign({}, getTableBodyProps(), { className: props.showVerticalBorders ? "" : "no-border" }), rows.map(function (row, i) {
                         prepareRow(row);
@@ -23590,11 +23630,99 @@ var FiltersInteract = function (props) {
 };
 var templateObject_1$3, templateObject_2$1, templateObject_3$1, templateObject_4$1;
 
+var getDataBaseName = function (tableName) { return tableName.split("-")[0].toUpperCase() + "_TABLES"; };
+function getDataFromTable(tableName) {
+    return new Promise(function (resolve) {
+        var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+        var request = indexedDB.open(getDataBaseName(tableName), 1), db, tx, store;
+        request.onupgradeneeded = function (e) {
+            var db = request.result, store = db.createObjectStore("DataStore", {
+                keyPath: "tableName"
+            });
+        };
+        request.onerror = function (e) {
+            console.log('There was an error : ' + e.target);
+        };
+        request.onsuccess = function (e) {
+            db = request.result;
+            tx = db.transaction(["DataStore"], "readwrite");
+            store = tx.objectStore("DataStore");
+            db.onerror = function (e) {
+                console.log("ERROR" + e.target.error);
+            };
+            var q1 = store.get(tableName);
+            q1.onsuccess = function () {
+                return resolve(q1.result);
+            };
+            tx.oncomplete = function () { db.close(); };
+        };
+    });
+}
+function storeDataByName(data, tableName) {
+    return new Promise(function (resolve) {
+        var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+        var request = indexedDB.open(getDataBaseName(tableName), 1), db, tx, store;
+        request.onerror = function (e) {
+            console.log('There was an error : ' + e.target);
+        };
+        request.onsuccess = function (e) {
+            db = request.result;
+            tx = db.transaction(["DataStore"], "readwrite");
+            store = tx.objectStore("DataStore");
+            db.onerror = function (e) {
+                console.log("ERROR" + e.target.error);
+            };
+            var q2 = store.get(tableName);
+            q2.onsuccess = function () {
+                var table = q2.result;
+                store.put({
+                    tableName: tableName,
+                    filters: !!data.filters ? data.filters : !!(table === null || table === void 0 ? void 0 : table.filters) ? table.filters : null,
+                    sort: !!data.sort ? data.sort : !!(table === null || table === void 0 ? void 0 : table.sort) ? table.sort : null,
+                    hideColumns: !!data.hideColumns ? data.hideColumns : !!(table === null || table === void 0 ? void 0 : table.hideColumns) ? table.hideColumns : [],
+                    showVerticalBorders: data.showVerticalBorders !== undefined ? data.showVerticalBorders : (table === null || table === void 0 ? void 0 : table.showVerticalBorders) !== undefined ? table.showVerticalBorders : false,
+                    lineSpacing: !!data.lineSpacing ? data.lineSpacing : !!(table === null || table === void 0 ? void 0 : table.lineSpacing) ? table.lineSpacing : "medium",
+                });
+                resolve(null);
+            };
+            var q1 = store.get(tableName);
+            q1.onsuccess = function () {
+                return resolve(q1.result);
+            };
+            tx.oncomplete = function () { db.close(); };
+        };
+    });
+}
+function deleteKeyInDb(tableName) {
+    var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+    var request = indexedDB.open(getDataBaseName(tableName), 1), db, tx, store;
+    request.onerror = function (e) {
+        console.log('There was an error : ' + e.target);
+    };
+    request.onsuccess = function (e) {
+        db = request.result;
+        tx = db.transaction(["DataStore"], "readwrite");
+        store = tx.objectStore("DataStore");
+        var objectStoreRequest = store.delete(tableName);
+        objectStoreRequest.onsuccess = function (e) {
+            path.resolve("OK");
+        };
+        path.resolve("OK");
+    };
+}
+function getTableFilters(tableId) {
+    if (!!tableId) {
+        return getDataFromTable(tableId)
+            .then(function (res) { return res === null || res === void 0 ? void 0 : res.filters; });
+    }
+}
+
 var ColumnsSelector = function (props) {
     var _a = React.useState(props.columns.filter(function (column) { return !!column.Header && column.Header.length > 0; }).map(function (column) { return column.accessor; }).filter(function (column) { return !props.hiddenColumns.includes(column); })), checkedColumns = _a[0], setCheckedColumns = _a[1];
     var _b = React.useState(props.hiddenColumns), uncheckedColumns = _b[0], setUncheckedColumns = _b[1];
     React.useEffect(function () {
         props.onChange(uncheckedColumns);
+        storeDataByName({ hideColumns: uncheckedColumns }, props.tableId);
     }, [uncheckedColumns]);
     return (React__default.createElement(React__default.Fragment, null, props.columns.map(function (column, i) {
         if (!!column.Header && column.Header.length > 0) {
@@ -23608,31 +23736,10 @@ var ColumnsSelector = function (props) {
     })));
 };
 
-function getLineSpacing() {
-    if (!!localStorage.getItem('line-spacing-table'))
-        return localStorage.getItem('line-spacing-table');
-    else
-        return 'medium';
-}
-function saveLineSpacing(space) {
-    localStorage.setItem('line-spacing-table', space);
-}
-function getTableFilters(tableId) {
-    return !!tableId && !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId)) : {};
-}
-function registerTableFilters(tableId, filters) {
-    if (!!filters && !lodash.isEmpty(filters)) {
-        localStorage.setItem(tableId, JSON.stringify(filters));
-    }
-}
-function destroyTableFiltersStorage(tableId) {
-    localStorage.removeItem(tableId);
-}
-
 var Container = styled.div(templateObject_1$4 || (templateObject_1$4 = __makeTemplateObject(["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"], ["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"])));
 var SettingsInteractor = function (props) {
     var node = React__default.useRef();
-    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, onExportClick = props.onExportClick, darkMode = props.darkMode, tableId = props.tableId;
+    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, onExportClick = props.onExportClick, darkMode = props.darkMode, tableId = props.tableId, lineSpacing = props.lineSpacing, showVerticalBorders = props.showVerticalBorders, onShowVerticalBorderChange = props.onShowVerticalBorderChange;
     var _a = React.useState(false), open = _a[0], setOpen = _a[1];
     var handleClick = function (e) {
         if (node.current && node.current.contains(e.target)) {
@@ -23646,17 +23753,15 @@ var SettingsInteractor = function (props) {
     }, []);
     return (React__default.createElement(Container, { ref: node },
         React__default.createElement("i", { className: "ri-equalizer-line", style: { fontSize: 18, color: "#828282", cursor: "pointer" }, onClick: function () { return setOpen(!open); } }),
-        open && React__default.createElement(DropdownMenu, { columns: props.columns, hiddenColumns: props.hiddenColumns, onHiddenColumnsChange: function (e) { return props.onHiddenColumnsChange(e); }, onLineSpacingChange: function (e) { return props.onLineSpacingChange(e); }, translationsProps: translationsProps, enabledExport: enabledExport, onExportClick: onExportClick, darkMode: darkMode, tableId: tableId })));
+        open && React__default.createElement(DropdownMenu, { lineSpacing: lineSpacing, columns: props.columns, hiddenColumns: props.hiddenColumns, onHiddenColumnsChange: function (e) { return props.onHiddenColumnsChange(e); }, onLineSpacingChange: function (e) { return props.onLineSpacingChange(e); }, translationsProps: translationsProps, enabledExport: enabledExport, onExportClick: onExportClick, darkMode: darkMode, tableId: tableId, showVerticalBorders: showVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange })));
 };
 var DropdownMenu = function (props) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
-    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, onExportClick = props.onExportClick, darkMode = props.darkMode, tableId = props.tableId;
+    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, onExportClick = props.onExportClick, darkMode = props.darkMode, tableId = props.tableId, lineSpacing = props.lineSpacing, onLineSpacingChange = props.onLineSpacingChange, showVerticalBorders = props.showVerticalBorders, onShowVerticalBorderChange = props.onShowVerticalBorderChange;
     var _u = React.useState('main'), activeMenu = _u[0], setActiveMenu = _u[1];
     var _v = React.useState(null), menuHeight = _v[0], setMenuHeight = _v[1];
-    var _w = React.useState(getLineSpacing()), lineSpacing = _w[0], setLineSpacing = _w[1];
     React.useEffect(function () {
         props.onLineSpacingChange(lineSpacing);
-        saveLineSpacing(lineSpacing);
     }, [lineSpacing]);
     function calcHeight(el) {
         var height = el.offsetHeight;
@@ -23669,7 +23774,7 @@ var DropdownMenu = function (props) {
             !!props.rightIcon && React__default.createElement("span", { className: "icon-right" }, props.rightIcon)));
     }
     var clearCache = function () {
-        destroyTableFiltersStorage(props.tableId);
+        deleteKeyInDb(props.tableId);
         location.reload();
     };
     return (React__default.createElement("div", { className: "table-settings-dropdown " + (darkMode ? "dark" : ""), style: { height: menuHeight } },
@@ -23687,22 +23792,25 @@ var DropdownMenu = function (props) {
         React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "columns", unmountOnExit: true, timeout: 200, classNames: "menu-secondary", onEnter: calcHeight },
             React__default.createElement("div", { className: "menu" },
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-arrow-left-s-line" }), goToMenu: "main" }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _j === void 0 ? void 0 : _j.back) !== null && _k !== void 0 ? _k : translations.settings.back),
-                React__default.createElement(ColumnsSelector, { columns: props.columns, onChange: function (e) { return props.onHiddenColumnsChange(e); }, hiddenColumns: props.hiddenColumns }))),
+                React__default.createElement(ColumnsSelector, { columns: props.columns, onChange: function (e) { return props.onHiddenColumnsChange(e); }, hiddenColumns: props.hiddenColumns, tableId: tableId }))),
         React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "lineSpacing", unmountOnExit: true, timeout: 200, classNames: "menu-secondary", onEnter: calcHeight },
             React__default.createElement("div", { className: "menu" },
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-arrow-left-s-line" }), goToMenu: "main" }, (_m = (_l = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _l === void 0 ? void 0 : _l.back) !== null && _m !== void 0 ? _m : translations.settings.back),
                 React__default.createElement("div", { style: { paddingTop: 10 } }),
                 React__default.createElement("label", { className: "radio-container", key: "settings_radio_high" },
-                    React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_high", name: "radio_type_settings_radio_high", value: 'high', checked: lineSpacing === 'high', onChange: function () { return setLineSpacing('high'); } }),
+                    React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_high", name: "radio_type_settings_radio_high", value: 'high', checked: lineSpacing === 'high', onChange: function () { return onLineSpacingChange('high'); } }),
                     React__default.createElement("span", null, (_p = (_o = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _o === void 0 ? void 0 : _o.highHeight) !== null && _p !== void 0 ? _p : translations.settings.highHeight)),
                 React__default.createElement("div", { style: { paddingTop: 5 } }),
                 React__default.createElement("label", { className: "radio-container", key: "settings_radio_medium" },
-                    React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_medium", name: "radio_type_settings_radio_medium", value: 'medium', checked: lineSpacing === 'medium', onChange: function () { return setLineSpacing('medium'); } }),
+                    React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_medium", name: "radio_type_settings_radio_medium", value: 'medium', checked: lineSpacing === 'medium', onChange: function () { return onLineSpacingChange('medium'); } }),
                     React__default.createElement("span", null, (_r = (_q = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _q === void 0 ? void 0 : _q.mediumHeight) !== null && _r !== void 0 ? _r : translations.settings.mediumHeight)),
                 React__default.createElement("div", { style: { paddingTop: 5 } }),
                 React__default.createElement("label", { className: "radio-container", key: "settings_radio_small" },
-                    React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_small", name: "radio_type_settings_radio_small", value: 'small', checked: lineSpacing === 'small', onChange: function () { return setLineSpacing('small'); } }),
+                    React__default.createElement("input", { type: "radio", id: "radio_type_settings_radio_small", name: "radio_type_settings_radio_small", value: 'small', checked: lineSpacing === 'small', onChange: function () { return onLineSpacingChange('small'); } }),
                     React__default.createElement("span", null, (_t = (_s = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _s === void 0 ? void 0 : _s.smallHeight) !== null && _t !== void 0 ? _t : translations.settings.smallHeight)),
+                React__default.createElement("div", { className: "check-group", style: { paddingTop: 10, paddingLeft: 10 } },
+                    React__default.createElement("input", { type: "checkbox", name: "SST_Vertical_Border_Checkbox", id: "SST_Vertical_Border_Checkbox", onChange: function () { return onShowVerticalBorderChange(!showVerticalBorders); }, checked: showVerticalBorders }),
+                    React__default.createElement("label", { htmlFor: "SST_Vertical_Border_Checkbox" }, "Afficher bordures verticales")),
                 React__default.createElement("div", { style: { paddingTop: 10 } })))));
 };
 var templateObject_1$4;
@@ -23988,36 +24096,45 @@ function getOptionsByType$1(type) {
     }
 }
 function createDefaultFilter(filtersList, defaultFilters, tableId, filtersParsedType) {
-    var savedFilters = getTableFilters(tableId);
-    var concatFilters = {};
-    var filters = filtersParsedType === "rsql"
-        ? parseFilterRSQL(savedFilters)
-        : parseFilterFuzzy(savedFilters);
-    if ((filtersParsedType === "fuzzy" && !(!tableId || (!filters && lodash.isEmpty(filters)))) || (filtersParsedType === "rsql" && (!tableId || (!filters && lodash.isEmpty(filters))))) {
-        var _initialFilters_1 = {};
-        filtersList.forEach(function (filter) {
-            _initialFilters_1[filter.name] = {
-                type: filter.type,
-                label: filter.label,
-                parsedValue: filter.parsedValue,
-                main: {
-                    option: getOptionsByType$1(filter.type),
-                    value: filter.type === "booleanRadio" ?
-                        filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) :
-                        filter.type === "geoloc" ? { lat: 0, lng: 0, display: "" } : ""
-                },
-                optionals: [],
-            };
+    return __awaiter(this, void 0, void 0, function () {
+        var savedFilters, concatFilters, filters, _initialFilters_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4, getTableFilters(tableId)];
+                case 1:
+                    savedFilters = _a.sent();
+                    concatFilters = {};
+                    filters = filtersParsedType === "rsql"
+                        ? parseFilterRSQL(savedFilters)
+                        : parseFilterFuzzy(savedFilters);
+                    if ((filtersParsedType === "fuzzy" && !(!tableId || (!filters && lodash.isEmpty(filters)))) || (filtersParsedType === "rsql" && (!tableId || (!filters && lodash.isEmpty(filters))))) {
+                        _initialFilters_1 = {};
+                        filtersList.forEach(function (filter) {
+                            _initialFilters_1[filter.name] = {
+                                type: filter.type,
+                                label: filter.label,
+                                parsedValue: filter.parsedValue,
+                                main: {
+                                    option: getOptionsByType$1(filter.type),
+                                    value: filter.type === "booleanRadio" ?
+                                        filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) :
+                                        filter.type === "geoloc" ? { lat: 0, lng: 0, display: "" } : ""
+                                },
+                                optionals: [],
+                            };
+                        });
+                        concatFilters = __assign(__assign({}, _initialFilters_1), defaultFilters);
+                    }
+                    else {
+                        if (!!defaultFilters)
+                            concatFilters = defaultFilters;
+                        if (!!tableId && !lodash.isEmpty(savedFilters))
+                            concatFilters = __assign(__assign({}, defaultFilters), savedFilters);
+                    }
+                    return [2, concatFilters];
+            }
         });
-        concatFilters = __assign(__assign({}, _initialFilters_1), defaultFilters);
-    }
-    else {
-        if (!!defaultFilters)
-            concatFilters = defaultFilters;
-        if (!!tableId && !lodash.isEmpty(savedFilters))
-            concatFilters = __assign(__assign({}, defaultFilters), savedFilters);
-    }
-    return concatFilters;
+    });
 }
 function cleanFilterOnlyWithLocked(filtersList, defaultFilters, lockedFilters) {
     var concatFilters = {};
@@ -24028,7 +24145,7 @@ function cleanFilterOnlyWithLocked(filtersList, defaultFilters, lockedFilters) {
         _initialFilters[filter.name] = {
             type: filter.type,
             label: filter.label,
-            parsedValue: '',
+            parsedValue: filter.parsedValue,
             main: {
                 option: getOptionsByType$1(filter.type),
                 value: filter.type === "booleanRadio" ?
@@ -24048,50 +24165,95 @@ function cleanFilterOnlyWithLocked(filtersList, defaultFilters, lockedFilters) {
     }
     return concatFilters = _initialFilters;
 }
-function createDefaultSorter(columns) {
-    var _initialSorter = {};
-    columns.forEach(function (column) {
-        if (!!column.sorterAttribut) {
-            _initialSorter[column.accessor] = {
-                attribut: column.sorterAttribut,
-                value: undefined
-            };
+function createDefaultSorter(tableId, columns) {
+    return getDataFromTable(tableId)
+        .then(function (res) {
+        if (!!(res === null || res === void 0 ? void 0 : res.sort)) {
+            return res.sort;
+        }
+        else {
+            var _initialSorter_1 = {};
+            columns.forEach(function (column) {
+                if (!!(column === null || column === void 0 ? void 0 : column.sorterAttribut)) {
+                    _initialSorter_1[column.accessor] = {
+                        attribut: column.sorterAttribut,
+                        value: undefined
+                    };
+                }
+            });
+            return _initialSorter_1;
         }
     });
-    return _initialSorter;
+}
+function getHiddenColumnsAndStyles(tableId) {
+    return getDataFromTable(tableId)
+        .then(function (res) { return ({
+        hideColumns: res === null || res === void 0 ? void 0 : res.hideColumns,
+        showVerticalBorders: res === null || res === void 0 ? void 0 : res.showVerticalBorders,
+        lineSpacing: res === null || res === void 0 ? void 0 : res.lineSpacing
+    }); });
+}
+function createDefaultProps(props) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _filters, _sorts, _columnsAndStyles;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4, createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filtersParsedType)];
+                case 1:
+                    _filters = _a.sent();
+                    return [4, createDefaultSorter(props.tableId, props.columns)];
+                case 2:
+                    _sorts = _a.sent();
+                    return [4, getHiddenColumnsAndStyles(props.tableId)];
+                case 3:
+                    _columnsAndStyles = _a.sent();
+                    return [2, {
+                            filters: _filters,
+                            sort: _sorts,
+                            hideColumns: _columnsAndStyles.hideColumns,
+                            showVerticalBorders: _columnsAndStyles.showVerticalBorders,
+                            lineSpacing: _columnsAndStyles.lineSpacing
+                        }];
+            }
+        });
+    });
 }
 
 FiltersContext.displayName = "ServerSideTableContext";
 var ServerSideTable = React.forwardRef(function (props, ref) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
     var translationsProps = props.translationsProps;
-    var _d = React.useState(!!props.tableId && !!props.defaultFilters ? lodash.cloneDeep(props.defaultFilters) :
+    var _m = React.useState(!!props.tableId && !!((_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters) ? lodash.cloneDeep(props.defaultProps.filters) :
         !!props.tableId ? getTableFilters(props.tableId) :
-            !!props.defaultFilters ? lodash.cloneDeep(props.defaultFilters) : {}), filtersState = _d[0], setFiltersState = _d[1];
-    var _e = React.useState(!!props.tableId && !!props.defaultFilters ? lodash.cloneDeep(props.defaultFilters) :
+            !!((_b = props.defaultProps) === null || _b === void 0 ? void 0 : _b.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), filtersState = _m[0], setFiltersState = _m[1];
+    var _o = React.useState(!!props.tableId && !!props.defaultProps ? lodash.cloneDeep(props.defaultProps.filters) :
         !!props.tableId ? getTableFilters(props.tableId) :
-            !!props.defaultFilters ? lodash.cloneDeep(props.defaultFilters) : {}), submitFiltersState = _e[0], setSubmitFilterState = _e[1];
-    var _f = React.useState(null), sorterState = _f[0], setSorterState = _f[1];
-    var _g = React.useState(""), submitSorter = _g[0], setSubmitSorter = _g[1];
-    var _h = React.useState(0), offset = _h[0], setOffset = _h[1];
-    var _j = React.useState(props.perPageItems ? props.perPageItems : 10), perPage = _j[0], setPerPage = _j[1];
-    var _k = React.useState(getLineSpacing()), lineSpacing = _k[0], setLineSpacing = _k[1];
-    var _l = React.useState([]), hiddenColumns = _l[0], setHiddenColumns = _l[1];
-    var _m = React.useState(null), parsedFilters = _m[0], setParsedFilters = _m[1];
+            !!((_c = props.defaultProps) === null || _c === void 0 ? void 0 : _c.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), submitFiltersState = _o[0], setSubmitFilterState = _o[1];
+    var _p = React.useState(!!((_d = props.defaultProps) === null || _d === void 0 ? void 0 : _d.sort) ? props.defaultProps.sort : null), sorterState = _p[0], setSorterState = _p[1];
+    var _q = React.useState(!!((_e = props.defaultProps) === null || _e === void 0 ? void 0 : _e.sort) ? Object.values(props.defaultProps.sort)
+        .filter(function (sorter) { return !!sorter.value; })
+        .map(function (sorter) { return sorter.attribut + ',' + sorter.value; }) : []), submitSorter = _q[0], setSubmitSorter = _q[1];
+    var _r = React.useState(0), offset = _r[0], setOffset = _r[1];
+    var _s = React.useState(props.perPageItems ? props.perPageItems : 10), perPage = _s[0], setPerPage = _s[1];
+    var _t = React.useState(null), parsedFilters = _t[0], setParsedFilters = _t[1];
     var tableRef = React.useRef(null);
-    var _o = React.useState(null), data = _o[0], setData = _o[1];
-    var _p = React.useState(), lockedFilters = _p[0], setLockedFiltersTest = _p[1];
-    var _q = React.useState(false), loading = _q[0], setLoading = _q[1];
+    var _u = React.useState(null), data = _u[0], setData = _u[1];
+    var _v = React.useState(), lockedFilters = _v[0], setLockedFiltersTest = _v[1];
+    var _w = React.useState(false), loading = _w[0], setLoading = _w[1];
+    var _x = React.useState(false), haveSelectedRows = _x[0], setHaveSelectedRows = _x[1];
+    var _y = React.useState(!!((_f = props.defaultProps) === null || _f === void 0 ? void 0 : _f.hideColumns) ? props.defaultProps.hideColumns : []), hiddenColumns = _y[0], setHiddenColumns = _y[1];
+    var _z = React.useState(!!((_g = props.defaultProps) === null || _g === void 0 ? void 0 : _g.lineSpacing) ? props.defaultProps.lineSpacing : "medium"), lineSpacing = _z[0], setLineSpacing = _z[1];
+    var _0 = React.useState(!!props.showVerticalBorders ? true : !!((_h = props.defaultProps) === null || _h === void 0 ? void 0 : _h.showVerticalBorders) ? props.defaultProps.showVerticalBorders : false), showVerticalBorders = _0[0], setShowVerticalBorders = _0[1];
     React.useEffect(function () {
-        if (!props.defaultFilters && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0) {
-            setFiltersState(createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filterParsedType));
+        var _a;
+        if (!props.defaultProps && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0) {
+            createDefaultFilter(props.filtersList, (_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters, props.tableId, props.filterParsedType).then(setFiltersState);
         }
-        setSorterState(createDefaultSorter(props.columns));
     }, [props.filtersList]);
     React.useEffect(function () {
-        if (!!props.defaultFilters)
-            setLockedFiltersTest(Object.keys(props === null || props === void 0 ? void 0 : props.defaultFilters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultFilters[f]["locked"]; }).map(function (v) { return v; }));
-    }, [props.defaultFilters]);
+        if (!!props.defaultProps)
+            setLockedFiltersTest(Object.keys(props === null || props === void 0 ? void 0 : props.defaultProps.filters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultProps.filters[f]["locked"]; }).map(function (v) { return v; }));
+    }, [props.defaultProps]);
     var updateDataOnChange = function (requestParam) {
         setLoading(true);
         props.onDataChange(requestParam)
@@ -24126,7 +24288,8 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         if (isInitialMount.current)
             isInitialMount.current = false;
         else if (!!submitFiltersState) {
-            registerTableFilters(props.tableId, submitFiltersState);
+            if (!!submitFiltersState && !lodash.isEmpty(submitFiltersState))
+                storeDataByName({ filters: submitFiltersState }, props.tableId);
             var filters = props.filterParsedType === "rsql"
                 ? parseFilterRSQL(submitFiltersState)
                 : parseFilterFuzzy(submitFiltersState);
@@ -24160,33 +24323,36 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         return;
     };
     var onClearAll = function () {
-        var _initialFilters = cleanFilterOnlyWithLocked(props.filtersList, props.defaultFilters, lockedFilters);
+        var _initialFilters = cleanFilterOnlyWithLocked(props.filtersList, props.defaultProps.filters, lockedFilters);
         setFiltersState(lodash.cloneDeep(_initialFilters));
         setSubmitFilterState(!!lockedFilters ? lodash.cloneDeep(_initialFilters) : {});
-        destroyTableFiltersStorage(props.tableId);
+        deleteKeyInDb(props.tableId);
         return;
+    };
+    var onSortChange = function (e) {
+        var _test = Object.values(e)
+            .filter(function (sorter) { return !!sorter.value; })
+            .map(function (sorter) { return sorter.attribut + ',' + sorter.value; });
+        setSorterState(e);
+        setSubmitSorter(_test);
+        storeDataByName({ sort: e }, props.tableId);
+        updateDataOnChange({ offset: offset, perPage: perPage, filters: parsedFilters, sorter: _test });
     };
     var onHeaderClick = function (e) {
     };
-    React.useEffect(function () {
-        if (!!sorterState) {
-            setSubmitSorter(Object.values(sorterState)
-                .filter(function (sorter) { return !!sorter.value; })
-                .map(function (sorter) { return sorter.attribut + ',' + sorter.value; })
-                .join(','));
-        }
-    }, [sorterState]);
-    React.useEffect(function () {
-        if (!!sorterState && !!submitSorter) {
-            updateDataOnChange({ offset: offset, perPage: perPage, filters: parsedFilters, sorter: submitSorter });
-        }
-    }, [submitSorter]);
-    var _r = React.useState(false), haveSelectedRows = _r[0], setHaveSelectedRows = _r[1];
+    var onLineSpacingChange = function (e) {
+        setLineSpacing(e);
+        storeDataByName({ lineSpacing: e }, props.tableId);
+    };
+    var onShowVerticalBorderChange = function (e) {
+        setShowVerticalBorders(e);
+        storeDataByName({ showVerticalBorders: e }, props.tableId);
+    };
     return (React__default.createElement(FiltersContext.Provider, { value: {
             filtersState: filtersState,
             submitFiltersState: submitFiltersState,
             sorterState: sorterState,
-            changeSort: setSorterState,
+            changeSort: onSortChange,
             changeMainFilter: changeMainFilter,
             changeOptionalsFilters: changeOptionalsFilters,
             onClearAll: onClearAll,
@@ -24198,25 +24364,25 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                     React__default.createElement("div", { className: "SST_HEADER" },
                         React__default.createElement("div", { className: "SST_actions_buttons" },
                             props.showAddBtn &&
-                                React__default.createElement("button", { className: "btn bg-plain-primary sst_main_button", onClick: props.onAddClick }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.add) !== null && _a !== void 0 ? _a : translations.add),
+                                React__default.createElement("button", { className: "btn bg-plain-primary sst_main_button", onClick: props.onAddClick }, (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.add) !== null && _j !== void 0 ? _j : translations.add),
                             !!props.optionnalsHeaderContent && props.optionnalsHeaderContent),
                         React__default.createElement("div", { style: { display: 'flex', alignItems: 'center', width: "100%", justifyContent: "space-between", flexDirection: "row-reverse" }, className: "table-actions-container" },
                             React__default.createElement("div", { className: "icons" }, !reactDeviceDetect.isMobile &&
-                                React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: function (e) { return setLineSpacing(e); }, translationsProps: translationsProps, enabledExport: props.enabledExport, onExportClick: props.onExportClick, darkMode: props.darkMode, tableId: props.tableId })),
+                                React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: onLineSpacingChange, translationsProps: translationsProps, enabledExport: props.enabledExport, onExportClick: props.onExportClick, darkMode: props.darkMode, tableId: props.tableId, lineSpacing: lineSpacing, showVerticalBorders: showVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange })),
                             props.isFilter && !!props.filtersList && props.filtersList.length > 0 &&
                                 React__default.createElement(React__default.Fragment, null,
-                                    React__default.createElement(FiltersContainer, { darkMode: props.darkMode, className: ((_b = props.filtersContainerClassName) !== null && _b !== void 0 ? _b : "") + " SST_filters_container" },
+                                    React__default.createElement(FiltersContainer, { darkMode: props.darkMode, className: ((_k = props.filtersContainerClassName) !== null && _k !== void 0 ? _k : "") + " SST_filters_container" },
                                         React__default.createElement(FiltersViewers, { translationsProps: translationsProps, darkMode: props.darkMode, lockedFilters: lockedFilters }),
                                         reactDeviceDetect.isMobile &&
                                             React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, darkMode: props.darkMode, isMobile: reactDeviceDetect.isMobile }))))),
                 React__default.createElement(React__default.Fragment, null,
                     !!props.selectableRows && !!props.selectedRowsAction && haveSelectedRows &&
                         React__default.createElement("div", { className: "SST_selected_rows_buttons" }, props.selectedRowsAction),
-                    React__default.createElement(Table, { ref: tableRef, data: !data ? [] : data.content, clickableHeader: onHeaderClick, columns: reactDeviceDetect.isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns, filters: props.filtersList, filterParsedType: props.filterParsedType, translationsProps: translationsProps, selectableRows: props.selectableRows, setHaveSelectedRows: setHaveSelectedRows, showVerticalBorders: props.showVerticalBorders, asyncLoading: loading, counterColumnToItemGoLeft: props.counterColumnToItemGoLeft })),
+                    React__default.createElement(Table, { ref: tableRef, data: !data ? [] : data.content, clickableHeader: onHeaderClick, columns: reactDeviceDetect.isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns, filters: props.filtersList, filterParsedType: props.filterParsedType, translationsProps: translationsProps, selectableRows: props.selectableRows, setHaveSelectedRows: setHaveSelectedRows, showVerticalBorders: showVerticalBorders, asyncLoading: loading, counterColumnToItemGoLeft: props.counterColumnToItemGoLeft })),
                 React__default.createElement("div", { className: "footerTable" },
                     React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement("i", { className: "ri-arrow-left-s-line", style: { transform: "translateY(2px)" } }), nextLabel: React__default.createElement("i", { className: "ri-arrow-right-s-line", style: { transform: "translateY(2px)" } }), breakLabel: "...", breakClassName: "break-me", pageCount: data === null || data === void 0 ? void 0 : data.totalPages, marginPagesDisplayed: 2, pageRangeDisplayed: 2, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
                     React__default.createElement(PerPageContainer, null,
-                        React__default.createElement("label", { htmlFor: "perPageSelect" }, (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.linePerPage) !== null && _c !== void 0 ? _c : translations.linePerPage),
+                        React__default.createElement("label", { htmlFor: "perPageSelect" }, (_l = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.linePerPage) !== null && _l !== void 0 ? _l : translations.linePerPage),
                         React__default.createElement("select", { name: "perPageSelect", value: perPage, onChange: function (e) { return setPerPage(parseInt(e.target.value)); }, style: { background: "#fff", width: 30 } },
                             React__default.createElement("option", { value: "5" }, "5"),
                             React__default.createElement("option", { value: "10" }, "10"),
@@ -24228,10 +24394,11 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
 var useSST = function () {
     var filtersState = React.useContext(FiltersContext);
     if (!filtersState) {
-        throw Error('The `useSST` hook must be called from a descendent of the `MithraProvider`.');
+        throw Error('The `useSST` hook must be called from a descendent of the `SSTProvider`.');
     }
     return {
         createFilters: createDefaultFilter,
+        createDefaultProps: createDefaultProps
     };
 };
 

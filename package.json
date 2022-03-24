@@ -1,6 +1,6 @@
 {
   "name": "@optalp/react-server-side-table",
-  "version": "1.8.301",
+  "version": "1.8.31",
   "description": "ServerSideTable React Component",
   "author": "ovieokeh",
   "license": "Apache-2.0",
@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "start": "rollup -c -w"
+    "start": "rollup -c -w",
+    "copy-typescript-definitions": "copyfiles -u 1 \"src/**/*.d.ts\" dist"
   },
   "dependencies": {
     "@optalp/react-optalp-pantheon": "^0.2.73",
@@ -44,6 +45,7 @@
     "@types/react-dom": "^16.9.12",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
+    "copyfiles": "^2.4.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "rollup": "^1.32.1",
@@ -59,5 +61,5 @@
     "typescript",
     "npm"
   ],
-  "types": "./src/types/main.d.ts"
+  "types": "./src/types/components-props.d.ts"
 }

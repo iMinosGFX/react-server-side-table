@@ -9,14 +9,15 @@ import FiltersViewers from './FiltersViewers';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
 import FiltersContext from './context/filterscontext';
-import { getLineSpacing, registerTableFilters, destroyTableFiltersStorage, getTableFilters } from './helpers/SSTlocalStorageManagement';
+import { getTableFilters } from './helpers/localDbManagement';
 import {translations} from "./assets/translations"
 import { isMobile } from 'react-device-detect';
 import { TableHandler } from './Table';
-import { GPaginationObject } from './types/entities';
+import { GPaginationObject, LineSpacing } from './types/entities';
 import { DataRequestParam, DefaultFiltersOptions, FilterStateItem, SorterRecord } from './types/entities';
-import { createDefaultFilter, cleanFilterOnlyWithLocked, createDefaultSorter } from './helpers/createDefaultFilters';
+import { createDefaultFilter, cleanFilterOnlyWithLocked } from './helpers/createDefaultFilters';
 import { SSTHandler, SSTProps } from './types/components-props';
+import { deleteKeyInDb, storeDataByName } from './helpers/localDbManagement';
 
 FiltersContext.displayName = "ServerSideTableContext";
 
@@ -24,35 +25,43 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 
     const {translationsProps} = props     
 
-    const [filtersState, setFiltersState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) : 
+    const [filtersState, setFiltersState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : 
                                                                     !!props.tableId ? getTableFilters(props.tableId) : 
-                                                                    !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) : {})
-    const [submitFiltersState, setSubmitFilterState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) :
+                                                                    !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : {})
+    const [submitFiltersState, setSubmitFilterState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultProps ? _.cloneDeep(props.defaultProps.filters) :
                                                                     !!props.tableId ? getTableFilters(props.tableId)  : 
-                                                                    !!props.defaultFilters ? _.cloneDeep(props.defaultFilters) : {})
-    const [sorterState, setSorterState] = useState<SorterRecord>(null)
-    const [submitSorter, setSubmitSorter] = useState<string>("")
-	const [offset, setOffset] = useState<number>(0);
+                                                                    !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : {})
+
+                                                                    
+    const [sorterState, setSorterState] = useState<SorterRecord>(!!props.defaultProps?.sort ? props.defaultProps.sort : null )
+    const [submitSorter, setSubmitSorter] = useState<string[]>(!!props.defaultProps?.sort ? Object.values(props.defaultProps.sort)
+                                                                                                    .filter(sorter => !!sorter.value)
+                                                                                                    .map(sorter => sorter.attribut + ',' + sorter.value) : [])
+	
+    
+    const [offset, setOffset] = useState<number>(0);
     const [perPage, setPerPage] = useState<number>(props.perPageItems ? props.perPageItems : 10);
-    const [lineSpacing, setLineSpacing] = useState<string>(getLineSpacing())
-    const [hiddenColumns, setHiddenColumns] = useState<string[]>([])
     const [parsedFilters, setParsedFilters] = useState<any>(null)
     const tableRef = useRef<TableHandler>(null)
     const [data, setData] = useState<GPaginationObject<any>>(null)
     const [lockedFilters, setLockedFiltersTest] = useState<string[]>()
     const [loading, setLoading] = useState<boolean>(false)
+    const [haveSelectedRows, setHaveSelectedRows] = useState<boolean>(false)
+    const [hiddenColumns, setHiddenColumns] = useState<string[]>(!!props.defaultProps?.hideColumns ? props.defaultProps.hideColumns : [])
+    const [lineSpacing, setLineSpacing] = useState<LineSpacing>(!!props.defaultProps?.lineSpacing ? props.defaultProps.lineSpacing : "medium")
+    const [showVerticalBorders, setShowVerticalBorders] = useState<boolean>(!!props.showVerticalBorders ? true : !!props.defaultProps?.showVerticalBorders ? props.defaultProps.showVerticalBorders : false)
+
 
     useEffect(() => {
-        if(!props.defaultFilters && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
-            setFiltersState(createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filterParsedType))
+        if(!props.defaultProps && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
+            createDefaultFilter(props.filtersList, props.defaultProps?.filters, props.tableId, props.filterParsedType).then(setFiltersState)
         }
-        setSorterState(createDefaultSorter(props.columns))
     }, [props.filtersList])
 
     useEffect(() => {
-        if(!!props.defaultFilters)
-            setLockedFiltersTest(Object.keys(props?.defaultFilters).filter(f => props?.defaultFilters[f]["locked"]).map(v => v))
-    }, [props.defaultFilters])
+        if(!!props.defaultProps)
+            setLockedFiltersTest(Object.keys(props?.defaultProps.filters).filter(f => props?.defaultProps.filters[f]["locked"]).map(v => v))
+    }, [props.defaultProps])
 
     const updateDataOnChange = (requestParam: DataRequestParam) => {
         setLoading(true)
@@ -94,7 +103,8 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
             isInitialMount.current = false
         else if(!!submitFiltersState){
             //Filter can be a string query or object with mulitple properties inside
-            registerTableFilters(props.tableId, submitFiltersState)
+            if(!!submitFiltersState && !_.isEmpty(submitFiltersState))
+                storeDataByName({filters: submitFiltersState}, props.tableId)
             let filters = props.filterParsedType === "rsql" 
             ? parseFilterRSQL(submitFiltersState)
             : parseFilterFuzzy(submitFiltersState)
@@ -111,6 +121,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         // setFilters(filters)
         setParsedFilters(filters)
         updateDataOnChange({offset,perPage,filters,sorter: submitSorter})
+
     }
     
     const changeMainFilter = (name: string, content: {option:DefaultFiltersOptions, value:string}) => {
@@ -138,42 +149,44 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
     }
 
     const onClearAll = () => {
-        let _initialFilters = cleanFilterOnlyWithLocked(props.filtersList, props.defaultFilters, lockedFilters)
+        let _initialFilters = cleanFilterOnlyWithLocked(props.filtersList, props.defaultProps.filters, lockedFilters)
         setFiltersState(_.cloneDeep(_initialFilters))
         setSubmitFilterState(!!lockedFilters ? _.cloneDeep(_initialFilters) : {})
-        destroyTableFiltersStorage(props.tableId)
+        deleteKeyInDb(props.tableId)
         return;
+    }
+
+    const onSortChange = (e: SorterRecord) => {
+        let _test = Object.values(e)
+            .filter(sorter => !!sorter.value)
+            .map(sorter => sorter.attribut + ',' + sorter.value)
+        setSorterState(e)
+        setSubmitSorter(_test)
+
+        storeDataByName({sort: e}, props.tableId)
+        updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: _test})
     }
 
     const onHeaderClick = (e: any) => {
         //DO SOMETHING ?
     };
 
-    useEffect(() => {
-        if(!!sorterState){
-            setSubmitSorter(
-                Object.values(sorterState)
-                .filter(sorter => !!sorter.value)
-                .map(sorter => sorter.attribut + ',' + sorter.value)
-                .join(',')
-            )
-        }
-    },[sorterState])
+    const onLineSpacingChange = (e: LineSpacing) => {
+        setLineSpacing(e)
+        storeDataByName({lineSpacing: e}, props.tableId)
+    }
 
-    useEffect(() => {
-        if(!!sorterState && !!submitSorter){
-            updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
-        }
-    }, [submitSorter])
-
-    const [haveSelectedRows, setHaveSelectedRows] = useState<boolean>(false)
+    const onShowVerticalBorderChange = (e: boolean) => {
+        setShowVerticalBorders(e)
+        storeDataByName({showVerticalBorders: e}, props.tableId)
+    }
 
     return(
         <FiltersContext.Provider value={{
             filtersState: filtersState,
             submitFiltersState: submitFiltersState,
             sorterState: sorterState,
-            changeSort: setSorterState,
+            changeSort: onSortChange,
             changeMainFilter: changeMainFilter,
             changeOptionalsFilters: changeOptionalsFilters,
             onClearAll: onClearAll,
@@ -197,12 +210,15 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                                             columns={props.columns}
                                             hiddenColumns={hiddenColumns}
                                             onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
-                                            onLineSpacingChange={e => setLineSpacing(e)}
+                                            onLineSpacingChange={onLineSpacingChange}
                                             translationsProps={translationsProps}
                                             enabledExport={props.enabledExport}
                                             onExportClick={props.onExportClick}
                                             darkMode={props.darkMode}
-                                            tableId={props.tableId}/>
+                                            tableId={props.tableId}
+                                            lineSpacing={lineSpacing}
+                                            showVerticalBorders={showVerticalBorders}
+                                            onShowVerticalBorderChange={onShowVerticalBorderChange}/>
                                     }
                                 </div>
                                 {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
@@ -242,7 +258,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                             translationsProps={translationsProps}
                             selectableRows={props.selectableRows}
                             setHaveSelectedRows={setHaveSelectedRows}
-                            showVerticalBorders={props.showVerticalBorders}
+                            showVerticalBorders={showVerticalBorders}
                             asyncLoading={loading}
                             counterColumnToItemGoLeft={props.counterColumnToItemGoLeft}/>
                         </>

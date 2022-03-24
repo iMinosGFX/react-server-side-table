@@ -1,7 +1,3 @@
-declare type Props = {
-    columns: any[];
-    hiddenColumns: string[];
-    onChange(e: string[]): void;
-};
-declare const ColumnsSelector: (props: Props) => JSX.Element;
+import { ColumnsSelectorProps } from './types/components-props';
+declare const ColumnsSelector: (props: ColumnsSelectorProps) => JSX.Element;
 export default ColumnsSelector;
