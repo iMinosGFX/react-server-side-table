@@ -134,7 +134,7 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
     /**
      * useRef pour remove sidebar info au clic exterieur
      */
-         const handleClick = e => {
+      const handleClick = e => {
           //@ts-ignore
           if (node.current && node.current.contains(e.target)) {
               return;

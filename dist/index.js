@@ -38,7 +38,6 @@ var framerMotion = _interopDefault(require('framer-motion'));
 var reactErrorBoundary = _interopDefault(require('react-error-boundary'));
 var moment = _interopDefault(require('moment'));
 var reactTransitionGroup = require('react-transition-group');
-var path = require('path');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -76,44 +75,6 @@ function __rest(s, e) {
                 t[p[i]] = s[p[i]];
         }
     return t;
-}
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
 }
 
 function __spreadArray(to, from) {
@@ -21965,7 +21926,7 @@ var translations = {
         filterType: "Affichage des filtres",
         filterList: "Liste",
         filterField: "Champs",
-        clearCache: "Vider le cache"
+        clearCache: "Réinitialiser tableau"
     }
 };
 
@@ -22026,7 +21987,7 @@ var TextFilter = function (props) {
                         : lodash.find(options, { value: filtersState.filtersState[filter.name]["optionals"][index].option }), onChange: function (e) { return handleSelectChange(e); }, classNamePrefix: "filterSelectChoice" })
                 :
                     React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _j === void 0 ? void 0 : _j.contain) !== null && _k !== void 0 ? _k : translations.filtersViewer.contain),
-            React__default.createElement("input", { name: filter.name, type: "text", value: index === "main"
+            React__default.createElement("input", { autoFocus: true, name: filter.name, type: "text", value: index === "main"
                     ? filtersState.filtersState[filter.name]["main"].value
                     : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
 };
@@ -22077,7 +22038,7 @@ var TextFilter$1 = function (props) {
                         : lodash.find(options, { value: filtersState.filtersState[filter.name]["optionals"][index].option }), onChange: function (e) { return handleSelectChange(e); }, classNamePrefix: "filterSelectChoice" })
                 :
                     React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _j === void 0 ? void 0 : _j.equal) !== null && _k !== void 0 ? _k : translations.filtersViewer.equal),
-            React__default.createElement("input", { name: filter.name, type: "number", value: index === "main"
+            React__default.createElement("input", { autoFocus: true, name: filter.name, type: "number", value: index === "main"
                     ? filtersState.filtersState[filter.name]["main"].value
                     : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
 };
@@ -23333,7 +23294,7 @@ var DateFilter = function (props) {
                         : lodash.find(options, { value: filtersState.filtersState[filter.name]["optionals"][index].option }), onChange: function (e) { return handleSelectChange(e); }, classNamePrefix: "filterSelectChoice" })
                 :
                     React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.atDay) !== null && _h !== void 0 ? _h : translations.filtersViewer.atDay),
-            React__default.createElement("input", { name: filter.name, type: "date", value: index === "main"
+            React__default.createElement("input", { autoFocus: true, name: filter.name, type: "date", value: index === "main"
                     ? filtersState.filtersState[filter.name]["main"].value
                     : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
 };
@@ -23630,91 +23591,26 @@ var FiltersInteract = function (props) {
 };
 var templateObject_1$3, templateObject_2$1, templateObject_3$1, templateObject_4$1;
 
-var getDataBaseName = function (tableName) { return tableName.split("-")[0].toUpperCase() + "_TABLES"; };
-function getDataFromTable(tableName) {
-    return new Promise(function (resolve) {
-        var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
-        var request = indexedDB.open(getDataBaseName(tableName), 1), db, tx, store;
-        request.onupgradeneeded = function (e) {
-            var db = request.result, store = db.createObjectStore("DataStore", {
-                keyPath: "tableName"
-            });
-        };
-        request.onerror = function (e) {
-            console.log('There was an error : ' + e.target);
-        };
-        request.onsuccess = function (e) {
-            db = request.result;
-            tx = db.transaction(["DataStore"], "readwrite");
-            store = tx.objectStore("DataStore");
-            db.onerror = function (e) {
-                console.log("ERROR" + e.target.error);
-            };
-            var q1 = store.get(tableName);
-            q1.onsuccess = function () {
-                return resolve(q1.result);
-            };
-            tx.oncomplete = function () { db.close(); };
-        };
-    });
-}
-function storeDataByName(data, tableName) {
-    return new Promise(function (resolve) {
-        var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
-        var request = indexedDB.open(getDataBaseName(tableName), 1), db, tx, store;
-        request.onerror = function (e) {
-            console.log('There was an error : ' + e.target);
-        };
-        request.onsuccess = function (e) {
-            db = request.result;
-            tx = db.transaction(["DataStore"], "readwrite");
-            store = tx.objectStore("DataStore");
-            db.onerror = function (e) {
-                console.log("ERROR" + e.target.error);
-            };
-            var q2 = store.get(tableName);
-            q2.onsuccess = function () {
-                var table = q2.result;
-                store.put({
-                    tableName: tableName,
-                    filters: !!data.filters ? data.filters : !!(table === null || table === void 0 ? void 0 : table.filters) ? table.filters : null,
-                    sort: !!data.sort ? data.sort : !!(table === null || table === void 0 ? void 0 : table.sort) ? table.sort : null,
-                    hideColumns: !!data.hideColumns ? data.hideColumns : !!(table === null || table === void 0 ? void 0 : table.hideColumns) ? table.hideColumns : [],
-                    showVerticalBorders: data.showVerticalBorders !== undefined ? data.showVerticalBorders : (table === null || table === void 0 ? void 0 : table.showVerticalBorders) !== undefined ? table.showVerticalBorders : false,
-                    lineSpacing: !!data.lineSpacing ? data.lineSpacing : !!(table === null || table === void 0 ? void 0 : table.lineSpacing) ? table.lineSpacing : "medium",
-                });
-                resolve(null);
-            };
-            var q1 = store.get(tableName);
-            q1.onsuccess = function () {
-                return resolve(q1.result);
-            };
-            tx.oncomplete = function () { db.close(); };
-        };
-    });
-}
-function deleteKeyInDb(tableName) {
-    var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
-    var request = indexedDB.open(getDataBaseName(tableName), 1), db, tx, store;
-    request.onerror = function (e) {
-        console.log('There was an error : ' + e.target);
-    };
-    request.onsuccess = function (e) {
-        db = request.result;
-        tx = db.transaction(["DataStore"], "readwrite");
-        store = tx.objectStore("DataStore");
-        var objectStoreRequest = store.delete(tableName);
-        objectStoreRequest.onsuccess = function (e) {
-            path.resolve("OK");
-        };
-        path.resolve("OK");
-    };
+function getTableData(tableId) {
+    return !!tableId && !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId)) : {};
 }
 function getTableFilters(tableId) {
-    if (!!tableId) {
-        return getDataFromTable(tableId)
-            .then(function (res) { return res === null || res === void 0 ? void 0 : res.filters; });
+    return !!tableId && !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId))["filters"] : {};
+}
+function registerTableFilters(data, tableName) {
+    if (!!data && !lodash.isEmpty(data)) {
+        var table = getTableData(tableName);
+        localStorage.setItem(tableName, JSON.stringify({
+            filters: !!data.filters ? data.filters : !!(table === null || table === void 0 ? void 0 : table.filters) ? table.filters : null,
+            sort: !!data.sort ? data.sort : !!(table === null || table === void 0 ? void 0 : table.sort) ? table.sort : null,
+            hideColumns: !!data.hideColumns ? data.hideColumns : !!(table === null || table === void 0 ? void 0 : table.hideColumns) ? table.hideColumns : [],
+            showVerticalBorders: data.showVerticalBorders !== undefined ? data.showVerticalBorders : (table === null || table === void 0 ? void 0 : table.showVerticalBorders) !== undefined ? table.showVerticalBorders : false,
+            lineSpacing: !!data.lineSpacing ? data.lineSpacing : !!(table === null || table === void 0 ? void 0 : table.lineSpacing) ? table.lineSpacing : "medium",
+        }));
     }
+}
+function destroyTableFiltersStorage(tableId) {
+    localStorage.removeItem(tableId);
 }
 
 var ColumnsSelector = function (props) {
@@ -23722,7 +23618,7 @@ var ColumnsSelector = function (props) {
     var _b = React.useState(props.hiddenColumns), uncheckedColumns = _b[0], setUncheckedColumns = _b[1];
     React.useEffect(function () {
         props.onChange(uncheckedColumns);
-        storeDataByName({ hideColumns: uncheckedColumns }, props.tableId);
+        registerTableFilters({ hideColumns: uncheckedColumns }, props.tableId);
     }, [uncheckedColumns]);
     return (React__default.createElement(React__default.Fragment, null, props.columns.map(function (column, i) {
         if (!!column.Header && column.Header.length > 0) {
@@ -23774,7 +23670,7 @@ var DropdownMenu = function (props) {
             !!props.rightIcon && React__default.createElement("span", { className: "icon-right" }, props.rightIcon)));
     }
     var clearCache = function () {
-        deleteKeyInDb(props.tableId);
+        destroyTableFiltersStorage(props.tableId);
         location.reload();
     };
     return (React__default.createElement("div", { className: "table-settings-dropdown " + (darkMode ? "dark" : ""), style: { height: menuHeight } },
@@ -23832,11 +23728,11 @@ function translateOptionsToOperator(opt, val) {
         case 'between':
             return "=bw=(" + val.split('-')[0] + "," + val.split('-')[1] + ")";
         case 'atDay':
-            return "=bw=(" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "Z," + moment(val).add(1, 'day').startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "Z)";
+            return "=bw=(" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "," + moment(val).add(1, 'day').startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + ")";
         case 'minDay':
-            return ">=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "Z";
+            return ">=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS');
         case 'maxDay':
-            return "<=" + moment(val).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "Z";
+            return "<=" + moment(val).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS');
         default:
             return opt;
     }
@@ -24096,45 +23992,37 @@ function getOptionsByType$1(type) {
     }
 }
 function createDefaultFilter(filtersList, defaultFilters, tableId, filtersParsedType) {
-    return __awaiter(this, void 0, void 0, function () {
-        var savedFilters, concatFilters, filters, _initialFilters_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4, getTableFilters(tableId)];
-                case 1:
-                    savedFilters = _a.sent();
-                    concatFilters = {};
-                    filters = filtersParsedType === "rsql"
-                        ? parseFilterRSQL(savedFilters)
-                        : parseFilterFuzzy(savedFilters);
-                    if ((filtersParsedType === "fuzzy" && !(!tableId || (!filters && lodash.isEmpty(filters)))) || (filtersParsedType === "rsql" && (!tableId || (!filters && lodash.isEmpty(filters))))) {
-                        _initialFilters_1 = {};
-                        filtersList.forEach(function (filter) {
-                            _initialFilters_1[filter.name] = {
-                                type: filter.type,
-                                label: filter.label,
-                                parsedValue: filter.parsedValue,
-                                main: {
-                                    option: getOptionsByType$1(filter.type),
-                                    value: filter.type === "booleanRadio" ?
-                                        filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) :
-                                        filter.type === "geoloc" ? { lat: 0, lng: 0, display: "" } : ""
-                                },
-                                optionals: [],
-                            };
-                        });
-                        concatFilters = __assign(__assign({}, _initialFilters_1), defaultFilters);
-                    }
-                    else {
-                        if (!!defaultFilters)
-                            concatFilters = defaultFilters;
-                        if (!!tableId && !lodash.isEmpty(savedFilters))
-                            concatFilters = __assign(__assign({}, defaultFilters), savedFilters);
-                    }
-                    return [2, concatFilters];
-            }
+    var savedFilters = getTableFilters(tableId);
+    var concatFilters = {};
+    var filters = filtersParsedType === "rsql"
+        ? parseFilterRSQL(savedFilters)
+        : parseFilterFuzzy(savedFilters);
+    if ((filtersParsedType === "fuzzy" && !(!tableId || (!filters && lodash.isEmpty(filters)))) || (filtersParsedType === "rsql" && (!tableId || (!filters && lodash.isEmpty(filters))))) {
+        var _initialFilters_1 = {};
+        filtersList.forEach(function (filter) {
+            _initialFilters_1[filter.name] = {
+                type: filter.type,
+                label: filter.label,
+                parsedValue: filter.parsedValue,
+                main: {
+                    option: getOptionsByType$1(filter.type),
+                    value: filter.type === "booleanRadio" ?
+                        filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) :
+                        filter.type === "geoloc" ? { lat: 0, lng: 0, display: "" } : ""
+                },
+                optionals: [],
+            };
         });
-    });
+        concatFilters = __assign(__assign({}, _initialFilters_1), defaultFilters);
+    }
+    else {
+        if (!!defaultFilters)
+            concatFilters = defaultFilters;
+        if (!!tableId && !lodash.isEmpty(savedFilters)) {
+            concatFilters = __assign(__assign({}, savedFilters), defaultFilters);
+        }
+    }
+    return concatFilters;
 }
 function cleanFilterOnlyWithLocked(filtersList, defaultFilters, lockedFilters) {
     var concatFilters = {};
@@ -24166,57 +24054,49 @@ function cleanFilterOnlyWithLocked(filtersList, defaultFilters, lockedFilters) {
     return concatFilters = _initialFilters;
 }
 function createDefaultSorter(tableId, columns) {
-    return getDataFromTable(tableId)
-        .then(function (res) {
-        if (!!(res === null || res === void 0 ? void 0 : res.sort)) {
-            return res.sort;
-        }
-        else {
-            var _initialSorter_1 = {};
-            columns.forEach(function (column) {
-                if (!!(column === null || column === void 0 ? void 0 : column.sorterAttribut)) {
-                    _initialSorter_1[column.accessor] = {
-                        attribut: column.sorterAttribut,
-                        value: undefined
-                    };
-                }
-            });
-            return _initialSorter_1;
-        }
-    });
-}
-function getHiddenColumnsAndStyles(tableId) {
-    return getDataFromTable(tableId)
-        .then(function (res) { return ({
-        hideColumns: res === null || res === void 0 ? void 0 : res.hideColumns,
-        showVerticalBorders: res === null || res === void 0 ? void 0 : res.showVerticalBorders,
-        lineSpacing: res === null || res === void 0 ? void 0 : res.lineSpacing
-    }); });
-}
-function createDefaultProps(props) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _filters, _sorts, _columnsAndStyles;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4, createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filtersParsedType)];
-                case 1:
-                    _filters = _a.sent();
-                    return [4, createDefaultSorter(props.tableId, props.columns)];
-                case 2:
-                    _sorts = _a.sent();
-                    return [4, getHiddenColumnsAndStyles(props.tableId)];
-                case 3:
-                    _columnsAndStyles = _a.sent();
-                    return [2, {
-                            filters: _filters,
-                            sort: _sorts,
-                            hideColumns: _columnsAndStyles.hideColumns,
-                            showVerticalBorders: _columnsAndStyles.showVerticalBorders,
-                            lineSpacing: _columnsAndStyles.lineSpacing
-                        }];
+    var _data = getTableData(tableId);
+    if (_data.sort) {
+        return _data.sort;
+    }
+    else {
+        var _initialSorter_1 = {};
+        columns.forEach(function (column) {
+            if (!!(column === null || column === void 0 ? void 0 : column.sorterAttribut)) {
+                _initialSorter_1[column.accessor] = {
+                    attribut: column.sorterAttribut,
+                    value: undefined
+                };
             }
         });
+        return _initialSorter_1;
+    }
+}
+function getHiddenColumnsAndStyles(tableId) {
+    var _data = getTableData(tableId);
+    return ({
+        hideColumns: _data.hideColumns,
+        showVerticalBorders: _data.showVerticalBorders,
+        lineSpacing: _data.lineSpacing
     });
+}
+function createDefaultProps(props) {
+    var _filters = createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filtersParsedType);
+    var _sorts = createDefaultSorter(props.tableId, props.columns);
+    var _columnsAndStyles = getHiddenColumnsAndStyles(props.tableId);
+    console.log({
+        filters: _filters,
+        sort: _sorts,
+        hideColumns: _columnsAndStyles.hideColumns,
+        showVerticalBorders: _columnsAndStyles.showVerticalBorders,
+        lineSpacing: _columnsAndStyles.lineSpacing
+    });
+    return {
+        filters: _filters,
+        sort: _sorts,
+        hideColumns: _columnsAndStyles.hideColumns,
+        showVerticalBorders: _columnsAndStyles.showVerticalBorders,
+        lineSpacing: _columnsAndStyles.lineSpacing
+    };
 }
 
 FiltersContext.displayName = "ServerSideTableContext";
@@ -24247,12 +24127,12 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
     React.useEffect(function () {
         var _a;
         if (!props.defaultProps && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0) {
-            createDefaultFilter(props.filtersList, (_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters, props.tableId, props.filterParsedType).then(setFiltersState);
+            setFiltersState(createDefaultFilter(props.filtersList, (_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters, props.tableId, props.filterParsedType));
         }
     }, [props.filtersList]);
     React.useEffect(function () {
         if (!!props.defaultProps)
-            setLockedFiltersTest(Object.keys(props === null || props === void 0 ? void 0 : props.defaultProps.filters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultProps.filters[f]["locked"]; }).map(function (v) { return v; }));
+            setLockedFiltersTest(Object.keys(props === null || props === void 0 ? void 0 : props.defaultProps.filters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultProps.filters[f]["locked"]; }));
     }, [props.defaultProps]);
     var updateDataOnChange = function (requestParam) {
         setLoading(true);
@@ -24289,7 +24169,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             isInitialMount.current = false;
         else if (!!submitFiltersState) {
             if (!!submitFiltersState && !lodash.isEmpty(submitFiltersState))
-                storeDataByName({ filters: submitFiltersState }, props.tableId);
+                registerTableFilters({ filters: submitFiltersState }, props.tableId);
             var filters = props.filterParsedType === "rsql"
                 ? parseFilterRSQL(submitFiltersState)
                 : parseFilterFuzzy(submitFiltersState);
@@ -24326,7 +24206,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         var _initialFilters = cleanFilterOnlyWithLocked(props.filtersList, props.defaultProps.filters, lockedFilters);
         setFiltersState(lodash.cloneDeep(_initialFilters));
         setSubmitFilterState(!!lockedFilters ? lodash.cloneDeep(_initialFilters) : {});
-        deleteKeyInDb(props.tableId);
+        destroyTableFiltersStorage(props.tableId);
         return;
     };
     var onSortChange = function (e) {
@@ -24335,18 +24215,18 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             .map(function (sorter) { return sorter.attribut + ',' + sorter.value; });
         setSorterState(e);
         setSubmitSorter(_test);
-        storeDataByName({ sort: e }, props.tableId);
+        registerTableFilters({ sort: e }, props.tableId);
         updateDataOnChange({ offset: offset, perPage: perPage, filters: parsedFilters, sorter: _test });
     };
     var onHeaderClick = function (e) {
     };
     var onLineSpacingChange = function (e) {
         setLineSpacing(e);
-        storeDataByName({ lineSpacing: e }, props.tableId);
+        registerTableFilters({ lineSpacing: e }, props.tableId);
     };
     var onShowVerticalBorderChange = function (e) {
         setShowVerticalBorders(e);
-        storeDataByName({ showVerticalBorders: e }, props.tableId);
+        registerTableFilters({ showVerticalBorders: e }, props.tableId);
     };
     return (React__default.createElement(FiltersContext.Provider, { value: {
             filtersState: filtersState,

@@ -1,10 +1,9 @@
 import { FilterItem, FilterStateItem, LineSpacing, SorterRecord } from "../types/entities"
-import { getTableFilters } from './localDbManagement';
 import _ from 'lodash';
 import { parseFilterRSQL } from "../parserRSQL";
 import { parseFilterFuzzy } from "../parserFuzzy";
-import { getDataFromTable } from "./localDbManagement";
 import { DefaultProps } from "../types/components-props";
+import { getTableFilters, getTableData } from './SSTlocalStorageManagement';
 
 function getOptionsByType(type: string): string{
     switch(type){
@@ -21,9 +20,9 @@ function getOptionsByType(type: string): string{
     }
 }
 
-export async function createDefaultFilter (filtersList: FilterItem[], defaultFilters?: FilterStateItem, tableId?: string, filtersParsedType?: "rsql" | "fuzzy"): Promise<FilterStateItem>{
+export function createDefaultFilter (filtersList: FilterItem[], defaultFilters?: FilterStateItem, tableId?: string, filtersParsedType?: "rsql" | "fuzzy"): FilterStateItem {
     
-    const savedFilters = await getTableFilters(tableId);
+    const savedFilters = getTableFilters(tableId);
     let concatFilters = {}
 
     let filters = filtersParsedType === "rsql" 
@@ -88,34 +87,31 @@ export function cleanFilterOnlyWithLocked(filtersList: FilterItem[], defaultFilt
     return concatFilters = _initialFilters
 }
 
-export function createDefaultSorter(tableId: string, columns?: any[]): Promise<SorterRecord>{
-    return getDataFromTable(tableId)
-    .then(res => {
-        if(!!res?.sort){
-            return res.sort
-        }
-        else {
-            let  _initialSorter: SorterRecord = {};
-            columns.forEach(column => {
-                if(!!column?.sorterAttribut){
-                    _initialSorter[column.accessor] = {
-                        attribut: column.sorterAttribut,
-                        value: undefined
-                    }
+export function createDefaultSorter(tableId: string, columns?: any[]): SorterRecord{
+    let _data = getTableData(tableId)
+    if(_data.sort){
+        return _data.sort
+    } else {
+        let  _initialSorter: SorterRecord = {};
+        columns.forEach(column => {
+            if(!!column?.sorterAttribut){
+                _initialSorter[column.accessor] = {
+                    attribut: column.sorterAttribut,
+                    value: undefined
                 }
-            })
-            return _initialSorter;
-        }
-    })
+            }
+        })
+        return _initialSorter;
+    }
 }
 
-export function getHiddenColumnsAndStyles(tableId: string): Promise<{hideColumns: string[], showVerticalBorders: boolean, lineSpacing: LineSpacing}>{
-    return getDataFromTable(tableId)
-    .then(res => ({
-        hideColumns: res?.hideColumns,
-        showVerticalBorders: res?.showVerticalBorders,
-        lineSpacing: res?.lineSpacing
-    }))
+export function getHiddenColumnsAndStyles(tableId: string): {hideColumns: string[], showVerticalBorders: boolean, lineSpacing: LineSpacing}{
+    let _data = getTableData(tableId)
+    return ({
+        hideColumns: _data.hideColumns,
+        showVerticalBorders: _data.showVerticalBorders,
+        lineSpacing: _data.lineSpacing
+    })
 }
 
 type Props = {
@@ -127,10 +123,17 @@ type Props = {
 }
 
 
-export async function createDefaultProps(props: Props): Promise<DefaultProps> {
-    let _filters = await createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filtersParsedType)
-    let _sorts = await createDefaultSorter(props.tableId, props.columns)
-    let _columnsAndStyles = await getHiddenColumnsAndStyles(props.tableId)
+export function createDefaultProps(props: Props): DefaultProps {
+    let _filters = createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filtersParsedType)
+    let _sorts = createDefaultSorter(props.tableId, props.columns)
+    let _columnsAndStyles = getHiddenColumnsAndStyles(props.tableId)
+    console.log({
+        filters: _filters,
+        sort: _sorts,
+        hideColumns: _columnsAndStyles.hideColumns,
+        showVerticalBorders: _columnsAndStyles.showVerticalBorders,
+        lineSpacing: _columnsAndStyles.lineSpacing
+    })
     return {
         filters: _filters,
         sort: _sorts,

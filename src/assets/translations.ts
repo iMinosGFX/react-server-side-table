@@ -38,6 +38,6 @@ export const translations: Translations = {
         filterType:"Affichage des filtres",
         filterList: "Liste",
         filterField: "Champs",
-        clearCache: "Vider le cache"
+        clearCache: "Réinitialiser tableau"
     }
 }

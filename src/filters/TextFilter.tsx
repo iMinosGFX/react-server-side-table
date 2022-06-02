@@ -60,6 +60,7 @@ const TextFilter = (props: TextFilterProps) => {
                     <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.contain ?? translations.filtersViewer.contain}</span>
                 }
                 <input 
+                    autoFocus
                     name={filter.name} 
                     type="text"
                     value={index === "main"

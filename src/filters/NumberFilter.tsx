@@ -62,6 +62,7 @@ const TextFilter = (props: TextFilterProps) => {
                         <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.equal ?? translations.filtersViewer.equal}</span> 
                     }
                 <input 
+                    autoFocus
                     name={filter.name} 
                     type="number"
                     value={index === "main"

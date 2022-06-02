@@ -60,6 +60,7 @@ const DateFilter = (props: TextFilterProps) => {
                     <span style={{lineHeight: "2.4rem", color: "#435F71"}}>{translationsProps?.filtersViewer?.atDay ?? translations.filtersViewer.atDay}</span> 
                 }
                 <input 
+                    autoFocus
                     name={filter.name} 
                     type="date"
                     value={index === "main"

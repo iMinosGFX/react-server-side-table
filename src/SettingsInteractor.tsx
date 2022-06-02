@@ -5,7 +5,7 @@ import ColumnsSelector from './ColumnsSelector';
 import { Translations } from './types/props';
 import { translations } from './assets/translations';
 import { LineSpacing } from './types/entities';
-import { deleteKeyInDb } from './helpers/localDbManagement';
+import { destroyTableFiltersStorage } from './helpers/SSTlocalStorageManagement';
 
 const Container = styled.div`
     position: relative;
@@ -124,7 +124,7 @@ const DropdownMenu = (props: PropsDropdown) => {
     }
 
     const clearCache = () => {
-        deleteKeyInDb(props.tableId)
+        destroyTableFiltersStorage(props.tableId)
         location.reload();
     }
 

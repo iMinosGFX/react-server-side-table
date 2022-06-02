@@ -1,21 +1,36 @@
 import _ from 'lodash';
-import { getDataFromTable, storeDataByName } from './localDbManagement';
+import { LineSpacing, SorterRecord } from '../types/entities';
 
-// export function getTableFilters(tableId?: string): any{
-//     if(!!tableId){
-//         return getDataFromTable(tableId)
-//             .then(res => res?.filters)
-//     }
-//     // return !!tableId && !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId)) : {}
-// }
+type Data = {
+    filters?: any,
+    sort?: SorterRecord
+    hideColumns?: string[]
+    showVerticalBorders?: boolean
+    lineSpacing?: LineSpacing
+}
 
-// export function registerTableFilters(tableId: string, filters: any): void {
-//     if(!!filters && !_.isEmpty(filters)){
-//         storeDataByName({filters: filters}, tableId)
-//         // localStorage.setItem(tableId, JSON.stringify(filters))
-//     }
-// }
+export function getTableData(tableId?: string): Data{
+    return !!tableId && !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId)) : {}
+}
 
-// export function destroyTableFiltersStorage(tableId: string): void{
-//     localStorage.removeItem(tableId)
-// }
+export function getTableFilters(tableId?: string): Data{
+    return !!tableId && !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId))["filters"] : {}
+}
+
+
+export function registerTableFilters(data: Data, tableName: string): void {
+    if(!!data && !_.isEmpty(data)){
+        let table = getTableData(tableName)
+        localStorage.setItem(tableName, JSON.stringify({
+            filters: !!data.filters ? data.filters : !!table?.filters ? table.filters : null,
+            sort: !!data.sort ? data.sort : !!table?.sort ? table.sort : null,
+            hideColumns: !!data.hideColumns ? data.hideColumns : !!table?.hideColumns ? table.hideColumns : [],
+            showVerticalBorders: data.showVerticalBorders !== undefined ? data.showVerticalBorders : table?.showVerticalBorders !== undefined ? table.showVerticalBorders : false,
+            lineSpacing: !!data.lineSpacing ? data.lineSpacing : !!table?.lineSpacing ? table.lineSpacing : "medium",
+        }))
+    }
+}
+
+export function destroyTableFiltersStorage(tableId: string): void{
+    localStorage.removeItem(tableId)
+}

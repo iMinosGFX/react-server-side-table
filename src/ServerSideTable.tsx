@@ -9,7 +9,6 @@ import FiltersViewers from './FiltersViewers';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
 import FiltersContext from './context/filterscontext';
-import { getTableFilters } from './helpers/localDbManagement';
 import {translations} from "./assets/translations"
 import { isMobile } from 'react-device-detect';
 import { TableHandler } from './Table';
@@ -17,7 +16,7 @@ import { GPaginationObject, LineSpacing } from './types/entities';
 import { DataRequestParam, DefaultFiltersOptions, FilterStateItem, SorterRecord } from './types/entities';
 import { createDefaultFilter, cleanFilterOnlyWithLocked } from './helpers/createDefaultFilters';
 import { SSTHandler, SSTProps } from './types/components-props';
-import { deleteKeyInDb, storeDataByName } from './helpers/localDbManagement';
+import { destroyTableFiltersStorage,  getTableFilters, registerTableFilters } from './helpers/SSTlocalStorageManagement';
 
 FiltersContext.displayName = "ServerSideTableContext";
 
@@ -54,13 +53,13 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 
     useEffect(() => {
         if(!props.defaultProps && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
-            createDefaultFilter(props.filtersList, props.defaultProps?.filters, props.tableId, props.filterParsedType).then(setFiltersState)
+            setFiltersState(createDefaultFilter(props.filtersList, props.defaultProps?.filters, props.tableId, props.filterParsedType))
         }
     }, [props.filtersList])
 
     useEffect(() => {
         if(!!props.defaultProps)
-            setLockedFiltersTest(Object.keys(props?.defaultProps.filters).filter(f => props?.defaultProps.filters[f]["locked"]).map(v => v))
+            setLockedFiltersTest(Object.keys(props?.defaultProps.filters).filter(f => props?.defaultProps.filters[f]["locked"]))
     }, [props.defaultProps])
 
     const updateDataOnChange = (requestParam: DataRequestParam) => {
@@ -104,7 +103,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         else if(!!submitFiltersState){
             //Filter can be a string query or object with mulitple properties inside
             if(!!submitFiltersState && !_.isEmpty(submitFiltersState))
-                storeDataByName({filters: submitFiltersState}, props.tableId)
+                registerTableFilters({filters: submitFiltersState}, props.tableId)
             let filters = props.filterParsedType === "rsql" 
             ? parseFilterRSQL(submitFiltersState)
             : parseFilterFuzzy(submitFiltersState)
@@ -152,7 +151,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         let _initialFilters = cleanFilterOnlyWithLocked(props.filtersList, props.defaultProps.filters, lockedFilters)
         setFiltersState(_.cloneDeep(_initialFilters))
         setSubmitFilterState(!!lockedFilters ? _.cloneDeep(_initialFilters) : {})
-        deleteKeyInDb(props.tableId)
+        destroyTableFiltersStorage(props.tableId)
         return;
     }
 
@@ -163,7 +162,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         setSorterState(e)
         setSubmitSorter(_test)
 
-        storeDataByName({sort: e}, props.tableId)
+        registerTableFilters({sort: e}, props.tableId)
         updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: _test})
     }
 
@@ -173,12 +172,12 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 
     const onLineSpacingChange = (e: LineSpacing) => {
         setLineSpacing(e)
-        storeDataByName({lineSpacing: e}, props.tableId)
+        registerTableFilters({lineSpacing: e}, props.tableId)
     }
 
     const onShowVerticalBorderChange = (e: boolean) => {
         setShowVerticalBorders(e)
-        storeDataByName({showVerticalBorders: e}, props.tableId)
+        registerTableFilters({showVerticalBorders: e}, props.tableId)
     }
 
     return(

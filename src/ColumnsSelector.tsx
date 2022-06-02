@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import _ from "lodash"
 import { ColumnsSelectorProps } from './types/components-props';
-import { storeDataByName } from './helpers/localDbManagement';
+import { registerTableFilters } from './helpers/SSTlocalStorageManagement';
 
 const ColumnsSelector = (props: ColumnsSelectorProps) => {
 
@@ -10,7 +10,7 @@ const ColumnsSelector = (props: ColumnsSelectorProps) => {
 
     useEffect(() => {
         props.onChange(uncheckedColumns)
-        storeDataByName({hideColumns: uncheckedColumns}, props.tableId)
+        registerTableFilters({hideColumns: uncheckedColumns}, props.tableId)
     }, [uncheckedColumns])
 
     return(
