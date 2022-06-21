@@ -15,7 +15,7 @@ import ServerSideTable from "@optalp/react-server-side-table"
 ```
 
 Then you can call him in the renderer, here an example : 
-```
+```javascript
 <ServerSideTable 
     ref={SSTRef}
     columns={columns}
@@ -79,13 +79,26 @@ Here is an example:
 
 ##### Reload Data
 In addition to the automatic reload after a change of page, filters, etc... It is possible to manually reload data from the parent component, just call the reloadData() function like this:  
-```
+```javascript
 SSTRef.current.reloadData();
 ```
 
+#### Columns oject
+A column object can be composed like this: 
+
+```typescript
+Header: string, //Title of column
+accessor: string //Accessor in data object to get value
+Cell({value, row}): ReactElement
+sorterAttribut?: string //Accessor to sort
+alignment?: "left" | "center" | "right",
+id?: 'expander', //Use this to enable SubRowComponent expander
+```
+
+
 ##### Sorter 
 The sorting is done automatically on the columns, you just have to define the sorting field as a property in the column object. 
-```
+```javascript
 Header: Nom de la salle,
 accessor:'name',
 sorterAttribut: 'name', //api field
@@ -97,7 +110,7 @@ Filters are defined via an object, it will be automatically parsed according to 
 The Filter object is an array of FilterItem (see reference below)
 
 Here example of filterItem : 
-```
+```javascript
 const fitlers: FilterItem[] = [
     {name:'createdAt', label: "Date", type:"date", idAccessor:"createdAt"},
     {name:"createdByService", label:"Service", type:"text", idAccessor:"createdByService"},
@@ -117,7 +130,7 @@ You also have the possibility to create default filters, for that you have to do
 - import this variable into SST. 
 
 Here is an example: 
-```
+```javascript
 import {ServerSideTable, useSST} from '@optalp/react-server-side-table';
 const TABLE_ID = "tv2-logger-table"
 
@@ -165,6 +178,7 @@ return(
 )
 ```
 
+```javascript
 <ServerSideTable 
     ref={ServerSideTableRef}
     columns={columns}
@@ -179,7 +193,7 @@ return(
 ###### Locked Filters
 In addition to that, you can add locked Filters, useful to create a default filter untouchable by the user, just add the attribute `locked: true` in the defaultFilter object. 
 
-```
+```javascript
 const defaultFilters: FilterStateItem = {
     actionId: {
         type: "text",
@@ -198,7 +212,7 @@ const defaultFilters: FilterStateItem = {
 To activate the subComponent, you just have to add the boolean isRenderSubComponent and the props renderRowSubComponent which expects a JSX element. 
 
 Here an example : 
-```
+```javascript
 const renderRowSubComponent = React.useCallback(
     ({row}) => ( // All data in a row send by SST
         <div style={{width: "100%", margin: "0 auto"}}>

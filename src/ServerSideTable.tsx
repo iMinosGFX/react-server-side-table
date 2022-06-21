@@ -15,7 +15,7 @@ import { TableHandler } from './Table';
 import { GPaginationObject, LineSpacing } from './types/entities';
 import { DataRequestParam, DefaultFiltersOptions, FilterStateItem, SorterRecord } from './types/entities';
 import { createDefaultFilter, cleanFilterOnlyWithLocked } from './helpers/createDefaultFilters';
-import { SSTHandler, SSTProps } from './types/components-props';
+import { ExportType, SSTHandler, SSTProps } from './types/components-props';
 import { destroyTableFiltersStorage,  getTableFilters, registerTableFilters } from './helpers/SSTlocalStorageManagement';
 
 FiltersContext.displayName = "ServerSideTableContext";
@@ -43,13 +43,12 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
     const [parsedFilters, setParsedFilters] = useState<any>(null)
     const tableRef = useRef<TableHandler>(null)
     const [data, setData] = useState<GPaginationObject<any>>(null)
-    const [lockedFilters, setLockedFiltersTest] = useState<string[]>()
+    const [lockedFilters, setLockedFilters] = useState<string[]>(Object.keys(props?.defaultProps.filters).filter(f => props?.defaultProps.filters[f]["locked"]))
     const [loading, setLoading] = useState<boolean>(false)
     const [haveSelectedRows, setHaveSelectedRows] = useState<boolean>(false)
     const [hiddenColumns, setHiddenColumns] = useState<string[]>(!!props.defaultProps?.hideColumns ? props.defaultProps.hideColumns : [])
     const [lineSpacing, setLineSpacing] = useState<LineSpacing>(!!props.defaultProps?.lineSpacing ? props.defaultProps.lineSpacing : "medium")
     const [showVerticalBorders, setShowVerticalBorders] = useState<boolean>(!!props.showVerticalBorders ? true : !!props.defaultProps?.showVerticalBorders ? props.defaultProps.showVerticalBorders : false)
-
 
     useEffect(() => {
         if(!props.defaultProps && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
@@ -58,8 +57,12 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
     }, [props.filtersList])
 
     useEffect(() => {
-        if(!!props.defaultProps)
-            setLockedFiltersTest(Object.keys(props?.defaultProps.filters).filter(f => props?.defaultProps.filters[f]["locked"]))
+        if(isInitialMount.current)
+            return
+        else if(!!props.defaultProps){
+            setFiltersState(_.cloneDeep(props.defaultProps.filters))
+            setSubmitFilterState(_.cloneDeep(props.defaultProps.filters))
+        }
     }, [props.defaultProps])
 
     const updateDataOnChange = (requestParam: DataRequestParam) => {
@@ -180,6 +183,36 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         registerTableFilters({showVerticalBorders: e}, props.tableId)
     }
 
+    function exportData(e: ExportType): Promise<any> {
+        if(e === "one"){
+            return props.onDataChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
+            .then(data => {
+                if(!!data && !!data?.content){
+                    return data
+                } else {
+                    return {content: []}
+                }
+            })
+        } else {
+            return props.onDataChange({offset: 0, perPage: 999,filters: parsedFilters, sorter: submitSorter})
+            .then(firstData => {
+                if(firstData.totalElements > 999){
+                    let _apiCalls = []
+                    for(let i = 1; i < firstData.totalPages; i++) 
+                        _apiCalls.push(props.onDataChange({offset: i, perPage: 999,filters: parsedFilters, sorter: submitSorter}))
+                    return Promise.all(_apiCalls)
+                    .then(datas => {
+                        let _concatArrays = firstData.content ?? []
+                        datas.sort((a,b) => a.number - b.number).map(d => _concatArrays = _concatArrays.concat(d.content))
+                        return {content: _concatArrays}
+                    })
+                } else {
+                    return firstData
+                }
+            })
+        }
+    }
+
     return(
         <FiltersContext.Provider value={{
             filtersState: filtersState,
@@ -189,7 +222,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
             changeMainFilter: changeMainFilter,
             changeOptionalsFilters: changeOptionalsFilters,
             onClearAll: onClearAll,
-            onClickApply: onClickApply
+            onClickApply: onClickApply,
         }}>
             <TableContainer darkMode={props.darkMode} className="SST_container">
                 <TableStyles lineSpacing={lineSpacing} className={props.containerClassName} darkMode={props.darkMode}>
@@ -212,7 +245,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                                             onLineSpacingChange={onLineSpacingChange}
                                             translationsProps={translationsProps}
                                             enabledExport={props.enabledExport}
-                                            onExportClick={props.onExportClick}
+                                            handleExport={exportData}
                                             darkMode={props.darkMode}
                                             tableId={props.tableId}
                                             lineSpacing={lineSpacing}

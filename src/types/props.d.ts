@@ -28,7 +28,9 @@ export type Translations = {
     settings?:{
         toggleColumns?: string,
         lineSpacing?: string,
-        export?: string,
+        export?: string
+        exportOne?: string,
+        exportAll?: string,
         back?: string,
         highHeight?: string,
         mediumHeight?:  string,

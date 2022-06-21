@@ -38,6 +38,8 @@ var framerMotion = _interopDefault(require('framer-motion'));
 var reactErrorBoundary = _interopDefault(require('react-error-boundary'));
 var moment = _interopDefault(require('moment'));
 var reactTransitionGroup = require('react-transition-group');
+var propTypes = _interopDefault(require('prop-types'));
+var timers = require('timers');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -21918,7 +21920,9 @@ var translations = {
     settings: {
         toggleColumns: "Afficher / Masquer colonnes",
         lineSpacing: "Confort d'affichage",
-        export: "Export",
+        export: "Exporter",
+        exportOne: "Exporter vue",
+        exportAll: "Export tout",
         back: "Retour",
         highHeight: "Grande hauteur",
         mediumHeight: "Hauteur moyenne",
@@ -23632,10 +23636,452 @@ var ColumnsSelector = function (props) {
     })));
 };
 
+var core = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var isSafari = exports.isSafari = function isSafari() {
+  return (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+  );
+};
+
+var isJsons = exports.isJsons = function isJsons(array) {
+  return Array.isArray(array) && array.every(function (row) {
+    return (typeof row === "undefined" ? "undefined" : _typeof(row)) === 'object' && !(row instanceof Array);
+  });
+};
+
+var isArrays = exports.isArrays = function isArrays(array) {
+  return Array.isArray(array) && array.every(function (row) {
+    return Array.isArray(row);
+  });
+};
+
+var jsonsHeaders = exports.jsonsHeaders = function jsonsHeaders(array) {
+  return Array.from(array.map(function (json) {
+    return Object.keys(json);
+  }).reduce(function (a, b) {
+    return new Set([].concat(_toConsumableArray(a), _toConsumableArray(b)));
+  }, []));
+};
+
+var jsons2arrays = exports.jsons2arrays = function jsons2arrays(jsons, headers) {
+  headers = headers || jsonsHeaders(jsons);
+
+  var headerLabels = headers;
+  var headerKeys = headers;
+  if (isJsons(headers)) {
+    headerLabels = headers.map(function (header) {
+      return header.label;
+    });
+    headerKeys = headers.map(function (header) {
+      return header.key;
+    });
+  }
+
+  var data = jsons.map(function (object) {
+    return headerKeys.map(function (header) {
+      return getHeaderValue(header, object);
+    });
+  });
+  return [headerLabels].concat(_toConsumableArray(data));
+};
+
+var getHeaderValue = exports.getHeaderValue = function getHeaderValue(property, obj) {
+  var foundValue = property.replace(/\[([^\]]+)]/g, ".$1").split(".").reduce(function (o, p, i, arr) {
+    var value = o[p];
+    if (value === undefined || value === null) {
+      arr.splice(1);
+    } else {
+      return value;
+    }
+  }, obj);
+
+  return foundValue === undefined ? property in obj ? obj[property] : '' : foundValue;
+};
+
+var elementOrEmpty = exports.elementOrEmpty = function elementOrEmpty(element) {
+  return typeof element === 'undefined' || element === null ? '' : element;
+};
+
+var joiner = exports.joiner = function joiner(data) {
+  var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ',';
+  var enclosingCharacter = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '"';
+
+  return data.filter(function (e) {
+    return e;
+  }).map(function (row) {
+    return row.map(function (element) {
+      return elementOrEmpty(element);
+    }).map(function (column) {
+      return "" + enclosingCharacter + column + enclosingCharacter;
+    }).join(separator);
+  }).join("\n");
+};
+
+var arrays2csv = exports.arrays2csv = function arrays2csv(data, headers, separator, enclosingCharacter) {
+  return joiner(headers ? [headers].concat(_toConsumableArray(data)) : data, separator, enclosingCharacter);
+};
+
+var jsons2csv = exports.jsons2csv = function jsons2csv(data, headers, separator, enclosingCharacter) {
+  return joiner(jsons2arrays(data, headers), separator, enclosingCharacter);
+};
+
+var string2csv = exports.string2csv = function string2csv(data, headers, separator, enclosingCharacter) {
+  return headers ? headers.join(separator) + "\n" + data : data.replace(/"/g, '""');
+};
+
+var toCSV = exports.toCSV = function toCSV(data, headers, separator, enclosingCharacter) {
+  if (isJsons(data)) return jsons2csv(data, headers, separator, enclosingCharacter);
+  if (isArrays(data)) return arrays2csv(data, headers, separator, enclosingCharacter);
+  if (typeof data === 'string') return string2csv(data, headers, separator);
+  throw new TypeError("Data should be a \"String\", \"Array of arrays\" OR \"Array of objects\" ");
+};
+
+var buildURI = exports.buildURI = function buildURI(data, uFEFF, headers, separator, enclosingCharacter) {
+  var csv = toCSV(data, headers, separator, enclosingCharacter);
+  var type = isSafari() ? 'application/csv' : 'text/csv';
+  var blob = new Blob([uFEFF ? "\uFEFF" : '', csv], { type: type });
+  var dataURI = "data:" + type + ";charset=utf-8," + (uFEFF ? "\uFEFF" : '') + csv;
+
+  var URL = window.URL || window.webkitURL;
+
+  return typeof URL.createObjectURL === 'undefined' ? dataURI : URL.createObjectURL(blob);
+};
+});
+
+unwrapExports(core);
+var core_1 = core.isSafari;
+var core_2 = core.isJsons;
+var core_3 = core.isArrays;
+var core_4 = core.jsonsHeaders;
+var core_5 = core.jsons2arrays;
+var core_6 = core.getHeaderValue;
+var core_7 = core.elementOrEmpty;
+var core_8 = core.joiner;
+var core_9 = core.arrays2csv;
+var core_10 = core.jsons2csv;
+var core_11 = core.string2csv;
+var core_12 = core.toCSV;
+var core_13 = core.buildURI;
+
+var metaProps = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PropsNotForwarded = exports.defaultProps = exports.propTypes = undefined;
+
+
+
+var _react2 = _interopRequireDefault(React__default);
+
+
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var propTypes$1 = exports.propTypes = {
+  data: (0, propTypes.oneOfType)([propTypes.string, propTypes.array, propTypes.func]).isRequired,
+  headers: propTypes.array,
+  target: propTypes.string,
+  separator: propTypes.string,
+  filename: propTypes.string,
+  uFEFF: propTypes.bool,
+  onClick: propTypes.func,
+  asyncOnClick: propTypes.bool,
+  enclosingCharacter: propTypes.string
+};
+
+var defaultProps = exports.defaultProps = {
+  separator: ',',
+  filename: 'generatedBy_react-csv.csv',
+  uFEFF: true,
+  asyncOnClick: false,
+  enclosingCharacter: '"'
+};
+
+var PropsNotForwarded = exports.PropsNotForwarded = ['data', 'headers'];
+});
+
+unwrapExports(metaProps);
+var metaProps_1 = metaProps.PropsNotForwarded;
+var metaProps_2 = metaProps.defaultProps;
+var metaProps_3 = metaProps.propTypes;
+
+var Download = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+
+
+var _react2 = _interopRequireDefault(React__default);
+
+
+
+
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var defaultProps = {
+  target: '_blank'
+};
+
+var CSVDownload = function (_React$Component) {
+  _inherits(CSVDownload, _React$Component);
+
+  function CSVDownload(props) {
+    _classCallCheck(this, CSVDownload);
+
+    var _this = _possibleConstructorReturn(this, (CSVDownload.__proto__ || Object.getPrototypeOf(CSVDownload)).call(this, props));
+
+    _this.state = {};
+    return _this;
+  }
+
+  _createClass(CSVDownload, [{
+    key: 'buildURI',
+    value: function buildURI() {
+      return core.buildURI.apply(undefined, arguments);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _props = this.props,
+          data = _props.data,
+          headers = _props.headers,
+          separator = _props.separator,
+          enclosingCharacter = _props.enclosingCharacter,
+          uFEFF = _props.uFEFF,
+          target = _props.target,
+          specs = _props.specs,
+          replace = _props.replace;
+
+      this.state.page = window.open(this.buildURI(data, uFEFF, headers, separator, enclosingCharacter), target, specs, replace);
+    }
+  }, {
+    key: 'getWindow',
+    value: function getWindow() {
+      return this.state.page;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return null;
+    }
+  }]);
+
+  return CSVDownload;
+}(_react2.default.Component);
+
+CSVDownload.defaultProps = Object.assign(metaProps.defaultProps, defaultProps);
+CSVDownload.propTypes = metaProps.propTypes;
+exports.default = CSVDownload;
+});
+
+unwrapExports(Download);
+
+var Link = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+
+
+var _react2 = _interopRequireDefault(React__default);
+
+
+
+
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CSVLink = function (_React$Component) {
+  _inherits(CSVLink, _React$Component);
+
+  function CSVLink(props) {
+    _classCallCheck(this, CSVLink);
+
+    var _this = _possibleConstructorReturn(this, (CSVLink.__proto__ || Object.getPrototypeOf(CSVLink)).call(this, props));
+
+    _this.buildURI = _this.buildURI.bind(_this);
+    return _this;
+  }
+
+  _createClass(CSVLink, [{
+    key: 'buildURI',
+    value: function buildURI() {
+      return core.buildURI.apply(undefined, arguments);
+    }
+  }, {
+    key: 'handleLegacy',
+    value: function handleLegacy(event) {
+      var isAsync = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (window.navigator.msSaveOrOpenBlob) {
+        event.preventDefault();
+
+        var _props = this.props,
+            data = _props.data,
+            headers = _props.headers,
+            separator = _props.separator,
+            filename = _props.filename,
+            enclosingCharacter = _props.enclosingCharacter,
+            uFEFF = _props.uFEFF;
+
+
+        var csvData = isAsync && typeof data === 'function' ? data() : data;
+
+        var blob = new Blob([uFEFF ? '\uFEFF' : '', (0, core.toCSV)(csvData, headers, separator, enclosingCharacter)]);
+        window.navigator.msSaveBlob(blob, filename);
+
+        return false;
+      }
+    }
+  }, {
+    key: 'handleAsyncClick',
+    value: function handleAsyncClick(event) {
+      var _this2 = this;
+
+      var done = function done(proceed) {
+        if (proceed === false) {
+          event.preventDefault();
+          return;
+        }
+        _this2.handleLegacy(event, true);
+      };
+
+      this.props.onClick(event, done);
+    }
+  }, {
+    key: 'handleSyncClick',
+    value: function handleSyncClick(event) {
+      var stopEvent = this.props.onClick(event) === false;
+      if (stopEvent) {
+        event.preventDefault();
+        return;
+      }
+      this.handleLegacy(event);
+    }
+  }, {
+    key: 'handleClick',
+    value: function handleClick() {
+      var _this3 = this;
+
+      return function (event) {
+        if (typeof _this3.props.onClick === 'function') {
+          return _this3.props.asyncOnClick ? _this3.handleAsyncClick(event) : _this3.handleSyncClick(event);
+        }
+        _this3.handleLegacy(event);
+      };
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this4 = this;
+
+      var _props2 = this.props,
+          data = _props2.data,
+          headers = _props2.headers,
+          separator = _props2.separator,
+          filename = _props2.filename,
+          uFEFF = _props2.uFEFF,
+          children = _props2.children,
+          onClick = _props2.onClick,
+          asyncOnClick = _props2.asyncOnClick,
+          enclosingCharacter = _props2.enclosingCharacter,
+          rest = _objectWithoutProperties(_props2, ['data', 'headers', 'separator', 'filename', 'uFEFF', 'children', 'onClick', 'asyncOnClick', 'enclosingCharacter']);
+
+      var isNodeEnvironment = typeof window === 'undefined';
+      var href = isNodeEnvironment ? '' : this.buildURI(data, uFEFF, headers, separator, enclosingCharacter);
+
+      return _react2.default.createElement(
+        'a',
+        _extends({
+          download: filename
+        }, rest, {
+          ref: function ref(link) {
+            return _this4.link = link;
+          },
+          target: '_self',
+          href: href,
+          onClick: this.handleClick()
+        }),
+        children
+      );
+    }
+  }]);
+
+  return CSVLink;
+}(_react2.default.Component);
+
+CSVLink.defaultProps = metaProps.defaultProps;
+CSVLink.propTypes = metaProps.propTypes;
+exports.default = CSVLink;
+});
+
+unwrapExports(Link);
+
+var lib = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CSVLink = exports.CSVDownload = undefined;
+
+
+
+var _Download2 = _interopRequireDefault(Download);
+
+
+
+var _Link2 = _interopRequireDefault(Link);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var CSVDownload = exports.CSVDownload = _Download2.default;
+var CSVLink = exports.CSVLink = _Link2.default;
+});
+
+unwrapExports(lib);
+var lib_1 = lib.CSVLink;
+var lib_2 = lib.CSVDownload;
+
+var reactCsv = lib;
+var reactCsv_1 = reactCsv.CSVLink;
+
 var Container = styled.div(templateObject_1$4 || (templateObject_1$4 = __makeTemplateObject(["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"], ["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"])));
 var SettingsInteractor = function (props) {
     var node = React__default.useRef();
-    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, onExportClick = props.onExportClick, darkMode = props.darkMode, tableId = props.tableId, lineSpacing = props.lineSpacing, showVerticalBorders = props.showVerticalBorders, onShowVerticalBorderChange = props.onShowVerticalBorderChange;
+    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, handleExport = props.handleExport, darkMode = props.darkMode, tableId = props.tableId, lineSpacing = props.lineSpacing, showVerticalBorders = props.showVerticalBorders, onShowVerticalBorderChange = props.onShowVerticalBorderChange;
     var _a = React.useState(false), open = _a[0], setOpen = _a[1];
     var handleClick = function (e) {
         if (node.current && node.current.contains(e.target)) {
@@ -23649,13 +24095,48 @@ var SettingsInteractor = function (props) {
     }, []);
     return (React__default.createElement(Container, { ref: node },
         React__default.createElement("i", { className: "ri-equalizer-line", style: { fontSize: 18, color: "#828282", cursor: "pointer" }, onClick: function () { return setOpen(!open); } }),
-        open && React__default.createElement(DropdownMenu, { lineSpacing: lineSpacing, columns: props.columns, hiddenColumns: props.hiddenColumns, onHiddenColumnsChange: function (e) { return props.onHiddenColumnsChange(e); }, onLineSpacingChange: function (e) { return props.onLineSpacingChange(e); }, translationsProps: translationsProps, enabledExport: enabledExport, onExportClick: onExportClick, darkMode: darkMode, tableId: tableId, showVerticalBorders: showVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange })));
+        open && React__default.createElement(DropdownMenu, { lineSpacing: lineSpacing, columns: props.columns, hiddenColumns: props.hiddenColumns, onHiddenColumnsChange: function (e) { return props.onHiddenColumnsChange(e); }, onLineSpacingChange: function (e) { return props.onLineSpacingChange(e); }, translationsProps: translationsProps, enabledExport: enabledExport, handleExport: handleExport, darkMode: darkMode, tableId: tableId, showVerticalBorders: showVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange })));
 };
 var DropdownMenu = function (props) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
-    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, onExportClick = props.onExportClick, darkMode = props.darkMode, tableId = props.tableId, lineSpacing = props.lineSpacing, onLineSpacingChange = props.onLineSpacingChange, showVerticalBorders = props.showVerticalBorders, onShowVerticalBorderChange = props.onShowVerticalBorderChange;
-    var _u = React.useState('main'), activeMenu = _u[0], setActiveMenu = _u[1];
-    var _v = React.useState(null), menuHeight = _v[0], setMenuHeight = _v[1];
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+    var translationsProps = props.translationsProps, enabledExport = props.enabledExport, handleExport = props.handleExport, darkMode = props.darkMode, tableId = props.tableId, lineSpacing = props.lineSpacing, onLineSpacingChange = props.onLineSpacingChange, showVerticalBorders = props.showVerticalBorders, onShowVerticalBorderChange = props.onShowVerticalBorderChange, columns = props.columns, hiddenColumns = props.hiddenColumns;
+    var _0 = React.useState('main'), activeMenu = _0[0], setActiveMenu = _0[1];
+    var _1 = React.useState(null), menuHeight = _1[0], setMenuHeight = _1[1];
+    var _2 = React.useState([]), downloadedData = _2[0], setDownloadedData = _2[1];
+    var nodeBtn = React.useRef();
+    var fetchData = function (e) {
+        props.handleExport(e)
+            .then(function (data) {
+            var _activeColumns = columns.filter(function (col) { return !hiddenColumns.includes(col.accessor); }).map(function (c) { return ({ name: !!c.Header ? c.Header : "N/A", accessor: c.accessor }); });
+            var _preparedDataToExported = data.content.map(function (item) {
+                var _a;
+                var _pushedObject = {};
+                var _loop_1 = function (i) {
+                    var _value = _activeColumns[i].accessor.split(".").reduce(function (a, b) { return a[b]; }, item);
+                    if (!!_value)
+                        if (Array.isArray(_value)) {
+                            _pushedObject[_activeColumns[i].name] = (_a = _value.map(function (v) { var _a; return v === null || v === void 0 ? void 0 : v[(_a = columns.filter(function (c) { return c.accessor === _activeColumns[i].accessor; })[0]) === null || _a === void 0 ? void 0 : _a.exportAccessor]; })) === null || _a === void 0 ? void 0 : _a.join(",");
+                        }
+                        else if (typeof (_value) === "object") {
+                            _pushedObject[_activeColumns[i].name] = JSON.stringify(_value);
+                        }
+                        else {
+                            _pushedObject[_activeColumns[i].name] = _value;
+                        }
+                    else
+                        _pushedObject[_activeColumns[i].name] = "";
+                };
+                for (var i = 0; i < _activeColumns.length; i++) {
+                    _loop_1(i);
+                }
+                return _pushedObject;
+            });
+            setDownloadedData(_preparedDataToExported);
+            timers.setTimeout(function () {
+                nodeBtn.current.link.click();
+            });
+        });
+    };
     React.useEffect(function () {
         props.onLineSpacingChange(lineSpacing);
     }, [lineSpacing]);
@@ -23678,13 +24159,10 @@ var DropdownMenu = function (props) {
             React__default.createElement("div", { className: "menu" },
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-eye-line" }), rightIcon: React__default.createElement("i", { className: "ri-arrow-right-s-line" }), goToMenu: "columns" }, (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _a === void 0 ? void 0 : _a.toggleColumns) !== null && _b !== void 0 ? _b : translations.settings.toggleColumns),
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-line-height" }), rightIcon: React__default.createElement("i", { className: "ri-arrow-right-s-line" }), goToMenu: "lineSpacing" }, (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _c === void 0 ? void 0 : _c.lineSpacing) !== null && _d !== void 0 ? _d : translations.settings.lineSpacing),
+                enabledExport && React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-file-download-line" }), rightIcon: React__default.createElement("i", { className: "ri-arrow-right-s-line" }), goToMenu: "export" }, (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _e === void 0 ? void 0 : _e.export) !== null && _f !== void 0 ? _f : translations.settings.export),
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-delete-back-2-line" }) },
-                    React__default.createElement("span", { onClick: clearCache }, (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _e === void 0 ? void 0 : _e.clearCache) !== null && _f !== void 0 ? _f : translations.settings.clearCache,
-                        " ")),
-                enabledExport &&
-                    React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-file-download-line" }) },
-                        React__default.createElement("span", { onClick: onExportClick }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _g === void 0 ? void 0 : _g.export) !== null && _h !== void 0 ? _h : translations.settings.export,
-                            " ")))),
+                    React__default.createElement("span", { onClick: clearCache }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _g === void 0 ? void 0 : _g.clearCache) !== null && _h !== void 0 ? _h : translations.settings.clearCache,
+                        " ")))),
         React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "columns", unmountOnExit: true, timeout: 200, classNames: "menu-secondary", onEnter: calcHeight },
             React__default.createElement("div", { className: "menu" },
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-arrow-left-s-line" }), goToMenu: "main" }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _j === void 0 ? void 0 : _j.back) !== null && _k !== void 0 ? _k : translations.settings.back),
@@ -23707,7 +24185,16 @@ var DropdownMenu = function (props) {
                 React__default.createElement("div", { className: "check-group", style: { paddingTop: 10, paddingLeft: 10 } },
                     React__default.createElement("input", { type: "checkbox", name: "SST_Vertical_Border_Checkbox", id: "SST_Vertical_Border_Checkbox", onChange: function () { return onShowVerticalBorderChange(!showVerticalBorders); }, checked: showVerticalBorders }),
                     React__default.createElement("label", { htmlFor: "SST_Vertical_Border_Checkbox" }, "Afficher bordures verticales")),
-                React__default.createElement("div", { style: { paddingTop: 10 } })))));
+                React__default.createElement("div", { style: { paddingTop: 10 } }))),
+        React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "export", unmountOnExit: true, timeout: 200, classNames: "menu-secondary", onEnter: calcHeight },
+            React__default.createElement("div", { className: "menu" },
+                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-arrow-left-s-line" }), goToMenu: "main" }, (_v = (_u = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _u === void 0 ? void 0 : _u.back) !== null && _v !== void 0 ? _v : translations.settings.back),
+                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "" }) },
+                    React__default.createElement("span", { onClick: function () { return fetchData("one"); } }, (_x = (_w = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _w === void 0 ? void 0 : _w.exportOne) !== null && _x !== void 0 ? _x : translations.settings.exportOne),
+                    React__default.createElement(reactCsv_1, { data: downloadedData, ref: nodeBtn, separator: ";", filename: "exported_table" + (!!tableId ? "_" + tableId : "") })),
+                React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "" }) },
+                    React__default.createElement("span", { onClick: function () { return fetchData("all"); } }, (_z = (_y = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _y === void 0 ? void 0 : _y.exportAll) !== null && _z !== void 0 ? _z : translations.settings.exportAll),
+                    React__default.createElement(reactCsv_1, { data: downloadedData, ref: nodeBtn, separator: ";", filename: "exported_table" + (!!tableId ? "_" + tableId : "") }))))));
 };
 var templateObject_1$4;
 
@@ -24118,7 +24605,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
     var _t = React.useState(null), parsedFilters = _t[0], setParsedFilters = _t[1];
     var tableRef = React.useRef(null);
     var _u = React.useState(null), data = _u[0], setData = _u[1];
-    var _v = React.useState(), lockedFilters = _v[0], setLockedFiltersTest = _v[1];
+    var _v = React.useState(Object.keys(props === null || props === void 0 ? void 0 : props.defaultProps.filters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultProps.filters[f]["locked"]; })), lockedFilters = _v[0], setLockedFilters = _v[1];
     var _w = React.useState(false), loading = _w[0], setLoading = _w[1];
     var _x = React.useState(false), haveSelectedRows = _x[0], setHaveSelectedRows = _x[1];
     var _y = React.useState(!!((_f = props.defaultProps) === null || _f === void 0 ? void 0 : _f.hideColumns) ? props.defaultProps.hideColumns : []), hiddenColumns = _y[0], setHiddenColumns = _y[1];
@@ -24131,8 +24618,12 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         }
     }, [props.filtersList]);
     React.useEffect(function () {
-        if (!!props.defaultProps)
-            setLockedFiltersTest(Object.keys(props === null || props === void 0 ? void 0 : props.defaultProps.filters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultProps.filters[f]["locked"]; }));
+        if (isInitialMount.current)
+            return;
+        else if (!!props.defaultProps) {
+            setFiltersState(lodash.cloneDeep(props.defaultProps.filters));
+            setSubmitFilterState(lodash.cloneDeep(props.defaultProps.filters));
+        }
     }, [props.defaultProps]);
     var updateDataOnChange = function (requestParam) {
         setLoading(true);
@@ -24228,6 +24719,39 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         setShowVerticalBorders(e);
         registerTableFilters({ showVerticalBorders: e }, props.tableId);
     };
+    function exportData(e) {
+        if (e === "one") {
+            return props.onDataChange({ offset: offset, perPage: perPage, filters: parsedFilters, sorter: submitSorter })
+                .then(function (data) {
+                if (!!data && !!(data === null || data === void 0 ? void 0 : data.content)) {
+                    return data;
+                }
+                else {
+                    return { content: [] };
+                }
+            });
+        }
+        else {
+            return props.onDataChange({ offset: 0, perPage: 999, filters: parsedFilters, sorter: submitSorter })
+                .then(function (firstData) {
+                if (firstData.totalElements > 999) {
+                    var _apiCalls = [];
+                    for (var i = 1; i < firstData.totalPages; i++)
+                        _apiCalls.push(props.onDataChange({ offset: i, perPage: 999, filters: parsedFilters, sorter: submitSorter }));
+                    return Promise.all(_apiCalls)
+                        .then(function (datas) {
+                        var _a;
+                        var _concatArrays = (_a = firstData.content) !== null && _a !== void 0 ? _a : [];
+                        datas.sort(function (a, b) { return a.number - b.number; }).map(function (d) { return _concatArrays = _concatArrays.concat(d.content); });
+                        return { content: _concatArrays };
+                    });
+                }
+                else {
+                    return firstData;
+                }
+            });
+        }
+    }
     return (React__default.createElement(FiltersContext.Provider, { value: {
             filtersState: filtersState,
             submitFiltersState: submitFiltersState,
@@ -24236,7 +24760,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             changeMainFilter: changeMainFilter,
             changeOptionalsFilters: changeOptionalsFilters,
             onClearAll: onClearAll,
-            onClickApply: onClickApply
+            onClickApply: onClickApply,
         } },
         React__default.createElement(TableContainer, { darkMode: props.darkMode, className: "SST_container" },
             React__default.createElement(TableStyles, { lineSpacing: lineSpacing, className: props.containerClassName, darkMode: props.darkMode },
@@ -24248,7 +24772,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                             !!props.optionnalsHeaderContent && props.optionnalsHeaderContent),
                         React__default.createElement("div", { style: { display: 'flex', alignItems: 'center', width: "100%", justifyContent: "space-between", flexDirection: "row-reverse" }, className: "table-actions-container" },
                             React__default.createElement("div", { className: "icons" }, !reactDeviceDetect.isMobile &&
-                                React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: onLineSpacingChange, translationsProps: translationsProps, enabledExport: props.enabledExport, onExportClick: props.onExportClick, darkMode: props.darkMode, tableId: props.tableId, lineSpacing: lineSpacing, showVerticalBorders: showVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange })),
+                                React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: onLineSpacingChange, translationsProps: translationsProps, enabledExport: props.enabledExport, handleExport: exportData, darkMode: props.darkMode, tableId: props.tableId, lineSpacing: lineSpacing, showVerticalBorders: showVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange })),
                             props.isFilter && !!props.filtersList && props.filtersList.length > 0 &&
                                 React__default.createElement(React__default.Fragment, null,
                                     React__default.createElement(FiltersContainer, { darkMode: props.darkMode, className: ((_k = props.filtersContainerClassName) !== null && _k !== void 0 ? _k : "") + " SST_filters_container" },

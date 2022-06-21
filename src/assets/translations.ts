@@ -30,7 +30,9 @@ export const translations: Translations = {
     settings:{
         toggleColumns: "Afficher / Masquer colonnes",
         lineSpacing: "Confort d'affichage",
-        export: "Export",
+        export: "Exporter",
+        exportOne: "Exporter vue",
+        exportAll: "Export tout",
         back: "Retour",
         highHeight: "Grande hauteur",
         mediumHeight: "Hauteur moyenne",

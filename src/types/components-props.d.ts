@@ -101,3 +101,5 @@ type DefaultProps = {
     showVerticalBorders: boolean
     lineSpacing: LineSpacing
 }
+
+export type ExportType = "all" | "one"

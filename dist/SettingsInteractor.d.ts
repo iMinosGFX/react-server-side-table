@@ -1,5 +1,6 @@
 import { Translations } from './types/props';
 import { LineSpacing } from './types/entities';
+import { ExportType } from './types/components-props';
 declare type Props = {
     columns: any[];
     hiddenColumns: string[];
@@ -7,7 +8,7 @@ declare type Props = {
     onLineSpacingChange(e: LineSpacing): void;
     translationsProps: Translations;
     enabledExport?: boolean;
-    onExportClick?(): void;
+    handleExport?(e: ExportType): Promise<any>;
     darkMode: boolean;
     tableId?: string;
     lineSpacing: LineSpacing;

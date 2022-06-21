@@ -27,7 +27,7 @@ export default {
           'useTable',
           'useSortBy',
           'useExpanded',
-          'useRowSelect'
+          'useRowSelect',
         ],
         'react-select': [
           'components',
@@ -36,6 +36,9 @@ export default {
           'isElement',
           'isValidElementType',
           'ForwardRef'
+        ],
+        'react-csv': [
+          'CSVLink'
         ]
       }
     })

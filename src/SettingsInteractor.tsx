@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import styled from 'styled-components';
 import {CSSTransition} from "react-transition-group"
 import ColumnsSelector from './ColumnsSelector';
@@ -6,6 +6,9 @@ import { Translations } from './types/props';
 import { translations } from './assets/translations';
 import { LineSpacing } from './types/entities';
 import { destroyTableFiltersStorage } from './helpers/SSTlocalStorageManagement';
+import { ExportType } from './types/components-props';
+import { CSVLink } from "react-csv";
+import { setTimeout } from 'timers';
 
 const Container = styled.div`
     position: relative;
@@ -34,7 +37,7 @@ type Props = {
     onLineSpacingChange(e: LineSpacing): void
     translationsProps: Translations
     enabledExport?: boolean
-    onExportClick?(): void
+    handleExport?(e: ExportType): Promise<any>
     darkMode: boolean
     tableId?:string
     lineSpacing: LineSpacing
@@ -45,7 +48,7 @@ type Props = {
 const SettingsInteractor = (props: Props) => { 
 
     const node = React.useRef()
-    const {translationsProps, enabledExport, onExportClick, darkMode, tableId, lineSpacing, showVerticalBorders, onShowVerticalBorderChange} = props
+    const {translationsProps, enabledExport, handleExport, darkMode, tableId, lineSpacing, showVerticalBorders, onShowVerticalBorderChange} = props
     const [open, setOpen] = useState<boolean>(false)
 
 
@@ -73,7 +76,7 @@ const SettingsInteractor = (props: Props) => {
                 onLineSpacingChange={e => props.onLineSpacingChange(e)}
                 translationsProps={translationsProps}
                 enabledExport={enabledExport}
-                onExportClick={onExportClick}
+                handleExport={handleExport}
                 darkMode={darkMode}
                 tableId={tableId}
                 showVerticalBorders={showVerticalBorders}
@@ -84,13 +87,13 @@ const SettingsInteractor = (props: Props) => {
 
 type PropsDropdown = {
     ref?: any
-    columns: string[]
+    columns: any[]
     hiddenColumns: string[]
     onHiddenColumnsChange(e:string[]): void
     onLineSpacingChange(e: LineSpacing): void
     translationsProps: Translations
     enabledExport?: boolean
-    onExportClick?(): void
+    handleExport?(e: ExportType): Promise<any>
     darkMode: boolean
     tableId?:string
     lineSpacing: LineSpacing
@@ -100,10 +103,41 @@ type PropsDropdown = {
 
 const DropdownMenu = (props: PropsDropdown) => {
 
-    const {translationsProps, enabledExport, onExportClick, darkMode, tableId, lineSpacing, onLineSpacingChange, showVerticalBorders, onShowVerticalBorderChange} = props
+    const {translationsProps, enabledExport, handleExport, darkMode, tableId, lineSpacing, onLineSpacingChange, showVerticalBorders, onShowVerticalBorderChange, columns, hiddenColumns} = props
     const [activeMenu, setActiveMenu] = useState<string>('main')
     const [menuHeight, setMenuHeight] = useState<any>(null)
-    
+    const [downloadedData, setDownloadedData] = useState<any>([])
+    const nodeBtn = useRef()
+
+    const fetchData = (e: ExportType) => {
+        props.handleExport(e)
+        .then(data => {
+            let _activeColumns = columns.filter(col => !hiddenColumns.includes(col.accessor)).map(c => ({name: !!c.Header ? c.Header : "N/A", accessor: c.accessor}))
+
+            let _preparedDataToExported = data.content.map(item => {
+                let _pushedObject = {}
+                for(let i = 0; i < _activeColumns.length; i++) {
+                    let _value = _activeColumns[i].accessor.split(".").reduce((a,b) => a[b], item)
+                    if(!!_value)
+                        if(Array.isArray(_value)){
+                            _pushedObject[_activeColumns[i].name] = _value.map(v => v?.[columns.filter(c => c.accessor === _activeColumns[i].accessor)[0]?.exportAccessor])?.join(",")
+                        } else if(typeof(_value) === "object"){
+                            _pushedObject[_activeColumns[i].name] = JSON.stringify(_value)
+                        } else {
+                            _pushedObject[_activeColumns[i].name] = _value
+                        }
+                    else _pushedObject[_activeColumns[i].name] = ""
+                }
+                return _pushedObject
+            })
+            setDownloadedData(_preparedDataToExported)
+            setTimeout(() => {
+                //@ts-ignore
+                nodeBtn.current.link.click()
+            })
+        }) 
+    }
+
     useEffect(() => {
         props.onLineSpacingChange(lineSpacing)
     }, [lineSpacing])
@@ -144,16 +178,16 @@ const DropdownMenu = (props: PropsDropdown) => {
                         goToMenu="lineSpacing">
                             {translationsProps?.settings?.lineSpacing ?? translations.settings.lineSpacing}
                     </DropdownItem>
+                    {enabledExport && <DropdownItem 
+                        leftIcon={<i className="ri-file-download-line" />}
+                        rightIcon={<i className="ri-arrow-right-s-line" />}
+                        goToMenu="export">
+                            {translationsProps?.settings?.export ?? translations.settings.export}
+                    </DropdownItem>}
                     <DropdownItem
                             leftIcon={<i className="ri-delete-back-2-line" />}>
                             <span onClick={clearCache}>{translationsProps?.settings?.clearCache ?? translations.settings.clearCache} </span>
                     </DropdownItem>
-                    {enabledExport && 
-                        <DropdownItem
-                            leftIcon={<i className="ri-file-download-line" />}>
-                            <span onClick={onExportClick}>{translationsProps?.settings?.export ?? translations.settings.export} </span>
-                        </DropdownItem>
-                    }
                 </div>
             </CSSTransition>
             <CSSTransition in={activeMenu === "columns"} unmountOnExit timeout={200} classNames="menu-secondary" onEnter={calcHeight}>
@@ -203,6 +237,35 @@ const DropdownMenu = (props: PropsDropdown) => {
                             <label htmlFor="SST_Vertical_Border_Checkbox">Afficher bordures verticales</label>
                         </div>
                     <div style={{paddingTop: 10}}></div>
+                </div>
+            </CSSTransition>
+            <CSSTransition in={activeMenu === "export"} unmountOnExit timeout={200} classNames="menu-secondary" onEnter={calcHeight}>
+                <div className="menu">
+                    <DropdownItem 
+                        leftIcon={<i className="ri-arrow-left-s-line"/>}
+                        goToMenu="main">
+                        {translationsProps?.settings?.back ?? translations.settings.back}
+                    </DropdownItem>
+                    <DropdownItem
+                        leftIcon={<i className="" />}>
+                            <span onClick={() => fetchData("one")}>{translationsProps?.settings?.exportOne ?? translations.settings.exportOne}</span>
+                            <CSVLink
+                                data={downloadedData}
+                                ref={nodeBtn}
+                                separator={";"}
+                                filename={`exported_table${!!tableId ? "_"+tableId : ""}`}>
+                            </CSVLink>
+                    </DropdownItem>
+                    <DropdownItem
+                        leftIcon={<i className="" />}>
+                            <span onClick={() => fetchData("all")}>{translationsProps?.settings?.exportAll ?? translations.settings.exportAll}</span>
+                            <CSVLink
+                                data={downloadedData}
+                                ref={nodeBtn}
+                                separator={";"}
+                                filename={`exported_table${!!tableId ? "_"+tableId : ""}`}>
+                            </CSVLink>
+                    </DropdownItem>
                 </div>
             </CSSTransition>
         </div>
