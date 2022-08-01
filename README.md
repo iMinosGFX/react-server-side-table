@@ -62,6 +62,7 @@ Then you can call him in the renderer, here an example :
 | showVerticalBorders?       | boolean                                                                            |                                                                                                                                                                                        |                                                                       |
 | defaultProps?              | FilterStateItem                                                                    | If you want to use default props (filters, sort, hidden columns), you need to use useSST hooks, see more below                                                                         |                                                                       |
 | counterColumnToItemGoLeft  | number                                                                             | Add this if filters is on right of viewport                                                                                                                                            |                                                                       |
+
 ##### GetData
 The getData function must call the api using the parameters returned by onDataChange, and returning a PaginationObject object (content & pageabe). 
 Here is an example: 
@@ -93,6 +94,7 @@ Cell({value, row}): ReactElement
 sorterAttribut?: string //Accessor to sort
 alignment?: "left" | "center" | "right",
 id?: 'expander', //Use this to enable SubRowComponent expander
+exportFormat?: (e: CellValue): string, //Example: value => `${value+10}` 
 ```
 
 

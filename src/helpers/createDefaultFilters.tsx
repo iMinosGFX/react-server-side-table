@@ -105,12 +105,13 @@ export function createDefaultSorter(tableId: string, columns?: any[]): SorterRec
     }
 }
 
-export function getHiddenColumnsAndStyles(tableId: string): {hideColumns: string[], showVerticalBorders: boolean, lineSpacing: LineSpacing}{
+export function getHiddenColumnsAndStyles(tableId: string): {hideColumns: string[], showVerticalBorders: boolean, lineSpacing: LineSpacing, perPageItems: number}{
     let _data = getTableData(tableId)
     return ({
         hideColumns: _data.hideColumns,
         showVerticalBorders: _data.showVerticalBorders,
-        lineSpacing: _data.lineSpacing
+        lineSpacing: _data.lineSpacing,
+        perPageItems: _data.perPageItems
     })
 }
 
@@ -120,6 +121,7 @@ type Props = {
     tableId?: string, 
     filtersParsedType?: "rsql" | "fuzzy"
     columns: any[]
+    defaultPerPageItems?: number
 }
 
 
@@ -127,18 +129,13 @@ export function createDefaultProps(props: Props): DefaultProps {
     let _filters = createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filtersParsedType)
     let _sorts = createDefaultSorter(props.tableId, props.columns)
     let _columnsAndStyles = getHiddenColumnsAndStyles(props.tableId)
-    console.log({
-        filters: _filters,
-        sort: _sorts,
-        hideColumns: _columnsAndStyles.hideColumns,
-        showVerticalBorders: _columnsAndStyles.showVerticalBorders,
-        lineSpacing: _columnsAndStyles.lineSpacing
-    })
+
     return {
         filters: _filters,
         sort: _sorts,
         hideColumns: _columnsAndStyles.hideColumns,
         showVerticalBorders: _columnsAndStyles.showVerticalBorders,
-        lineSpacing: _columnsAndStyles.lineSpacing
+        lineSpacing: _columnsAndStyles.lineSpacing,
+        perPageItems: !!_columnsAndStyles.perPageItems ? _columnsAndStyles.perPageItems : !!props.defaultPerPageItems ? props.defaultPerPageItems : 10
     }
 }

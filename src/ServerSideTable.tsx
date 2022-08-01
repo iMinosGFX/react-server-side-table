@@ -39,16 +39,17 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 	
     
     const [offset, setOffset] = useState<number>(0);
-    const [perPage, setPerPage] = useState<number>(props.perPageItems ? props.perPageItems : 10);
+    const [perPage, setPerPage] = useState<number>(!!props.defaultProps?.perPageItems ? props.defaultProps.perPageItems : !!props.perPageItems ? props.perPageItems : 999);
     const [parsedFilters, setParsedFilters] = useState<any>(null)
     const tableRef = useRef<TableHandler>(null)
     const [data, setData] = useState<GPaginationObject<any>>(null)
-    const [lockedFilters, setLockedFilters] = useState<string[]>(Object.keys(props?.defaultProps.filters).filter(f => props?.defaultProps.filters[f]["locked"]))
+    const lockedFilters: string[] = (!!props.defaultProps ? Object.keys(props?.defaultProps.filters).filter(f => props?.defaultProps.filters[f]["locked"]) : [])
     const [loading, setLoading] = useState<boolean>(false)
     const [haveSelectedRows, setHaveSelectedRows] = useState<boolean>(false)
     const [hiddenColumns, setHiddenColumns] = useState<string[]>(!!props.defaultProps?.hideColumns ? props.defaultProps.hideColumns : [])
     const [lineSpacing, setLineSpacing] = useState<LineSpacing>(!!props.defaultProps?.lineSpacing ? props.defaultProps.lineSpacing : "medium")
     const [showVerticalBorders, setShowVerticalBorders] = useState<boolean>(!!props.showVerticalBorders ? true : !!props.defaultProps?.showVerticalBorders ? props.defaultProps.showVerticalBorders : false)
+    const isInitialMount = useRef(true);
 
     useEffect(() => {
         if(!props.defaultProps && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
@@ -76,7 +77,6 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
             })
     }
 
-    const isInitialMount = useRef(true);
 
     const handlePageClick = (e) => {
         const selectedPage = e.selected;
@@ -85,9 +85,10 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
     
 	useEffect(() => {
         if(isInitialMount.current)
-        isInitialMount.current = false
+            isInitialMount.current = false
         else {
             updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
+
         }
     }, [offset, perPage])
 
@@ -106,7 +107,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         else if(!!submitFiltersState){
             //Filter can be a string query or object with mulitple properties inside
             if(!!submitFiltersState && !_.isEmpty(submitFiltersState))
-                registerTableFilters({filters: submitFiltersState}, props.tableId)
+                registerTableFilters({filters: submitFiltersState, perPageItems: perPage}, props.tableId)
             let filters = props.filterParsedType === "rsql" 
             ? parseFilterRSQL(submitFiltersState)
             : parseFilterFuzzy(submitFiltersState)
@@ -114,15 +115,18 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                 setParsedFilters(filters)
                 setOffset(0)
                 updateDataOnChange({offset,perPage,filters, sorter: submitSorter})
-            }  
-        }
+            }  else {
+                setOffset(0)
+                updateDataOnChange({offset,perPage,filters: null, sorter: submitSorter})
+            }
+        } 
     }, [submitFiltersState])
 
     const handleFilterSubmit = (filters: any) => {
         setOffset(0)
-        // setFilters(filters)
         setParsedFilters(filters)
         updateDataOnChange({offset,perPage,filters,sorter: submitSorter})
+
 
     }
     
@@ -167,6 +171,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 
         registerTableFilters({sort: e}, props.tableId)
         updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: _test})
+
     }
 
     const onHeaderClick = (e: any) => {
@@ -230,7 +235,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                         <div className="SST_HEADER">
                             <div className="SST_actions_buttons">
                                 {props.showAddBtn && 
-                                    <button className="btn bg-plain-primary sst_main_button"  onClick={props.onAddClick}>
+                                    <button className="btn bg-plain-primary sst_main_button"  onClick={() => props.onAddClick()}>
                                             {translationsProps?.add ?? translations.add}
                                     </button>}
                                 {!!props.optionnalsHeaderContent && props.optionnalsHeaderContent}
@@ -309,7 +314,14 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                             activeClassName={"active"} />
                         <PerPageContainer>
                             <label htmlFor="perPageSelect">{translationsProps?.linePerPage ?? translations.linePerPage}</label>
-                            <select name="perPageSelect" value={perPage} onChange={(e) => setPerPage(parseInt(e.target.value))} style={{background: "#fff", width: 30}}>
+                            <select 
+                                name="perPageSelect" 
+                                value={perPage} 
+                                onChange={(e) => {
+                                    setPerPage(parseInt(e.target.value))
+                                    registerTableFilters({perPageItems: parseInt(e.target.value)}, props.tableId)
+                                }}
+                                style={{background: "#fff", width: 30}}>
                                 <option value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="20">20</option>

@@ -155,7 +155,7 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
           {headerGroups.map((headerGroup,i) => (
             <tr {...headerGroup.getHeaderGroupProps()} ref={node} key={i}>
               {headerGroup.headers.map((column,j) => {
-                const filter = filters.filter(f => f.idAccessor === column.id)[0]
+                const filter = filters?.filter(f => f.idAccessor === column.id)[0]
                 return(
                   <th {...column.getHeaderProps()} className="SST_header_cell" key={j}>
                     <div className="SST_header_container noselect" style={{justifyContent: !!column.alignment ? column.alignment : "left"}}>

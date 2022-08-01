@@ -7,6 +7,7 @@ type Data = {
     hideColumns?: string[]
     showVerticalBorders?: boolean
     lineSpacing?: LineSpacing
+    perPageItems?:number
 }
 
 export function getTableData(tableId?: string): Data{
@@ -27,6 +28,7 @@ export function registerTableFilters(data: Data, tableName: string): void {
             hideColumns: !!data.hideColumns ? data.hideColumns : !!table?.hideColumns ? table.hideColumns : [],
             showVerticalBorders: data.showVerticalBorders !== undefined ? data.showVerticalBorders : table?.showVerticalBorders !== undefined ? table.showVerticalBorders : false,
             lineSpacing: !!data.lineSpacing ? data.lineSpacing : !!table?.lineSpacing ? table.lineSpacing : "medium",
+            perPageItems: !!data.perPageItems ? data.perPageItems : !!table?.perPageItems ? table.perPageItems : null
         }))
     }
 }

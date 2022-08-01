@@ -43,6 +43,11 @@ export type FiltersViewersProps = {
     lockedFilters?:string[]
 }
 
+export type SSTExporter = {
+    accessor: string
+    exportFormat: any
+}
+
 export type SSTProps = {
     columns: any[]
     isFilter?: boolean
@@ -73,6 +78,8 @@ export type SSTProps = {
     counterColumnToItemGoLeft?: number
 }
 
+
+
 export type SSTHandler = {
     reloadData: () => void,
     getSelectedRows: () => any[]
@@ -100,6 +107,7 @@ type DefaultProps = {
     hideColumns: string[] 
     showVerticalBorders: boolean
     lineSpacing: LineSpacing
+    perPageItems: number
 }
 
 export type ExportType = "all" | "one"

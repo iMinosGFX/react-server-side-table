@@ -23527,7 +23527,7 @@ var Table = React.forwardRef(function (props, ref) {
         React__default.createElement("table", __assign({}, getTableProps(), { className: "table no-border" }),
             React__default.createElement("thead", { className: props.showVerticalBorders ? "" : "no-border" }, headerGroups.map(function (headerGroup, i) { return (React__default.createElement("tr", __assign({}, headerGroup.getHeaderGroupProps(), { ref: node, key: i }), headerGroup.headers.map(function (column, j) {
                 var _a, _b, _c, _d, _e, _f;
-                var filter = filters.filter(function (f) { return f.idAccessor === column.id; })[0];
+                var filter = filters === null || filters === void 0 ? void 0 : filters.filter(function (f) { return f.idAccessor === column.id; })[0];
                 return (React__default.createElement("th", __assign({}, column.getHeaderProps(), { className: "SST_header_cell", key: j }),
                     React__default.createElement("div", { className: "SST_header_container noselect", style: { justifyContent: !!column.alignment ? column.alignment : "left" } },
                         React__default.createElement("span", __assign({ className: "SST_header_title " + (!!((_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]) ? "pointer" : "") }, column.getHeaderProps(), { onClick: function () {
@@ -23610,6 +23610,7 @@ function registerTableFilters(data, tableName) {
             hideColumns: !!data.hideColumns ? data.hideColumns : !!(table === null || table === void 0 ? void 0 : table.hideColumns) ? table.hideColumns : [],
             showVerticalBorders: data.showVerticalBorders !== undefined ? data.showVerticalBorders : (table === null || table === void 0 ? void 0 : table.showVerticalBorders) !== undefined ? table.showVerticalBorders : false,
             lineSpacing: !!data.lineSpacing ? data.lineSpacing : !!(table === null || table === void 0 ? void 0 : table.lineSpacing) ? table.lineSpacing : "medium",
+            perPageItems: !!data.perPageItems ? data.perPageItems : !!(table === null || table === void 0 ? void 0 : table.perPageItems) ? table.perPageItems : null
         }));
     }
 }
@@ -24103,25 +24104,27 @@ var DropdownMenu = function (props) {
     var _0 = React.useState('main'), activeMenu = _0[0], setActiveMenu = _0[1];
     var _1 = React.useState(null), menuHeight = _1[0], setMenuHeight = _1[1];
     var _2 = React.useState([]), downloadedData = _2[0], setDownloadedData = _2[1];
+    var filtersState = React.useContext(FiltersContext);
     var nodeBtn = React.useRef();
     var fetchData = function (e) {
         props.handleExport(e)
             .then(function (data) {
-            var _activeColumns = columns.filter(function (col) { return !hiddenColumns.includes(col.accessor); }).map(function (c) { return ({ name: !!c.Header ? c.Header : "N/A", accessor: c.accessor }); });
+            var _activeColumns = columns.filter(function (col) { return !hiddenColumns.includes(col.accessor); }).map(function (c) { var _a; return ({ name: !!c.Header ? c.Header : (_a = c.accessor) !== null && _a !== void 0 ? _a : "N/A", accessor: c.accessor, exportedValue: c.exportFormat }); });
             var _preparedDataToExported = data.content.map(function (item) {
                 var _a;
                 var _pushedObject = {};
                 var _loop_1 = function (i) {
-                    var _value = _activeColumns[i].accessor.split(".").reduce(function (a, b) { return a[b]; }, item);
+                    var _value = _activeColumns[i].accessor.split(".").reduce(function (a, b) { return a[b]; }, item), _exporter = _activeColumns[i].exportedValue;
+                    console.log(!!_exporter ? _exporter(_value) : null);
                     if (!!_value)
                         if (Array.isArray(_value)) {
-                            _pushedObject[_activeColumns[i].name] = (_a = _value.map(function (v) { var _a; return v === null || v === void 0 ? void 0 : v[(_a = columns.filter(function (c) { return c.accessor === _activeColumns[i].accessor; })[0]) === null || _a === void 0 ? void 0 : _a.exportAccessor]; })) === null || _a === void 0 ? void 0 : _a.join(",");
+                            _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : (_a = _value.map(function (v) { var _a; return v === null || v === void 0 ? void 0 : v[(_a = columns.filter(function (c) { return c.accessor === _activeColumns[i].accessor; })[0]) === null || _a === void 0 ? void 0 : _a.exportAccessor]; })) === null || _a === void 0 ? void 0 : _a.join(",");
                         }
                         else if (typeof (_value) === "object") {
-                            _pushedObject[_activeColumns[i].name] = JSON.stringify(_value);
+                            _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : JSON.stringify(_value);
                         }
                         else {
-                            _pushedObject[_activeColumns[i].name] = _value;
+                            _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : _value;
                         }
                     else
                         _pushedObject[_activeColumns[i].name] = "";
@@ -24563,54 +24566,50 @@ function getHiddenColumnsAndStyles(tableId) {
     return ({
         hideColumns: _data.hideColumns,
         showVerticalBorders: _data.showVerticalBorders,
-        lineSpacing: _data.lineSpacing
+        lineSpacing: _data.lineSpacing,
+        perPageItems: _data.perPageItems
     });
 }
 function createDefaultProps(props) {
     var _filters = createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filtersParsedType);
     var _sorts = createDefaultSorter(props.tableId, props.columns);
     var _columnsAndStyles = getHiddenColumnsAndStyles(props.tableId);
-    console.log({
-        filters: _filters,
-        sort: _sorts,
-        hideColumns: _columnsAndStyles.hideColumns,
-        showVerticalBorders: _columnsAndStyles.showVerticalBorders,
-        lineSpacing: _columnsAndStyles.lineSpacing
-    });
     return {
         filters: _filters,
         sort: _sorts,
         hideColumns: _columnsAndStyles.hideColumns,
         showVerticalBorders: _columnsAndStyles.showVerticalBorders,
-        lineSpacing: _columnsAndStyles.lineSpacing
+        lineSpacing: _columnsAndStyles.lineSpacing,
+        perPageItems: !!_columnsAndStyles.perPageItems ? _columnsAndStyles.perPageItems : !!props.defaultPerPageItems ? props.defaultPerPageItems : 10
     };
 }
 
 FiltersContext.displayName = "ServerSideTableContext";
 var ServerSideTable = React.forwardRef(function (props, ref) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
     var translationsProps = props.translationsProps;
-    var _m = React.useState(!!props.tableId && !!((_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters) ? lodash.cloneDeep(props.defaultProps.filters) :
+    var _o = React.useState(!!props.tableId && !!((_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters) ? lodash.cloneDeep(props.defaultProps.filters) :
         !!props.tableId ? getTableFilters(props.tableId) :
-            !!((_b = props.defaultProps) === null || _b === void 0 ? void 0 : _b.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), filtersState = _m[0], setFiltersState = _m[1];
-    var _o = React.useState(!!props.tableId && !!props.defaultProps ? lodash.cloneDeep(props.defaultProps.filters) :
+            !!((_b = props.defaultProps) === null || _b === void 0 ? void 0 : _b.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), filtersState = _o[0], setFiltersState = _o[1];
+    var _p = React.useState(!!props.tableId && !!props.defaultProps ? lodash.cloneDeep(props.defaultProps.filters) :
         !!props.tableId ? getTableFilters(props.tableId) :
-            !!((_c = props.defaultProps) === null || _c === void 0 ? void 0 : _c.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), submitFiltersState = _o[0], setSubmitFilterState = _o[1];
-    var _p = React.useState(!!((_d = props.defaultProps) === null || _d === void 0 ? void 0 : _d.sort) ? props.defaultProps.sort : null), sorterState = _p[0], setSorterState = _p[1];
-    var _q = React.useState(!!((_e = props.defaultProps) === null || _e === void 0 ? void 0 : _e.sort) ? Object.values(props.defaultProps.sort)
+            !!((_c = props.defaultProps) === null || _c === void 0 ? void 0 : _c.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), submitFiltersState = _p[0], setSubmitFilterState = _p[1];
+    var _q = React.useState(!!((_d = props.defaultProps) === null || _d === void 0 ? void 0 : _d.sort) ? props.defaultProps.sort : null), sorterState = _q[0], setSorterState = _q[1];
+    var _r = React.useState(!!((_e = props.defaultProps) === null || _e === void 0 ? void 0 : _e.sort) ? Object.values(props.defaultProps.sort)
         .filter(function (sorter) { return !!sorter.value; })
-        .map(function (sorter) { return sorter.attribut + ',' + sorter.value; }) : []), submitSorter = _q[0], setSubmitSorter = _q[1];
-    var _r = React.useState(0), offset = _r[0], setOffset = _r[1];
-    var _s = React.useState(props.perPageItems ? props.perPageItems : 10), perPage = _s[0], setPerPage = _s[1];
-    var _t = React.useState(null), parsedFilters = _t[0], setParsedFilters = _t[1];
+        .map(function (sorter) { return sorter.attribut + ',' + sorter.value; }) : []), submitSorter = _r[0], setSubmitSorter = _r[1];
+    var _s = React.useState(0), offset = _s[0], setOffset = _s[1];
+    var _t = React.useState(!!((_f = props.defaultProps) === null || _f === void 0 ? void 0 : _f.perPageItems) ? props.defaultProps.perPageItems : !!props.perPageItems ? props.perPageItems : 999), perPage = _t[0], setPerPage = _t[1];
+    var _u = React.useState(null), parsedFilters = _u[0], setParsedFilters = _u[1];
     var tableRef = React.useRef(null);
-    var _u = React.useState(null), data = _u[0], setData = _u[1];
-    var _v = React.useState(Object.keys(props === null || props === void 0 ? void 0 : props.defaultProps.filters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultProps.filters[f]["locked"]; })), lockedFilters = _v[0], setLockedFilters = _v[1];
+    var _v = React.useState(null), data = _v[0], setData = _v[1];
+    var lockedFilters = (!!props.defaultProps ? Object.keys(props === null || props === void 0 ? void 0 : props.defaultProps.filters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultProps.filters[f]["locked"]; }) : []);
     var _w = React.useState(false), loading = _w[0], setLoading = _w[1];
     var _x = React.useState(false), haveSelectedRows = _x[0], setHaveSelectedRows = _x[1];
-    var _y = React.useState(!!((_f = props.defaultProps) === null || _f === void 0 ? void 0 : _f.hideColumns) ? props.defaultProps.hideColumns : []), hiddenColumns = _y[0], setHiddenColumns = _y[1];
-    var _z = React.useState(!!((_g = props.defaultProps) === null || _g === void 0 ? void 0 : _g.lineSpacing) ? props.defaultProps.lineSpacing : "medium"), lineSpacing = _z[0], setLineSpacing = _z[1];
-    var _0 = React.useState(!!props.showVerticalBorders ? true : !!((_h = props.defaultProps) === null || _h === void 0 ? void 0 : _h.showVerticalBorders) ? props.defaultProps.showVerticalBorders : false), showVerticalBorders = _0[0], setShowVerticalBorders = _0[1];
+    var _y = React.useState(!!((_g = props.defaultProps) === null || _g === void 0 ? void 0 : _g.hideColumns) ? props.defaultProps.hideColumns : []), hiddenColumns = _y[0], setHiddenColumns = _y[1];
+    var _z = React.useState(!!((_h = props.defaultProps) === null || _h === void 0 ? void 0 : _h.lineSpacing) ? props.defaultProps.lineSpacing : "medium"), lineSpacing = _z[0], setLineSpacing = _z[1];
+    var _0 = React.useState(!!props.showVerticalBorders ? true : !!((_j = props.defaultProps) === null || _j === void 0 ? void 0 : _j.showVerticalBorders) ? props.defaultProps.showVerticalBorders : false), showVerticalBorders = _0[0], setShowVerticalBorders = _0[1];
+    var isInitialMount = React.useRef(true);
     React.useEffect(function () {
         var _a;
         if (!props.defaultProps && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0) {
@@ -24635,7 +24634,6 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             }
         });
     };
-    var isInitialMount = React.useRef(true);
     var handlePageClick = function (e) {
         var selectedPage = e.selected;
         setOffset(selectedPage);
@@ -24660,7 +24658,7 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             isInitialMount.current = false;
         else if (!!submitFiltersState) {
             if (!!submitFiltersState && !lodash.isEmpty(submitFiltersState))
-                registerTableFilters({ filters: submitFiltersState }, props.tableId);
+                registerTableFilters({ filters: submitFiltersState, perPageItems: perPage }, props.tableId);
             var filters = props.filterParsedType === "rsql"
                 ? parseFilterRSQL(submitFiltersState)
                 : parseFilterFuzzy(submitFiltersState);
@@ -24668,6 +24666,10 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                 setParsedFilters(filters);
                 setOffset(0);
                 updateDataOnChange({ offset: offset, perPage: perPage, filters: filters, sorter: submitSorter });
+            }
+            else {
+                setOffset(0);
+                updateDataOnChange({ offset: offset, perPage: perPage, filters: null, sorter: submitSorter });
             }
         }
     }, [submitFiltersState]);
@@ -24768,14 +24770,14 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                     React__default.createElement("div", { className: "SST_HEADER" },
                         React__default.createElement("div", { className: "SST_actions_buttons" },
                             props.showAddBtn &&
-                                React__default.createElement("button", { className: "btn bg-plain-primary sst_main_button", onClick: props.onAddClick }, (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.add) !== null && _j !== void 0 ? _j : translations.add),
+                                React__default.createElement("button", { className: "btn bg-plain-primary sst_main_button", onClick: function () { return props.onAddClick(); } }, (_k = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.add) !== null && _k !== void 0 ? _k : translations.add),
                             !!props.optionnalsHeaderContent && props.optionnalsHeaderContent),
                         React__default.createElement("div", { style: { display: 'flex', alignItems: 'center', width: "100%", justifyContent: "space-between", flexDirection: "row-reverse" }, className: "table-actions-container" },
                             React__default.createElement("div", { className: "icons" }, !reactDeviceDetect.isMobile &&
                                 React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: onLineSpacingChange, translationsProps: translationsProps, enabledExport: props.enabledExport, handleExport: exportData, darkMode: props.darkMode, tableId: props.tableId, lineSpacing: lineSpacing, showVerticalBorders: showVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange })),
                             props.isFilter && !!props.filtersList && props.filtersList.length > 0 &&
                                 React__default.createElement(React__default.Fragment, null,
-                                    React__default.createElement(FiltersContainer, { darkMode: props.darkMode, className: ((_k = props.filtersContainerClassName) !== null && _k !== void 0 ? _k : "") + " SST_filters_container" },
+                                    React__default.createElement(FiltersContainer, { darkMode: props.darkMode, className: ((_l = props.filtersContainerClassName) !== null && _l !== void 0 ? _l : "") + " SST_filters_container" },
                                         React__default.createElement(FiltersViewers, { translationsProps: translationsProps, darkMode: props.darkMode, lockedFilters: lockedFilters }),
                                         reactDeviceDetect.isMobile &&
                                             React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, darkMode: props.darkMode, isMobile: reactDeviceDetect.isMobile }))))),
@@ -24786,8 +24788,11 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                 React__default.createElement("div", { className: "footerTable" },
                     React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement("i", { className: "ri-arrow-left-s-line", style: { transform: "translateY(2px)" } }), nextLabel: React__default.createElement("i", { className: "ri-arrow-right-s-line", style: { transform: "translateY(2px)" } }), breakLabel: "...", breakClassName: "break-me", pageCount: data === null || data === void 0 ? void 0 : data.totalPages, marginPagesDisplayed: 2, pageRangeDisplayed: 2, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
                     React__default.createElement(PerPageContainer, null,
-                        React__default.createElement("label", { htmlFor: "perPageSelect" }, (_l = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.linePerPage) !== null && _l !== void 0 ? _l : translations.linePerPage),
-                        React__default.createElement("select", { name: "perPageSelect", value: perPage, onChange: function (e) { return setPerPage(parseInt(e.target.value)); }, style: { background: "#fff", width: 30 } },
+                        React__default.createElement("label", { htmlFor: "perPageSelect" }, (_m = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.linePerPage) !== null && _m !== void 0 ? _m : translations.linePerPage),
+                        React__default.createElement("select", { name: "perPageSelect", value: perPage, onChange: function (e) {
+                                setPerPage(parseInt(e.target.value));
+                                registerTableFilters({ perPageItems: parseInt(e.target.value) }, props.tableId);
+                            }, style: { background: "#fff", width: 30 } },
                             React__default.createElement("option", { value: "5" }, "5"),
                             React__default.createElement("option", { value: "10" }, "10"),
                             React__default.createElement("option", { value: "20" }, "20"),

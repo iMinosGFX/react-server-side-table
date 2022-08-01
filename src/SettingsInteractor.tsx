@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef, useContext} from 'react'
 import styled from 'styled-components';
 import {CSSTransition} from "react-transition-group"
 import ColumnsSelector from './ColumnsSelector';
@@ -9,6 +9,7 @@ import { destroyTableFiltersStorage } from './helpers/SSTlocalStorageManagement'
 import { ExportType } from './types/components-props';
 import { CSVLink } from "react-csv";
 import { setTimeout } from 'timers';
+import FiltersContext from './context/filterscontext';
 
 const Container = styled.div`
     position: relative;
@@ -107,24 +108,29 @@ const DropdownMenu = (props: PropsDropdown) => {
     const [activeMenu, setActiveMenu] = useState<string>('main')
     const [menuHeight, setMenuHeight] = useState<any>(null)
     const [downloadedData, setDownloadedData] = useState<any>([])
+    const filtersState = useContext(FiltersContext)
     const nodeBtn = useRef()
 
     const fetchData = (e: ExportType) => {
         props.handleExport(e)
         .then(data => {
-            let _activeColumns = columns.filter(col => !hiddenColumns.includes(col.accessor)).map(c => ({name: !!c.Header ? c.Header : "N/A", accessor: c.accessor}))
+            let _activeColumns = columns.filter(col => !hiddenColumns.includes(col.accessor)).map(c => ({name: !!c.Header ? c.Header : c.accessor ?? "N/A", accessor: c.accessor, exportedValue: c.exportFormat}))
 
             let _preparedDataToExported = data.content.map(item => {
                 let _pushedObject = {}
                 for(let i = 0; i < _activeColumns.length; i++) {
-                    let _value = _activeColumns[i].accessor.split(".").reduce((a,b) => a[b], item)
+                    let _value =  _activeColumns[i].accessor.split(".").reduce((a,b) => a[b], item),
+                        _exporter = _activeColumns[i].exportedValue
+
+                        console.log(!!_exporter ?  _exporter(_value) : null)
+
                     if(!!_value)
                         if(Array.isArray(_value)){
-                            _pushedObject[_activeColumns[i].name] = _value.map(v => v?.[columns.filter(c => c.accessor === _activeColumns[i].accessor)[0]?.exportAccessor])?.join(",")
+                            _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : _value.map(v => v?.[columns.filter(c => c.accessor === _activeColumns[i].accessor)[0]?.exportAccessor])?.join(",")
                         } else if(typeof(_value) === "object"){
-                            _pushedObject[_activeColumns[i].name] = JSON.stringify(_value)
+                            _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : JSON.stringify(_value)
                         } else {
-                            _pushedObject[_activeColumns[i].name] = _value
+                            _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : _value
                         }
                     else _pushedObject[_activeColumns[i].name] = ""
                 }
