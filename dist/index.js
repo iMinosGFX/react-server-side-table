@@ -23398,6 +23398,7 @@ var ItemFilter = function (props) {
             case 'date':
                 return (React__default.createElement(DateFilter, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { filtersState.onClickApply(); onClose(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, darkMode: darkMode }));
             case 'checkbox':
+            case 'checkboxCtn':
                 return (React__default.createElement(CheckboxFilter, { filter: filter, darkMode: darkMode }));
             case 'booleanRadio':
                 return (React__default.createElement(BooleanRadioFilter, { filter: filter, translationsProps: translationsProps, darkMode: darkMode }));
@@ -23544,7 +23545,7 @@ var Table = React.forwardRef(function (props, ref) {
                             React__default.createElement("i", { onClick: function () { return setOpenedFilter(openedFilter === column.id ? null : column.id); }, className: "ri-filter-line fitler_icon " + (filter.idAccessor === openedFilter ? "SST_filter_active" : "") })),
                     !!filter && filter.idAccessor === openedFilter &&
                         React__default.createElement("div", { className: "SST_header_filter_modal" },
-                            React__default.createElement(ItemFilter, { key: (_e = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) === null || _e === void 0 ? void 0 : _e.name, filter: (_f = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) !== null && _f !== void 0 ? _f : null, filterParsedType: filterParsedType, translationsProps: translationsProps, isOnRightOfViewport: j >= (headerGroup.headers.length - counterColumnToItemGoLeft), darkMode: false, onClose: function () { return setOpenedFilter(null); } }))));
+                            React__default.createElement(ItemFilter, { key: (_e = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) === null || _e === void 0 ? void 0 : _e.name, filter: (_f = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) !== null && _f !== void 0 ? _f : null, filterParsedType: filterParsedType, translationsProps: translationsProps, isOnRightOfViewport: !counterColumnToItemGoLeft ? false : j >= (headerGroup.headers.length - counterColumnToItemGoLeft), darkMode: false, onClose: function () { return setOpenedFilter(null); } }))));
             }))); })),
             asyncLoading ?
                 React__default.createElement("tbody", { style: { textAlign: "center", display: 'flex', alignItems: "center" } },
@@ -23556,7 +23557,7 @@ var Table = React.forwardRef(function (props, ref) {
                     React__default.createElement("tbody", __assign({}, getTableBodyProps(), { className: props.showVerticalBorders ? "" : "no-border" }), rows.map(function (row, i) {
                         prepareRow(row);
                         return (React__default.createElement(React__default.Fragment, { key: row.getRowProps().key },
-                            React__default.createElement("tr", __assign({}, row.getRowProps()), row.cells.map(function (cell, k) {
+                            React__default.createElement("tr", __assign({}, row.getRowProps(), { onClick: function () { return !!props.onRowClick && props.onRowClick(row.original); }, className: !!props.onRowClick ? "pointer" : "" }), row.cells.map(function (cell, k) {
                                 return React__default.createElement("td", __assign({}, cell.getCellProps(), { key: k, style: { textAlign: cell.column.alignment } }), cell.render('Cell'));
                             })),
                             row.isExpanded ? (React__default.createElement("tr", { style: { background: '#F1EFFE' } },
@@ -24204,11 +24205,11 @@ var templateObject_1$4;
 function translateOptionsToOperator(opt, val) {
     switch (opt) {
         case 'contains':
-            return "=like=*" + val + "*";
+            return "=like=\"*" + val + "*\"";
         case 'startWith':
-            return "=like=" + val + "*";
+            return "=like=\"" + val + "*\"";
         case 'finishWith':
-            return "=like=*" + val;
+            return "=like=\"*" + val + "\"";
         case 'equal':
             return "==" + val;
         case 'moreThan':
@@ -24218,11 +24219,11 @@ function translateOptionsToOperator(opt, val) {
         case 'between':
             return "=bw=(" + val.split('-')[0] + "," + val.split('-')[1] + ")";
         case 'atDay':
-            return "=bw=(" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + "," + moment(val).add(1, 'day').startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + ")";
+            return "=bw=(" + moment(val).startOf('day').toISOString() + "," + moment(val).add(1, 'day').startOf('day').toISOString() + ")";
         case 'minDay':
-            return ">=" + moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS');
+            return ">=" + moment(val).startOf('day').toISOString();
         case 'maxDay':
-            return "<=" + moment(val).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS');
+            return "<=" + moment(val).endOf('day').toISOString();
         default:
             return opt;
     }
@@ -24238,10 +24239,10 @@ function parseCommons(name, filter) {
     });
     return parse;
 }
-function parseCheckbox(name, filter) {
+function parseCheckbox(name, filter, isContain) {
     var parse = '';
     if (filter["main"].value.length > 0) {
-        parse += name + "=in=(" + filter["main"].value.join(',') + ");";
+        parse += name + "=" + (isContain ? "in" : "ct") + "=(" + filter["main"].value.join(',') + ");";
     }
     return parse;
 }
@@ -24272,7 +24273,11 @@ function parseFilterRSQL(filters) {
                 parsedString += parseCommons(key, value);
                 break;
             case 'checkbox':
+            case 'checkboxCtn':
                 parsedString += parseCheckbox(key, value);
+                break;
+            case 'checkboxCtn':
+                parsedString += parseCheckbox(key, value, true);
                 break;
             case 'booleanRadio':
                 parsedString += parseBooleanRadios(value);
@@ -24587,28 +24592,29 @@ function createDefaultProps(props) {
 FiltersContext.displayName = "ServerSideTableContext";
 var ServerSideTable = React.forwardRef(function (props, ref) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
-    var translationsProps = props.translationsProps;
-    var _o = React.useState(!!props.tableId && !!((_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters) ? lodash.cloneDeep(props.defaultProps.filters) :
+    var translationsProps = props.translationsProps, _o = props.marginPagesDisplayed, marginPagesDisplayed = _o === void 0 ? 2 : _o, _p = props.pageRangeDisplayed, pageRangeDisplayed = _p === void 0 ? 2 : _p;
+    var _q = React.useState(!!props.tableId && !!((_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters) ? lodash.cloneDeep(props.defaultProps.filters) :
         !!props.tableId ? getTableFilters(props.tableId) :
-            !!((_b = props.defaultProps) === null || _b === void 0 ? void 0 : _b.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), filtersState = _o[0], setFiltersState = _o[1];
-    var _p = React.useState(!!props.tableId && !!props.defaultProps ? lodash.cloneDeep(props.defaultProps.filters) :
+            !!((_b = props.defaultProps) === null || _b === void 0 ? void 0 : _b.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), filtersState = _q[0], setFiltersState = _q[1];
+    var _r = React.useState(!!props.tableId && !!props.defaultProps ? lodash.cloneDeep(props.defaultProps.filters) :
         !!props.tableId ? getTableFilters(props.tableId) :
-            !!((_c = props.defaultProps) === null || _c === void 0 ? void 0 : _c.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), submitFiltersState = _p[0], setSubmitFilterState = _p[1];
-    var _q = React.useState(!!((_d = props.defaultProps) === null || _d === void 0 ? void 0 : _d.sort) ? props.defaultProps.sort : null), sorterState = _q[0], setSorterState = _q[1];
-    var _r = React.useState(!!((_e = props.defaultProps) === null || _e === void 0 ? void 0 : _e.sort) ? Object.values(props.defaultProps.sort)
+            !!((_c = props.defaultProps) === null || _c === void 0 ? void 0 : _c.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), submitFiltersState = _r[0], setSubmitFilterState = _r[1];
+    var _s = React.useState(!!((_d = props.defaultProps) === null || _d === void 0 ? void 0 : _d.sort) ? props.defaultProps.sort : null), sorterState = _s[0], setSorterState = _s[1];
+    var _t = React.useState(!!((_e = props.defaultProps) === null || _e === void 0 ? void 0 : _e.sort) ? Object.values(props.defaultProps.sort)
         .filter(function (sorter) { return !!sorter.value; })
-        .map(function (sorter) { return sorter.attribut + ',' + sorter.value; }) : []), submitSorter = _r[0], setSubmitSorter = _r[1];
-    var _s = React.useState(0), offset = _s[0], setOffset = _s[1];
-    var _t = React.useState(!!((_f = props.defaultProps) === null || _f === void 0 ? void 0 : _f.perPageItems) ? props.defaultProps.perPageItems : !!props.perPageItems ? props.perPageItems : 999), perPage = _t[0], setPerPage = _t[1];
-    var _u = React.useState(null), parsedFilters = _u[0], setParsedFilters = _u[1];
+        .map(function (sorter) { return sorter.attribut + ',' + sorter.value; }) : []), submitSorter = _t[0], setSubmitSorter = _t[1];
+    var _u = React.useState(0), offset = _u[0], setOffset = _u[1];
+    var _v = React.useState(null), totalElements = _v[0], setTotalElements = _v[1];
+    var _w = React.useState(!!((_f = props.defaultProps) === null || _f === void 0 ? void 0 : _f.perPageItems) ? props.defaultProps.perPageItems : !!props.perPageItems ? props.perPageItems : 999), perPage = _w[0], setPerPage = _w[1];
+    var _x = React.useState(null), parsedFilters = _x[0], setParsedFilters = _x[1];
     var tableRef = React.useRef(null);
-    var _v = React.useState(null), data = _v[0], setData = _v[1];
+    var _y = React.useState(null), data = _y[0], setData = _y[1];
     var lockedFilters = (!!props.defaultProps ? Object.keys(props === null || props === void 0 ? void 0 : props.defaultProps.filters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultProps.filters[f]["locked"]; }) : []);
-    var _w = React.useState(false), loading = _w[0], setLoading = _w[1];
-    var _x = React.useState(false), haveSelectedRows = _x[0], setHaveSelectedRows = _x[1];
-    var _y = React.useState(!!((_g = props.defaultProps) === null || _g === void 0 ? void 0 : _g.hideColumns) ? props.defaultProps.hideColumns : []), hiddenColumns = _y[0], setHiddenColumns = _y[1];
-    var _z = React.useState(!!((_h = props.defaultProps) === null || _h === void 0 ? void 0 : _h.lineSpacing) ? props.defaultProps.lineSpacing : "medium"), lineSpacing = _z[0], setLineSpacing = _z[1];
-    var _0 = React.useState(!!props.showVerticalBorders ? true : !!((_j = props.defaultProps) === null || _j === void 0 ? void 0 : _j.showVerticalBorders) ? props.defaultProps.showVerticalBorders : false), showVerticalBorders = _0[0], setShowVerticalBorders = _0[1];
+    var _z = React.useState(false), loading = _z[0], setLoading = _z[1];
+    var _0 = React.useState(false), haveSelectedRows = _0[0], setHaveSelectedRows = _0[1];
+    var _1 = React.useState(!!((_g = props.defaultProps) === null || _g === void 0 ? void 0 : _g.hideColumns) ? props.defaultProps.hideColumns : []), hiddenColumns = _1[0], setHiddenColumns = _1[1];
+    var _2 = React.useState(!!((_h = props.defaultProps) === null || _h === void 0 ? void 0 : _h.lineSpacing) ? props.defaultProps.lineSpacing : "medium"), lineSpacing = _2[0], setLineSpacing = _2[1];
+    var _3 = React.useState(!!props.showVerticalBorders ? true : !!((_j = props.defaultProps) === null || _j === void 0 ? void 0 : _j.showVerticalBorders) ? props.defaultProps.showVerticalBorders : false), showVerticalBorders = _3[0], setShowVerticalBorders = _3[1];
     var isInitialMount = React.useRef(true);
     React.useEffect(function () {
         var _a;
@@ -24628,9 +24634,11 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         setLoading(true);
         props.onDataChange(requestParam)
             .then(function (data) {
+            var _a;
             if (!!data && !!(data === null || data === void 0 ? void 0 : data.content)) {
                 setData(data);
                 setLoading(false);
+                setTotalElements((_a = data === null || data === void 0 ? void 0 : data.totalElements) !== null && _a !== void 0 ? _a : null);
             }
         });
     };
@@ -24784,9 +24792,14 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                 React__default.createElement(React__default.Fragment, null,
                     !!props.selectableRows && !!props.selectedRowsAction && haveSelectedRows &&
                         React__default.createElement("div", { className: "SST_selected_rows_buttons" }, props.selectedRowsAction),
-                    React__default.createElement(Table, { ref: tableRef, data: !data ? [] : data.content, clickableHeader: onHeaderClick, columns: reactDeviceDetect.isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns, filters: props.filtersList, filterParsedType: props.filterParsedType, translationsProps: translationsProps, selectableRows: props.selectableRows, setHaveSelectedRows: setHaveSelectedRows, showVerticalBorders: showVerticalBorders, asyncLoading: loading, counterColumnToItemGoLeft: props.counterColumnToItemGoLeft })),
+                    React__default.createElement(Table, { ref: tableRef, data: !data ? [] : data.content, clickableHeader: onHeaderClick, columns: reactDeviceDetect.isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns, filters: props.filtersList, filterParsedType: props.filterParsedType, translationsProps: translationsProps, selectableRows: props.selectableRows, setHaveSelectedRows: setHaveSelectedRows, showVerticalBorders: showVerticalBorders, asyncLoading: loading, onRowClick: props.onRowClick, counterColumnToItemGoLeft: props.counterColumnToItemGoLeft })),
                 React__default.createElement("div", { className: "footerTable" },
-                    React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement("i", { className: "ri-arrow-left-s-line", style: { transform: "translateY(2px)" } }), nextLabel: React__default.createElement("i", { className: "ri-arrow-right-s-line", style: { transform: "translateY(2px)" } }), breakLabel: "...", breakClassName: "break-me", pageCount: data === null || data === void 0 ? void 0 : data.totalPages, marginPagesDisplayed: 2, pageRangeDisplayed: 2, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
+                    React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement("i", { className: "ri-arrow-left-s-line", style: { transform: "translateY(2px)" } }), nextLabel: React__default.createElement("i", { className: "ri-arrow-right-s-line", style: { transform: "translateY(2px)" } }), breakLabel: "...", breakClassName: "break-me", pageCount: data === null || data === void 0 ? void 0 : data.totalPages, marginPagesDisplayed: marginPagesDisplayed, pageRangeDisplayed: pageRangeDisplayed, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
+                    !!totalElements && !props.withoutTotalElements && React__default.createElement("span", { className: 'font-italic medium' },
+                        "Total : ",
+                        totalElements,
+                        " \u00E9lement",
+                        totalElements > 1 && "s"),
                     React__default.createElement(PerPageContainer, null,
                         React__default.createElement("label", { htmlFor: "perPageSelect" }, (_m = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.linePerPage) !== null && _m !== void 0 ? _m : translations.linePerPage),
                         React__default.createElement("select", { name: "perPageSelect", value: perPage, onChange: function (e) {

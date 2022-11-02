@@ -110,7 +110,7 @@ const ItemFilter = (props: Props) => {
                         translationsProps={translationsProps}
                         darkMode={darkMode}/>
                     )
-            case 'checkbox':
+            case 'checkbox': case 'checkboxCtn': 
                 return(
                     <CheckboxFilter 
                         filter={filter}

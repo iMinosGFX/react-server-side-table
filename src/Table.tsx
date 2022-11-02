@@ -187,7 +187,7 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
                           filter={filters.filter(f => f.idAccessor === column.id)[0] ?? null} 
                           filterParsedType={filterParsedType}
                           translationsProps={translationsProps}
-                          isOnRightOfViewport={j >= (headerGroup.headers.length - counterColumnToItemGoLeft)}
+                          isOnRightOfViewport={!counterColumnToItemGoLeft ? false : j >= (headerGroup.headers.length - counterColumnToItemGoLeft)}
                           darkMode={false}
                           onClose={() => setOpenedFilter(null)}/>
                       </div>
@@ -212,7 +212,7 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
               prepareRow(row)
               return (
                 <React.Fragment key={row.getRowProps().key}>
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()}  onClick={() => !!props.onRowClick && props.onRowClick(row.original)} className={!!props.onRowClick ? "pointer" : ""}>
                   {row.cells.map((cell,k) => {
                     return <td {...cell.getCellProps()} key={k} style={{textAlign: cell.column.alignment}}>{cell.render('Cell')}</td>
                   })}

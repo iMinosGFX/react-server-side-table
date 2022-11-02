@@ -4,11 +4,11 @@ import _ from "lodash"
 function translateOptionsToOperator(opt: string, val:string): string{
     switch(opt){
         case 'contains':
-            return `=like=*${val}*`
+            return `=like="*${val}*"`
         case 'startWith' :
-            return `=like=${val}*`
+            return `=like="${val}*"`
         case 'finishWith' :
-            return `=like=*${val}`
+            return `=like="*${val}"`
         case 'equal' :
             return `==${val}`
         case 'moreThan' :
@@ -18,11 +18,11 @@ function translateOptionsToOperator(opt: string, val:string): string{
         case 'between' :
             return `=bw=(${val.split('-')[0]},${val.split('-')[1]})`
         case 'atDay' :
-            return `=bw=(${moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS')},${moment(val).add(1,'day').startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS')})`
+            return `=bw=(${moment(val).startOf('day').toISOString()},${moment(val).add(1,'day').startOf('day').toISOString()})`
         case 'minDay' :
-            return `>=${moment(val).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS')}`
+            return `>=${moment(val).startOf('day').toISOString()}`
         case 'maxDay' :
-            return `<=${moment(val).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS')}`
+            return `<=${moment(val).endOf('day').toISOString()}`
         default:
             return opt
     }
@@ -47,10 +47,10 @@ function parseCommons(name: string, filter: any): string{
  * Parse radio filter => string[]
  * Return =ct=(*list of string.join(',')*)
  */
-function parseCheckbox(name:string, filter: any): string{
+function parseCheckbox(name:string, filter: any, isContain?: boolean): string{
     let parse = ''
     if(filter["main"].value.length > 0){
-        parse += `${name}=in=(${filter["main"].value.join(',')});`
+        parse += `${name}=${isContain ? "in" : "ct"}=(${filter["main"].value.join(',')});`
     }
     return parse
 }
@@ -88,8 +88,11 @@ export function parseFilterRSQL(filters: any):string {
             case 'text': case 'number': case 'date': 
                 parsedString += parseCommons(key, value) 
                 break;
-            case 'checkbox' : 
+            case 'checkbox': case 'checkboxCtn': 
                 parsedString += parseCheckbox(key, value)  
+                break;
+            case 'checkboxCtn': 
+                parsedString += parseCheckbox(key, value, true)  
                 break;
             case 'booleanRadio' : 
                 parsedString += parseBooleanRadios(value)  

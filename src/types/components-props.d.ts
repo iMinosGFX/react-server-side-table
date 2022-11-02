@@ -66,6 +66,7 @@ export type SSTProps = {
     translationsProps?: Translations
     enabledExport?: boolean
     onExportClick?(): void
+    onRowClick?(e: any):void
     mobileColumns?: any[] 
     containerClassName?:string
     filtersContainerClassName?:string
@@ -76,6 +77,9 @@ export type SSTProps = {
     showVerticalBorders?: boolean
     defaultProps?: DefaultProps
     counterColumnToItemGoLeft?: number
+    marginPagesDisplayed?:number
+    pageRangeDisplayed?:number
+    withoutTotalElements?: boolean
 }
 
 
@@ -97,6 +101,7 @@ export type TableProps = {
     selectableRows?: boolean
     showVerticalBorders?: boolean
     asyncLoading?: boolean
+    onRowClick?(e: any): void
     counterColumnToItemGoLeft?: number
     setHaveSelectedRows?: (e: boolean) => void
 }

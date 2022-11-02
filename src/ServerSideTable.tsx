@@ -22,14 +22,16 @@ FiltersContext.displayName = "ServerSideTableContext";
 
 const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 
-    const {translationsProps} = props     
+    const {translationsProps, marginPagesDisplayed = 2, pageRangeDisplayed = 2} = props     
 
+    // @ts-ignore
     const [filtersState, setFiltersState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : 
                                                                     !!props.tableId ? getTableFilters(props.tableId) : 
                                                                     !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : {})
+    // @ts-ignore
     const [submitFiltersState, setSubmitFilterState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultProps ? _.cloneDeep(props.defaultProps.filters) :
-                                                                    !!props.tableId ? getTableFilters(props.tableId)  : 
-                                                                    !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : {})
+                                                                                !!props.tableId ? getTableFilters(props.tableId)  : 
+                                                                                !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : {})
 
                                                                     
     const [sorterState, setSorterState] = useState<SorterRecord>(!!props.defaultProps?.sort ? props.defaultProps.sort : null )
@@ -39,6 +41,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 	
     
     const [offset, setOffset] = useState<number>(0);
+    const [totalElements, setTotalElements] = useState<number>(null)
     const [perPage, setPerPage] = useState<number>(!!props.defaultProps?.perPageItems ? props.defaultProps.perPageItems : !!props.perPageItems ? props.perPageItems : 999);
     const [parsedFilters, setParsedFilters] = useState<any>(null)
     const tableRef = useRef<TableHandler>(null)
@@ -73,6 +76,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                 if(!!data && !!data?.content){
                     setData(data)
                     setLoading(false)
+                    setTotalElements(data?.totalElements ?? null)
                 }
             })
     }
@@ -297,6 +301,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                             setHaveSelectedRows={setHaveSelectedRows}
                             showVerticalBorders={showVerticalBorders}
                             asyncLoading={loading}
+                            onRowClick={props.onRowClick}
                             counterColumnToItemGoLeft={props.counterColumnToItemGoLeft}/>
                         </>
                     <div className="footerTable">
@@ -306,12 +311,13 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                             breakLabel={"..."}
                             breakClassName={"break-me"}
                             pageCount={data?.totalPages}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={2}
+                            marginPagesDisplayed={marginPagesDisplayed}
+                            pageRangeDisplayed={pageRangeDisplayed}
                             onPageChange={handlePageClick}
                             containerClassName={"paginationTable"}
                             subContainerClassName={"pages paginationTable"}
                             activeClassName={"active"} />
+                        {!!totalElements && !props.withoutTotalElements && <span className='font-italic medium'>Total : {totalElements} élement{totalElements > 1 && "s"}</span>}
                         <PerPageContainer>
                             <label htmlFor="perPageSelect">{translationsProps?.linePerPage ?? translations.linePerPage}</label>
                             <select 
