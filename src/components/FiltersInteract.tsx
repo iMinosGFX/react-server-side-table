@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import styled  from 'styled-components';
 import ItemFilter from './ItemFilter';
 import _ from "lodash";
-import FiltersContext from './context/filterscontext';
-import { Translations } from './types/props';
-import { FilterItem, filtersType } from './types/entities';
-import { FiltersInteractProps } from './types/components-props';
+import FiltersContext from '../context/filterscontext';
+import { Translations } from '../types/props';
+import { FilterItem, filtersType } from '../types/entities';
+import { FiltersInteractProps } from '../types/components-props';
 
 const ListContainer = styled.div`
     display: flex;

@@ -3,10 +3,10 @@ import { useExpanded } from 'react-table';
 import { useTable, useRowSelect } from 'react-table'
 import _ from "lodash"
 import ItemFilter from './ItemFilter'
-import FiltersContext from "./context/filterscontext"
-import { Sorter } from './types/entities';
-import { translations } from './assets/translations';
-import { TableProps } from './types/components-props';
+import FiltersContext from "../context/filterscontext"
+import { Sorter } from '../types/entities';
+import { translations } from '../assets/translations';
+import { TableProps } from '../types/components-props';
 
 const IndeterminateCheckbox = React.forwardRef(
   // @ts-ignore
@@ -42,7 +42,7 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
     renderRowSubComponent, hiddenColumns, 
     filters, filterParsedType, 
     translationsProps, selectableRows,
-    asyncLoading, counterColumnToItemGoLeft = 2
+    smallTextsHeader, asyncLoading, counterColumnToItemGoLeft = 2
   } = props
 
   const [openedFilter, setOpenedFilter] = useState<string>(null)
@@ -160,7 +160,7 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
                   <th {...column.getHeaderProps()} className="SST_header_cell" key={j}>
                     <div className="SST_header_container noselect" style={{justifyContent: !!column.alignment ? column.alignment : "left"}}>
                       <span 
-                        className={`SST_header_title ${!!SstState.sorterState?.[column.id] ? "pointer" : ""}`}
+                        className={`SST_header_title ${!!SstState.sorterState?.[column.id] ? "pointer" : ""} ${smallTextsHeader ? "SST_header_title_small" : ""}`}
                         {...column.getHeaderProps()}
                         onClick={() => {
                           if(!!SstState.sorterState[column.id])

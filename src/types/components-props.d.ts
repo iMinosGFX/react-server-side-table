@@ -80,6 +80,7 @@ export type SSTProps = {
     marginPagesDisplayed?:number
     pageRangeDisplayed?:number
     withoutTotalElements?: boolean
+    smallTextsHeader?:boolean
 }
 
 
@@ -103,6 +104,7 @@ export type TableProps = {
     asyncLoading?: boolean
     onRowClick?(e: any): void
     counterColumnToItemGoLeft?: number
+    smallTextsHeader?:boolean
     setHaveSelectedRows?: (e: boolean) => void
 }
 

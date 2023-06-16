@@ -115,6 +115,9 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
                     span{
                         font-weight: 600;
                     }
+                    &.SST_header_title_small{
+                        font-size: 12px;
+                    }
                 }
                 i{
                     &.fitler_icon{
@@ -451,15 +454,17 @@ const FieldContainer = styled('div')<{darkMode: boolean}>`
 `
 
 const PerPageContainer = styled.div`
-	float: right;
     transform: translateY(3px);
     padding-right: 10px;
+    white-space: nowrap;
 	label{
 		padding-right: 10px;
 	}
 	select{
 		height: 40px;
 		width: 20px;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
 	}
     .perPageSelect {
         color: #A3A6C0;

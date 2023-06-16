@@ -4,7 +4,7 @@ export const translations: Translations = {
     add: "+ Ajouter",
     sortBy: "Trier par...",
     appliedFilters:"Filtres appliqués",
-    linePerPage:"Élements par page",
+    linePerPage:"Items par page",
     clearAll: "Effacer tout",
     clear: "Effacer",
     apply: "Appliquer",

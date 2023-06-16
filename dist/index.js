@@ -25,21 +25,10 @@ var React__default = _interopDefault(React);
 var Select = _interopDefault(require('react-select'));
 var styled = _interopDefault(require('styled-components'));
 var polished = require('polished');
-var polished__default = _interopDefault(polished);
-var reactTooltip = _interopDefault(require('react-tooltip'));
-var reactDeviceDetect = require('react-device-detect');
-var reactDeviceDetect__default = _interopDefault(reactDeviceDetect);
-var reactRouterDom = _interopDefault(require('react-router-dom'));
-var useModal = _interopDefault(require('@optalp/use-modal'));
-var useSidebar = _interopDefault(require('@optalp/use-sidebar'));
-var reactJoyride = _interopDefault(require('react-joyride'));
-var reactRouter = _interopDefault(require('react-router'));
-var framerMotion = _interopDefault(require('framer-motion'));
-var reactErrorBoundary = _interopDefault(require('react-error-boundary'));
-var moment = _interopDefault(require('moment'));
 var reactTransitionGroup = require('react-transition-group');
-var propTypes = _interopDefault(require('prop-types'));
-var timers = require('timers');
+var XLSX = _interopDefault(require('xlsx'));
+var moment = _interopDefault(require('moment'));
+var reactDeviceDetect = require('react-device-detect');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -21894,7 +21883,7 @@ var translations = {
     add: "+ Ajouter",
     sortBy: "Trier par...",
     appliedFilters: "Filtres appliqués",
-    linePerPage: "Élements par page",
+    linePerPage: "Items par page",
     clearAll: "Effacer tout",
     clear: "Effacer",
     apply: "Appliquer",
@@ -21935,13 +21924,13 @@ var translations = {
 };
 
 var TableContainer = styled("div")(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    padding-top: 10px;\n    margin: 0 5px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .SST_HEADER{\n        padding: .4rem;\n        width: 100%;\n        display: flex;\n        justify-content: space-between;\n        align-items: flex-start;\n        padding-right: 10px;\n        flex-direction: column;\n        .SST_actions_buttons{\n            display: flex;\n            align-items: center;\n            & > * {\n                margin: 0 5px;\n            }\n        }\n    }\n    .SST_selected_rows_buttons{\n        padding: .4rem;\n        display: flex;\n        align-items: center;\n        & > * {\n            margin: 0 5px;\n        }\n    }\n    @media only screen and (max-width: 540px){\n        .SST_HEADER{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"], ["\n    padding-top: 10px;\n    margin: 0 5px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .SST_HEADER{\n        padding: .4rem;\n        width: 100%;\n        display: flex;\n        justify-content: space-between;\n        align-items: flex-start;\n        padding-right: 10px;\n        flex-direction: column;\n        .SST_actions_buttons{\n            display: flex;\n            align-items: center;\n            & > * {\n                margin: 0 5px;\n            }\n        }\n    }\n    .SST_selected_rows_buttons{\n        padding: .4rem;\n        display: flex;\n        align-items: center;\n        & > * {\n            margin: 0 5px;\n        }\n    }\n    @media only screen and (max-width: 540px){\n        .SST_HEADER{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"])), function (props) { return props.darkMode ? "#2a3c4e" : "#fff"; }, function (props) { return props.darkMode ? "#272d3a" : "#E0E0E0"; }, function (props) { return props.darkMode ? "#bccde0" : "#2a3c4e"; }, function (props) { return props.darkMode ? "#2a3c4e" : "#fff;"; }, function (props) { return props.darkMode ? "#bccde0" : "#435F71"; });
-var TableStyles = styled("div")(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"], ["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"])), function (props) { return props.darkMode ? "#141b24" : "#E7EAF3"; }, function (props) { return props.darkMode ? "#272d3a" : "#F8FAFD"; }, function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; }, polished.transparentize(.95, "#000"));
+var TableStyles = styled("div")(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                    &.SST_header_title_small{\n                        font-size: 12px;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"], ["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                    &.SST_header_title_small{\n                        font-size: 12px;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"])), function (props) { return props.darkMode ? "#141b24" : "#E7EAF3"; }, function (props) { return props.darkMode ? "#272d3a" : "#F8FAFD"; }, function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; }, polished.transparentize(.95, "#000"));
 var ListItem = styled('div')(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .SST_list_filter_item_popup{\n        width: ", ";\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"], ["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .SST_list_filter_item_popup{\n        width: ", ";\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"])), function (props) { return props.type === "top" && "1px solid #E1E1E1"; }, function (props) { return props.type === "top" && "#FFF"; }, function (props) { return props.type === "left" && "rgba(33, 106, 154,.1)"; }, function (props) { return props.type === "top" && "1px solid #216A9A"; }, function (props) { return props.filterParsedType === "rsql" ? "400px" : "300px"; }, function (props) { return props.type === "left" ? "0px" : "110%"; }, function (props) { return props.isOnRightOfViewport ? "-310px" : props.type === "left" ? "105%" : "0"; });
 var FieldItem = styled('div')(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    padding: 0px 5px;\n    @media (max-width: 1230px){\n        width: 33% !important;\n    }\n    @media (max-width: 1150px){\n        width: 50% !important;\n    }\n    @media (max-width: 820px){\n        width: 100% !important;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"], ["\n    padding: 0px 5px;\n    @media (max-width: 1230px){\n        width: 33% !important;\n    }\n    @media (max-width: 1150px){\n        width: 50% !important;\n    }\n    @media (max-width: 820px){\n        width: 100% !important;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"])));
 var FilterContainer = styled('div')(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: flex;\n        justify-content: space-between;\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            height: ", ";\n            line-height: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            width: 150px;\n            border: .09rem solid #dbdee7;\n            max-height: 35px;\n        }\n        .filterSelectChoice__value-container{\n            max-height: 35px;\n            overflow: hidden;\n            flex-wrap: nowrap;\n        }\n        .filterSelectChoice__input{\n            input{\n                max-height: 25px !important;\n                max-height: 25px !important;\n                color: ", ";\n                margin-bottom: 0;\n            }\n        }\n        .filterSelectChoice__control--is-focused{\n\n        }\n        .filterSelectChoice__indicator-separator{\n            display: none;\n        }\n        .filterSelectChoice__single-value{\n            color: ", ";\n            font-size: 13px;\n            font-weight: 500;\n        }\n        .filterSelectChoice__option{\n            font-weight: 400;\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: flex;\n        justify-content: space-between;\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            height: ", ";\n            line-height: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            width: 150px;\n            border: .09rem solid #dbdee7;\n            max-height: 35px;\n        }\n        .filterSelectChoice__value-container{\n            max-height: 35px;\n            overflow: hidden;\n            flex-wrap: nowrap;\n        }\n        .filterSelectChoice__input{\n            input{\n                max-height: 25px !important;\n                max-height: 25px !important;\n                color: ", ";\n                margin-bottom: 0;\n            }\n        }\n        .filterSelectChoice__control--is-focused{\n\n        }\n        .filterSelectChoice__indicator-separator{\n            display: none;\n        }\n        .filterSelectChoice__single-value{\n            color: ", ";\n            font-size: 13px;\n            font-weight: 500;\n        }\n        .filterSelectChoice__option{\n            font-weight: 400;\n        }\n    }\n"])), function (props) { return props.filterParsedType === "rsql" ? "38px" : "35px"; }, function (props) { return props.filterParsedType === "rsql" ? "38px" : "35px"; }, function (props) { return props.filterParsedType === "rsql" ? "350px" : "70%"; }, function (props) { return props.darkMode ? "#bccde0" : "initial"; }, function (props) { return props.darkMode ? "#bccde0" : "#initial"; });
 var CheckContainer = styled('div')(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    max-height: 200px;\n    overflow: auto;\n    position: relative;\n    z-index: 99;\n    label{\n        font-weight: 400;\n    }\n    .check-group{\n        label{\n            font-weight: 400;\n            color: #435F71 !important;\n            &:after{\n\n                top: 2px;\n            }\n        }\n    }\n"], ["\n    max-height: 200px;\n    overflow: auto;\n    position: relative;\n    z-index: 99;\n    label{\n        font-weight: 400;\n    }\n    .check-group{\n        label{\n            font-weight: 400;\n            color: #435F71 !important;\n            &:after{\n\n                top: 2px;\n            }\n        }\n    }\n"])));
 var FieldContainer = styled('div')(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    line-height: 38px;\n    height: 38px;\n    /* border: 1px solid #E0E0E0; */\n    background:", ";\n    border-radius: 3px;\n    label{\n        margin-left: 3px;\n    }\n    @media(max-width: 820px){\n        margin-bottom: 10px;\n    }\n"], ["\n    line-height: 38px;\n    height: 38px;\n    /* border: 1px solid #E0E0E0; */\n    background:", ";\n    border-radius: 3px;\n    label{\n        margin-left: 3px;\n    }\n    @media(max-width: 820px){\n        margin-bottom: 10px;\n    }\n"])), function (props) { return props.darkMode ? "#272d3a" : "#ECECEC"; });
-var PerPageContainer = styled.div(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n\tfloat: right;\n    transform: translateY(3px);\n    padding-right: 10px;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n\t}\n    .perPageSelect {\n        color: #A3A6C0;\n    }\n"], ["\n\tfloat: right;\n    transform: translateY(3px);\n    padding-right: 10px;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n\t}\n    .perPageSelect {\n        color: #A3A6C0;\n    }\n"])));
+var PerPageContainer = styled.div(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    transform: translateY(3px);\n    padding-right: 10px;\n    white-space: nowrap;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n\t}\n    .perPageSelect {\n        color: #A3A6C0;\n    }\n"], ["\n    transform: translateY(3px);\n    padding-right: 10px;\n    white-space: nowrap;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n\t}\n    .perPageSelect {\n        color: #A3A6C0;\n    }\n"])));
 var FiltersContainer = styled('div')(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    padding: 0 10px;\n"], ["\n    padding: 0 10px;\n"])));
 var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9;
 
@@ -22047,1196 +22036,12 @@ var TextFilter$1 = function (props) {
                     : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
 };
 
-var dist = createCommonjsModule(function (module, exports) {
-function ___$insertStyle(css) {
-  if (!css) {
-    return;
-  }
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  var style = document.createElement('style');
-
-  style.setAttribute('type', 'text/css');
-  style.innerHTML = css;
-  document.head.appendChild(style);
-  return css;
-}
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-
-var React__default$1 = _interopDefault(React__default);
-var ReactTooltip = _interopDefault(reactTooltip);
-var styled$1 = _interopDefault(styled);
-var Select$1 = _interopDefault(Select);
-
-
-
-var useModal$1 = _interopDefault(useModal);
-var useSidebar$1 = _interopDefault(useSidebar);
-var Joyride = _interopDefault(reactJoyride);
-
-
-
-var moment$1 = _interopDefault(moment);
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-
-function __rest(s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-}
-
-function __makeTemplateObject(cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-}
-
-var Colors = {
-    primary: "#65ADC9",
-    secondary: "#785378",
-    purple: "#833471",
-    pink: "#ef5777",
-    orange: "#ff9f43",
-    yellow: "#ffd32a",
-    teal: "#c0d6d1",
-    green: "#27ae60",
-    cyan: "#01a3a4",
-    blue: "#3498db",
-    red: "#ee5253",
-    gray_light: "#e6e6e6",
-    gray_medium: "#435F71",
-    gray_medium_light: "#8497B1",
-    gray_dark: "#141b24",
-    gray_dark_subcolor: "#2a3c4e",
-    gray: {
-        700: "#454545",
-        600: "#858585",
-        500: "#949494",
-        400: "#ababab",
-        300: "#c8c8c8",
-        200: "#f5f5f5",
-        100: "#bccde0" //dark mode gray
-    }
-};
-var breakpoint_small = 540; //540px
-
-var Input = React__default$1.forwardRef(function (props, ref) {
-    var name = props.name, label = props.label, error = props.error, type = props.type, placeholder = props.placeholder, helper = props.helper, onAppendClick = props.onAppendClick, onPrependClick = props.onPrependClick, appendRender = props.appendRender, prependRender = props.prependRender, disabled = props.disabled, disableAutoComplete = props.disableAutoComplete, min = props.min, max = props.max, step = props.step, rest = __rest(props, ["name", "label", "error", "type", "placeholder", "helper", "onAppendClick", "onPrependClick", "appendRender", "prependRender", "disabled", "disableAutoComplete", "min", "max", "step"]);
-    var _a = React__default.useState(type !== null && type !== void 0 ? type : "text"), inputType = _a[0], setInputType = _a[1];
-    React__default.useEffect(function () {
-        ReactTooltip.rebuild();
-    }, [error]);
-    var togglePasswordType = function (type) { return setInputType(inputType === "text" ? "password" : "text"); };
-    return (React__default$1.createElement("div", { className: "form-group noselect " + (!!error ? "error" : "") },
-        label && React__default$1.createElement("label", { htmlFor: name },
-            !!error && React__default$1.createElement("i", { className: "ri-error-warning-line", style: { marginRight: 5, color: Colors.red }, "data-tip": true, "data-for": "error-tip-" + name }),
-            label),
-        React__default$1.createElement("div", { className: "form-addon" },
-            !!prependRender && React__default$1.createElement("span", { className: "form-addon-item item-left " + (!!onPrependClick ? "pointer" : ""), onClick: function () { return !!onPrependClick && onPrependClick(); } }, prependRender),
-            React__default$1.createElement("input", __assign({ type: inputType, name: name, placeholder: placeholder !== null && placeholder !== void 0 ? placeholder : "", ref: ref, disabled: disabled, min: min !== null && min !== void 0 ? min : null, max: max !== null && max !== void 0 ? max : null, step: step !== null && step !== void 0 ? step : null, autoComplete: disableAutoComplete ? "new-password" : "", className: "form-input " + (error ? "form-error" : '') }, rest)),
-            !!type && type === "password" && React__default$1.createElement("span", { className: "form-addon-item item-right pointer", onClick: function () { togglePasswordType(); } },
-                React__default$1.createElement("span", { style: { padding: '0 5px' } }, inputType === "password" ? React__default$1.createElement("i", { className: "ri-eye-line", style: { transform: "translateY(2px)" } }) : React__default$1.createElement("i", { className: "ri-eye-off-line", style: { transform: "translateY(2px)" } }))),
-            !!appendRender && inputType !== "password" && React__default$1.createElement("span", { className: "form-addon-item item-right " + (!!onAppendClick ? "pointer" : ""), onClick: function () { return !!onAppendClick && onAppendClick(); } }, appendRender)),
-        !!helper && React__default$1.createElement("small", { className: "input-helper" }, helper),
-        React__default$1.createElement(ReactTooltip, { place: "top", effect: "solid", type: 'error', id: "error-tip-" + name }, (error === null || error === void 0 ? void 0 : error.type) === "required" ? "Champs obligatoire" : error === null || error === void 0 ? void 0 : error.message)));
-});
-
-var InputLabel = function (props) {
-    var error = props.error, htmlFor = props.htmlFor, children = props.children;
-    React__default.useEffect(function () {
-        ReactTooltip.rebuild();
-    }, [error]);
-    return (React__default$1.createElement(React__default$1.Fragment, null,
-        React__default$1.createElement("label", { htmlFor: htmlFor },
-            error && React__default$1.createElement("i", { className: "ri-error-warning-line", style: { marginRight: 5, color: Colors.red }, "data-tip": true, "data-for": "error-tip-" + htmlFor }),
-            children),
-        React__default$1.createElement(ReactTooltip, { place: "top", effect: "solid", type: 'error', id: "error-tip-" + htmlFor }, (error === null || error === void 0 ? void 0 : error.type) === "required" ? "Champs obligatoire" : error === null || error === void 0 ? void 0 : error.message)));
-};
-
-var InputWithoutRegister = function (props) {
-    var name = props.name, label = props.label, error = props.error, type = props.type, placeholder = props.placeholder, helper = props.helper, onAppendClick = props.onAppendClick, onPrependClick = props.onPrependClick, appendRender = props.appendRender, prependRender = props.prependRender, value = props.value, onChange = props.onChange;
-    return (React__default$1.createElement("div", { className: "form-group noselect" },
-        label && React__default$1.createElement("label", { htmlFor: name }, label),
-        React__default$1.createElement("div", { className: "form-addon" },
-            !!prependRender && React__default$1.createElement("span", { className: "form-addon-item item-left " + (!!onPrependClick ? "pointer" : ""), onClick: function () { return !!onPrependClick && onPrependClick(); } }, prependRender),
-            React__default$1.createElement("input", __assign({ type: type !== null && type !== void 0 ? type : "text", name: name, placeholder: placeholder !== null && placeholder !== void 0 ? placeholder : "", className: "form-input " + (error ? "form-error" : ''), value: value, onChange: onChange }, props)),
-            !!appendRender && React__default$1.createElement("span", { className: "form-addon-item item-right " + (!!onAppendClick ? "pointer" : ""), onClick: function () { return !!onAppendClick && onAppendClick(); } }, appendRender)),
-        !!helper && React__default$1.createElement("small", { className: "input-helper" }, helper),
-        error && React__default$1.createElement("span", { className: "input-error red", style: { marginBottom: 5 } }, error.type === "required" ? "Champs obligatoire" : error.message)));
-};
-
-var Wrapper = styled$1('div')(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    width:  ", ";;\n    position: ", ";\n    top: ", ";\n    left: ", ";\n    z-index:  ", ";\n    &:after{\n        content:\"\";\n        background: rgba(0, 0, 0, .5);\n        position:fixed;\n        top:0; left:0;\n        width: 100vw;\n        height: 100vh;\n        z-index: 1;\n        display: ", ";\n    }\n    .RSelect__control{\n        background: ", ";\n        border: ", " !important;\n        width: ", " !important;\n        margin: ", ";\n        position: relative;\n        z-index: 2;\n        max-height: ", ";\n    }\n    .RSelect__control--is-focused{\n        border: ", " !important;\n        outline: 0;\n        box-shadow: 0 0 10px rgb(55 125 255 / 10%) !important;\n    }\n    .RSelect__menu{\n        z-index: 999;\n        width: ", " !important;\n        left: ", ";\n        transform: ", ";\n        background: ", ";\n        color: ", ";\n    }\n    .RSelect__option{\n        color: ", ";\n    }\n    .RSelect__option--is-focused{\n        background: ", ";\n    }\n    .RSelect__option--is-selected{\n        background: ", ";\n        color: ", ";\n    }\n    .RSelect__value-container{\n        max-height: ", ";\n        overflow: hidden;\n        flex-wrap: nowrap;\n    }\n    .RSelect__single-value{\n        color: ", ";\n    }\n    .RSelect__input{\n        input{\n            max-height: 2rem !important;\n            max-height: 2rem !important;\n            margin-bottom: 0px;\n        }\n    }\n    .RSelect__indicator-separator{\n        padding-right: initial !important;\n        max-height:2rem;\n        display: ", ";\n    }\n    .RSelect__multi-value{\n        background: ", ";\n        color: ", ";\n        border:none;\n    }\n    .RSelect__multi-value__label{\n        color: ", ";\n    }\n"], ["\n    width:  ", ";;\n    position: ", ";\n    top: ", ";\n    left: ", ";\n    z-index:  ", ";\n    &:after{\n        content:\"\";\n        background: rgba(0, 0, 0, .5);\n        position:fixed;\n        top:0; left:0;\n        width: 100vw;\n        height: 100vh;\n        z-index: 1;\n        display: ", ";\n    }\n    .RSelect__control{\n        background: ", ";\n        border: ", " !important;\n        width: ", " !important;\n        margin: ", ";\n        position: relative;\n        z-index: 2;\n        max-height: ", ";\n    }\n    .RSelect__control--is-focused{\n        border: ", " !important;\n        outline: 0;\n        box-shadow: 0 0 10px rgb(55 125 255 / 10%) !important;\n    }\n    .RSelect__menu{\n        z-index: 999;\n        width: ", " !important;\n        left: ", ";\n        transform: ", ";\n        background: ", ";\n        color: ", ";\n    }\n    .RSelect__option{\n        color: ", ";\n    }\n    .RSelect__option--is-focused{\n        background: ", ";\n    }\n    .RSelect__option--is-selected{\n        background: ", ";\n        color: ", ";\n    }\n    .RSelect__value-container{\n        max-height: ", ";\n        overflow: hidden;\n        flex-wrap: nowrap;\n    }\n    .RSelect__single-value{\n        color: ", ";\n    }\n    .RSelect__input{\n        input{\n            max-height: 2rem !important;\n            max-height: 2rem !important;\n            margin-bottom: 0px;\n        }\n    }\n    .RSelect__indicator-separator{\n        padding-right: initial !important;\n        max-height:2rem;\n        display: ", ";\n    }\n    .RSelect__multi-value{\n        background: ", ";\n        color: ", ";\n        border:none;\n    }\n    .RSelect__multi-value__label{\n        color: ", ";\n    }\n"])), function (props) { return (props.isOpen && props.isMobile) ? "100%" : "100%"; }, function (props) { return (props.isOpen && props.isMobile) ? "fixed" : "relative"; }, function (props) { return (props.isOpen && props.isMobile) ? "50vh" : "initial"; }, function (props) { return (props.isOpen && props.isMobile) ? "0" : "initial"; }, function (props) { return (props.isOpen && props.isMobile) ? "99" : props.zIndex; }, function (props) { return (props.isOpen && props.isMobile) ? "block" : "none"; }, function (props) { return props.darkMode ? Colors.gray_dark : "none"; }, function (props) { return props.darkMode ? "none" : props.error ? "1px solid " + Colors.red : "1px solid #dbdee7"; }, function (props) { return (props.isOpen && props.isMobile) ? "90%" : "100%"; }, function (props) { return (props.isOpen && props.isMobile) ? "0 auto" : "initial"; }, function (props) { return props.smallHeight ? "2rem" : "3rem"; }, function (props) { return props.darkMode ? "none" : props.error ? "1px solid " + Colors.red : "1px solid rgba(55,125,255,.4)"; }, function (props) { return (props.isOpen && props.isMobile) ? "90%" : "100%"; }, function (props) { return (props.isOpen && props.isMobile) ? "50%" : "initial"; }, function (props) { return (props.isOpen && props.isMobile) ? "translateX(-50%)" : "initial"; }, function (props) { return props.darkMode ? Colors.gray_dark : "#fff"; }, function (props) { return props.darkMode ? Colors.gray[100] : "initial"; }, function (props) { return props.darkMode ? Colors.gray[100] : Colors.gray_dark; }, function (props) { return props.darkMode ? Colors.gray_dark_subcolor : "#B2D4FF"; }, Colors.blue, Colors.gray_dark, function (props) { return props.smallHeight ? "2rem" : "3rem"; }, function (props) { return props.darkMode ? Colors.gray[100] : Colors.gray[700]; }, function (props) { return props.removeSeparator ? "none" : "initial"; }, function (props) { return props.darkMode ? Colors.blue : polished__default.transparentize(.85, Colors.blue); }, function (props) { return props.darkMode ? "#fff" : Colors.blue; }, function (props) { return props.darkMode ? "#fff" : Colors.blue; });
-var RSelect = function (props) {
-    var _a, _b;
-    var smallHeight = props.smallHeight, borderStyle = props.borderStyle, darkMode = props.darkMode, zIndex = props.zIndex, error = props.error, removeSeparator = props.removeSeparator, rest = __rest(props, ["smallHeight", "borderStyle", "darkMode", "zIndex", "error", "removeSeparator"]);
-    var _c = React__default.useState(false), isOpen = _c[0], setIsOpen = _c[1];
-    var selectRef = React__default.useRef();
-    return (React__default$1.createElement(Wrapper, { removeSeparator: removeSeparator, smallHeight: smallHeight, isMobile: reactDeviceDetect__default.isMobile, isOpen: isOpen, borderStyle: props.borderStyle, darkMode: props.darkMode, zIndex: (_a = props.zIndex) !== null && _a !== void 0 ? _a : 1, error: !!props.error },
-        React__default$1.createElement(Select$1, __assign({ ref: selectRef, onMenuOpen: function () { return setIsOpen(true); }, onMenuClose: function () { return setIsOpen(false); }, menuColor: 'red', classNamePrefix: "RSelect" + ((_b = props.classNamePrefix) !== null && _b !== void 0 ? _b : "") }, rest))));
-};
-var templateObject_1;
-
-var isSameDomain = function (currentPath, domainPath, globalRoot, separator) {
-    if (currentPath === void 0) { currentPath = ""; }
-    if (domainPath === void 0) { domainPath = ""; }
-    if (globalRoot === void 0) { globalRoot = ""; }
-    if (separator === void 0) { separator = "/"; }
-    var domainPathParts = domainPath.split(separator).filter(function (p) { return !!p; }), currentPathParts = currentPath.replace(globalRoot, "").split(separator).filter(function (p) { return !!p; });
-    return domainPathParts.length > 0 && currentPathParts.includes(domainPathParts[0]);
-};
-
-var translations = {
-    quickActions: "Actions rapides",
-    myAccount: "Mon compte",
-    darkMode: "Mode sombre",
-    lightMode: "Mode clair",
-    logout: "Déconnexion",
-    extend: "Etendue",
-    shrunk: "Rétrécie",
-    help: "Aide",
-    tutorialBack: "Retour",
-    tutorialClose: "Fermer",
-    tutorialLast: "Fin",
-    tutorialNext: "Suivant",
-    tutorialOpen: "Ouvrir",
-    tutorialSkip: "Passer",
-};
-
-var QuickActionContainer = styled$1("div")(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject(["\ndisplay: flex;\nflex-wrap: wrap;\nwidth: 265px;\nheight: 100%;\nmargin-top: 20px;\nmargin-bottom: 20px;\ntext-align: center;\n.quick-action-category-title {\n    width: 100%;\n    margin: 0 auto;\n    font-size: 80%;\n    margin-bottom: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: space-around;\n    color: ", ";\n    .separator {\n        display: block;\n        height: 1px;\n        background-color: ", ";\n        width: 30%;\n    }\n}\n\n"], ["\ndisplay: flex;\nflex-wrap: wrap;\nwidth: 265px;\nheight: 100%;\nmargin-top: 20px;\nmargin-bottom: 20px;\ntext-align: center;\n.quick-action-category-title {\n    width: 100%;\n    margin: 0 auto;\n    font-size: 80%;\n    margin-bottom: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: space-around;\n    color: ", ";\n    .separator {\n        display: block;\n        height: 1px;\n        background-color: ", ";\n        width: 30%;\n    }\n}\n\n"])), function (props) { return props.darkMode ? Colors.gray_light : Colors.gray[100]; }, function (props) { return props.darkMode ? Colors.gray_light : Colors.gray[100]; });
-var QuickActionItem = styled$1("div")(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\nwidth: 75px;\nheight: 75px;\nborder-radius: 5px;\nmargin-top: 10px;\nmargin-left: 10px;\ndisplay: flex;\nflex-direction: column;\njustify-content: center;\nalign-content: center;\n.quick-action-title {\n    height: 30px;\n    display: block;\n    width: 90%;\n    font-size: 70%;\n    align-self: center;\n    justify-self: center;\n}\n.quick-action-icon {\n    height: 30px;\n    width: 30px;\n    align-self: center;\n}\n&:hover{\n    .quick-action-title{\n        color:#fff;\n    }\n}\n"], ["\nwidth: 75px;\nheight: 75px;\nborder-radius: 5px;\nmargin-top: 10px;\nmargin-left: 10px;\ndisplay: flex;\nflex-direction: column;\njustify-content: center;\nalign-content: center;\n.quick-action-title {\n    height: 30px;\n    display: block;\n    width: 90%;\n    font-size: 70%;\n    align-self: center;\n    justify-self: center;\n}\n.quick-action-icon {\n    height: 30px;\n    width: 30px;\n    align-self: center;\n}\n&:hover{\n    .quick-action-title{\n        color:#fff;\n    }\n}\n"])));
-var templateObject_1$1, templateObject_2;
-
-var SubmenusContainer = styled$1("div")(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject(["\n    overflow: hidden;\n    height: 0;\n    li {\n        list-style: none;\n        width: 100%;\n        a, span {\n            position: relative;\n            cursor: pointer;\n            width: 70%;\n            border-radius: 3px;\n            margin: 5px auto;\n            display: flex;\n            align-items: start;\n            text-decoration: none;\n        }\n    }\n"], ["\n    overflow: hidden;\n    height: 0;\n    li {\n        list-style: none;\n        width: 100%;\n        a, span {\n            position: relative;\n            cursor: pointer;\n            width: 70%;\n            border-radius: 3px;\n            margin: 5px auto;\n            display: flex;\n            align-items: start;\n            text-decoration: none;\n        }\n    }\n"])));
-var NavContext = React__default$1.createContext({
-    closeModal: function () { },
-    closeSidebar: function () { }
-});
-var firstStep = {
-    target: '.step-0',
-    placement: "right",
-    content: 'Sur votre barre latérale de navigation, vous pouvez retrouver tout ce dont vous avez besoin.',
-    disableBeacon: true,
-    hideCloseButton: true,
-    disableScrolling: true
-};
-var Nav = function (props) {
-    var _a = React__default.useState(false), isActive = _a[0], setIsActive = _a[1];
-    var location = reactRouterDom.useLocation();
-    var history = reactRouter.useHistory();
-    var _b = useModal$1(), Modal = _b.Modal, isModalShowed = _b.isShowing, openModal = _b.open, closeModal = _b.close;
-    var _c = useSidebar$1(), Sidebar = _c.Sidebar, isSidebarShowed = _c.isShowing, openSidebar = _c.open, closeSidebar = _c.close;
-    var QACategories = props.QAList;
-    var _d = React__default.useState(), modalContent = _d[0], setModalContent = _d[1];
-    var _e = React__default.useState(), sideBarContent = _e[0], setSidebarContent = _e[1];
-    var _f = React__default.useState(""), QATitle = _f[0], setQATitle = _f[1];
-    var _g = React__default.useState(false), isHelping = _g[0], setIsHelping = _g[1];
-    var _h = React__default.useState([]), steps = _h[0], setSteps = _h[1];
-    var _j = React__default.useState(false), hasQA = _j[0], setHasQA = _j[1];
-    var arrowControls = framerMotion.useAnimation();
-    var _k = React__default.useState(null), actualSubmenu = _k[0], setActualSubmenu = _k[1];
-    var _l = React__default.useState(false), QAVisible = _l[0], setQAVisible = _l[1];
-    var _m = React__default.useState(false), QALocked = _m[0], setQALocked = _m[1];
-    var constraintsRef = React__default.useRef();
-    React__default.useEffect(function () {
-        arrowControls.start(function (i) { return ({
-            rotate: actualSubmenu == i ? 180 : 0,
-            transition: { duration: 0.1 }
-        }); });
-    }, [actualSubmenu]);
-    React__default.useEffect(function () {
-        setActualSubmenu(null);
-    }, [props.isPrimaryNavExtend]);
-    React__default.useEffect(function () {
-        setHasQA(false);
-        if (!!QACategories) {
-            for (var i = 0; i < QACategories.length; i++) {
-                var category = QACategories[i];
-                for (var y = 0; y < category.actions.length; y++) {
-                    var action = category.actions[y];
-                    if (action.roles.includes(props.connectedUser.role)) {
-                        setHasQA(true);
-                        return;
-                    }
-                }
-            }
-        }
-    }, [props.routes]);
-    function createSteps() {
-        var steps = [firstStep];
-        for (var i = 0; i < props.routes.length; i++) {
-            var route = props.routes[i];
-            if (!route.subMenu && !!route.content) {
-                steps.push({ target: '.' + route.component, placement: "right", content: route.content, disableBeacon: true, hideCloseButton: true, disableScrolling: true });
-            }
-        }
-        if (steps.length > 1) {
-            return steps;
-        }
-        else {
-            return [];
-        }
-    }
-    React__default.useEffect(function () {
-        if (!!props.tutorialState && !!props.routes) {
-            // @ts-ignore
-            var steps = props.tutorialsList.find(function (stepList) { return stepList.id == props.tutorialState.id; }).steps;
-            if (!!steps) {
-                setSteps(steps);
-            }
-        }
-        else {
-            setSteps(createSteps());
-        }
-    }, [props.tutorialState, props.routes]);
-    var handleJoyride = function (tour) {
-        var _a;
-        if (["finished", "skipped"].includes(tour.status)) {
-            setIsHelping(false);
-        }
-        if ((_a = props.tutorialState) === null || _a === void 0 ? void 0 : _a.callback) {
-            props.tutorialState.callback(tour);
-        }
-    };
-    var onQAClick = function (action) {
-        setQATitle(action.title);
-        switch (action.type) {
-            case 0 /* REDIRECT */:
-                history.push(action.url);
-                break;
-            case 1 /* MODAL */:
-                setModalContent(React__default$1.cloneElement(action.content, { close: function () { closeModal(); } }));
-                openModal();
-                break;
-            case 2 /* SIDEBAR */:
-                setSidebarContent(React__default$1.cloneElement(action.content, { close: function () { closeSidebar(); } }));
-                openSidebar();
-                break;
-        }
-    };
-    // <NavContext.Provider value={{closeModal: closeModal, closeSidebar: closeSidebar}}>  
-    return (React__default$1.createElement(React__default$1.Fragment, null,
-        React__default$1.createElement("div", { style: { position: "absolute", width: "100%", height: "100vh", visibility: "hidden" }, ref: constraintsRef }),
-        React__default$1.createElement(Joyride, { disableScrolling: true, showProgress: true, showSkipButton: true, continuous: true, steps: steps, run: isHelping, callback: function (tour) { return handleJoyride(tour); }, styles: { options: { primaryColor: Colors.blue } }, locale: {
-                back: !!props.useTranslations ? props.translationsNavigation.tutorialBack : translations.tutorialBack,
-                close: !!props.useTranslations ? props.translationsNavigation.tutorialClose : translations.tutorialClose,
-                last: !!props.useTranslations ? props.translationsNavigation.tutorialLast : translations.tutorialLast,
-                next: !!props.useTranslations ? props.translationsNavigation.tutorialNext : translations.tutorialNext,
-                open: !!props.useTranslations ? props.translationsNavigation.tutorialOpen : translations.tutorialOpen,
-                skip: !!props.useTranslations ? props.translationsNavigation.tutorialSkip : translations.tutorialSkip
-            } }),
-        React__default$1.createElement("div", { className: "step-0 navbar noselect " + (isActive ? 'active' : '') + " " + (props.darkMode ? "navbar-dark" : "") + " " + (props.isPrimaryNavExtend ? "navbar-extend" : "") },
-            React__default$1.createElement("div", { className: "brand" },
-                React__default$1.createElement("img", { src: props.logo, alt: "" })),
-            React__default$1.createElement("div", { className: "listsContainer" },
-                React__default$1.createElement("ul", { className: "topList" }, props.routes.map(function (route, i) {
-                    return (React__default$1.createElement("li", { key: i, "data-title": route.title, className: route.component + " li-container" },
-                        React__default$1.createElement(reactRouterDom.Link, { to: "" + props.path + route.url, className: isSameDomain(location.pathname, route.url, props.path) ? 'active' : '', onClick: function () { return reactDeviceDetect__default.isMobile && setIsActive(false); }, onMouseEnter: function () { if (!props.isPrimaryNavExtend)
-                                setActualSubmenu(i); }, onMouseLeave: function () { if (!props.isPrimaryNavExtend)
-                                setActualSubmenu(null); } },
-                            React__default$1.createElement("span", { className: "icon" },
-                                route.icon,
-                                React__default$1.createElement("span", { className: "item-title" }, route.title),
-                                !!route.subMenu && props.isPrimaryNavExtend &&
-                                    React__default$1.createElement(framerMotion.motion.i, { onClick: function () { return actualSubmenu == i ? setActualSubmenu(null) : setActualSubmenu(i); }, custom: i, animate: arrowControls, initial: false, className: "arrow ri-arrow-down-s-line" }))),
-                        React__default$1.createElement(framerMotion.AnimatePresence, { initial: false },
-                            !!route.subMenu && actualSubmenu == i && props.isPrimaryNavExtend &&
-                                React__default$1.createElement(framerMotion.motion.div, { className: 'submenu-extended', initial: { height: 0, opacity: 0 }, animate: { height: "auto", opacity: 1 }, exit: { height: 0, opacity: 0 }, transition: { type: "tween", duration: 0.1 } },
-                                    React__default$1.createElement("div", { className: 'submenu-line' }),
-                                    React__default$1.createElement("ul", { className: 'submenu-ul-extended' }, props.subMenus.map(function (subMenu, i) {
-                                        if (subMenu.subMenuId == route.subMenu) {
-                                            return (React__default$1.createElement("li", { key: subMenu.subMenuId.toString() + "-" + i.toString(), "data-title": subMenu.title, className: subMenu.component + " submenu-li" },
-                                                React__default$1.createElement(reactRouterDom.Link, { to: "" + props.path + subMenu.url, onClick: function () { return reactDeviceDetect__default.isMobile && setIsActive(false); } },
-                                                    React__default$1.createElement("span", { className: "submenu-title" }, subMenu.title))));
-                                        }
-                                    }))),
-                            !!route.subMenu && actualSubmenu == i && !props.isPrimaryNavExtend &&
-                                React__default$1.createElement(framerMotion.motion.div, { className: 'submenu', initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { type: "tween", duration: 0.1 }, onMouseEnter: function () { if (!props.isPrimaryNavExtend)
-                                        setActualSubmenu(i); }, onMouseLeave: function () { if (!props.isPrimaryNavExtend)
-                                        setActualSubmenu(null); } },
-                                    React__default$1.createElement("ul", { className: 'submenu-ul' }, props.subMenus.map(function (subMenu, i) {
-                                        if (subMenu.subMenuId == route.subMenu) {
-                                            return (React__default$1.createElement("li", { key: subMenu.subMenuId.toString() + "-" + i.toString(), "data-title": subMenu.title, className: subMenu.component + " submenu-li" },
-                                                React__default$1.createElement(reactRouterDom.Link, { to: "" + props.path + subMenu.url, onClick: function () { return reactDeviceDetect__default.isMobile && setIsActive(false); } },
-                                                    React__default$1.createElement("span", { className: "submenu-title" }, subMenu.title))));
-                                        }
-                                    }))))));
-                })),
-                React__default$1.createElement("ul", { className: "bottomList" },
-                    steps.length > 0 &&
-                        React__default$1.createElement("li", { className: "li-container help-li", onClick: function () { return setIsHelping(true); } },
-                            React__default$1.createElement("span", null,
-                                React__default$1.createElement("span", { className: "icon" },
-                                    React__default$1.createElement("i", { className: "ri-question-line" }),
-                                    props.isPrimaryNavExtend && React__default$1.createElement("span", { className: "item-title" }, !!props.useTranslations ? props.translationsNavigation.help : translations.help)))),
-                    hasQA &&
-                        React__default$1.createElement("li", { className: "li-container quick-action-li" },
-                            React__default$1.createElement("span", null,
-                                React__default$1.createElement("span", { className: "icon", onMouseEnter: function () { return setQAVisible(true); }, onMouseLeave: function () { return setQAVisible(QALocked); } },
-                                    React__default$1.createElement("i", { className: "ri-apps-line" }),
-                                    props.isPrimaryNavExtend && React__default$1.createElement("span", { className: "item-title" }, !!props.useTranslations ? props.translationsNavigation.quickActions : translations.quickActions))),
-                            React__default$1.createElement(framerMotion.AnimatePresence, null, QAVisible &&
-                                React__default$1.createElement(framerMotion.motion.div, { className: "qa-popup", initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { opacity: { duration: 0.2 }, stiffness: 0 }, onMouseEnter: function () { return setQAVisible(true); }, onMouseLeave: function () { return setQAVisible(QALocked); }, drag: true, dragConstraints: constraintsRef, dragElastic: 0, dragMomentum: false }, !!props.connectedUser &&
-                                    React__default$1.createElement(React__default$1.Fragment, null,
-                                        React__default$1.createElement("i", { className: "pointer stay-ahead " + (QALocked ? "ri-pushpin-2-fill" : "ri-pushpin-line"), onClick: function () { setQALocked(!QALocked); } }),
-                                        QACategories.map(function (category, i) {
-                                            if (category.roles.includes(props.connectedUser.role)) {
-                                                return (React__default$1.createElement(QuickActionContainer, { darkMode: props.darkMode, key: i },
-                                                    React__default$1.createElement("div", { className: "quick-action-category-title" },
-                                                        React__default$1.createElement("div", { className: "separator" }),
-                                                        category.title,
-                                                        React__default$1.createElement("div", { className: "separator" })),
-                                                    category.actions.map(function (action, j) {
-                                                        if (action.roles.includes(props.connectedUser.role)) {
-                                                            return (React__default$1.createElement(QuickActionItem, { key: j, className: "quick-action pointer", onClick: function () { return onQAClick(action); } },
-                                                                React__default$1.createElement("div", { className: "quick-action-icon" }, action.icon),
-                                                                React__default$1.createElement("div", { className: "quick-action-title" }, action.title)));
-                                                        }
-                                                    })));
-                                            }
-                                        }))))),
-                    React__default$1.createElement("li", { className: "li-container user-nav" },
-                        React__default$1.createElement("span", null,
-                            React__default$1.createElement("span", { className: "icon" },
-                                React__default$1.createElement("i", { className: "ri-account-circle-line" }),
-                                props.isPrimaryNavExtend && React__default$1.createElement("span", { className: "item-title" }, !!props.useTranslations ? props.translationsNavigation.myAccount : translations.myAccount))),
-                        React__default$1.createElement("div", { className: "user-popup" }, props.connectedUser &&
-                            React__default$1.createElement(React__default$1.Fragment, null,
-                                React__default$1.createElement("div", null,
-                                    React__default$1.createElement("span", { className: "user-name" }, props.connectedUser.user_name),
-                                    React__default$1.createElement("span", { className: "user-role" }, props.roleMap(props.connectedUser.role))),
-                                React__default$1.createElement("div", { className: "user-actions", onClick: props.toggleDarkMode },
-                                    props.darkMode ? React__default$1.createElement(React__default$1.Fragment, null,
-                                        React__default$1.createElement("i", { className: "ri-moon-clear-line" }),
-                                        " ",
-                                        !!props.useTranslations ? props.translationsNavigation.darkMode : translations.darkMode) : React__default$1.createElement(React__default$1.Fragment, null,
-                                        React__default$1.createElement("i", { className: "ri-sun-line" }),
-                                        " ",
-                                        !!props.useTranslations ? props.translationsNavigation.lightMode : translations.lightMode),
-                                    " "),
-                                !reactDeviceDetect__default.isMobile && React__default$1.createElement("div", { className: "user-actions", onClick: props.toggleExtend }, props.isPrimaryNavExtend ? React__default$1.createElement(React__default$1.Fragment, null,
-                                    React__default$1.createElement("i", { className: "ri-menu-line" }),
-                                    " ",
-                                    !!props.useTranslations ? props.translationsNavigation.extend : translations.extend) : React__default$1.createElement(React__default$1.Fragment, null,
-                                    React__default$1.createElement("i", { className: "ri-menu-2-line" }),
-                                    " ",
-                                    !!props.useTranslations ? props.translationsNavigation.shrunk : translations.shrunk)),
-                                React__default$1.createElement("div", { className: "user-actions", onClick: props.logout },
-                                    React__default$1.createElement("i", { className: "ri-logout-circle-r-line" }),
-                                    " ",
-                                    !!props.useTranslations ? props.translationsNavigation.logout : translations.logout))))))),
-        React__default$1.createElement(Modal
-        //@ts-ignore
-        , { 
-            //@ts-ignore
-            darkMode: props.darkMode, isShowing: isModalShowed, closeOnDocumentClick: true, hide: function () { closeModal(); }, widthPercentage: 30, title: QATitle }, modalContent),
-        React__default$1.createElement(Sidebar
-        //@ts-ignore
-        , { 
-            //@ts-ignore
-            darkMode: props.darkMode, isShowing: isSidebarShowed, closeOnDocumentClick: true, hide: function () { closeSidebar(); }, widthPercentage: 30, title: QATitle }, sideBarContent),
-        reactDeviceDetect__default.isMobile && !reactDeviceDetect__default.isTablet &&
-            React__default$1.createElement("div", { className: "toggle-navigation", onClick: function () { return setIsActive(!isActive); } }, isActive ? React__default$1.createElement("i", { className: "ri-menu-fold-line", style: { color: "#fff" } }) : React__default$1.createElement("i", { className: "ri-menu-unfold-line", style: { color: Colors.gray_medium } }))));
-};
-var templateObject_1$2;
-
-var Breadcrumb = function (props) {
-    return (React__default$1.createElement("nav", { className: "breadcrumb" },
-        React__default$1.createElement("ul", null, !!props.breadCrumb && props.breadCrumb.map(function (bread) {
-            if (!!bread) {
-                return (React__default$1.createElement("li", { key: bread.name, className: "breadcrumb-item primary " + bread.statut },
-                    React__default$1.createElement(reactRouterDom.Link, { to: bread.link }, bread.name)));
-            }
-        }))));
-};
-
-var DashboardNavigationContainer = styled$1("div")(templateObject_1$3 || (templateObject_1$3 = __makeTemplateObject(["\n    .dashboard-content{\n    width: calc(100% - 80px);\n    float: right;\n    height: 100vh;\n        .container{\n            box-sizing: border-box;\n            display: flex;\n            flex-direction: column;\n            height: 100%;\n        }\n    }\n\n    .dashboard-content.content-with-primary-only{width: calc(100% - 250px);}\n    .dashboard-content.content-with-primary-collapse{width: calc(100% - 280px);}\n    .dashboard-content.content-with-both-navs{ width: calc(100% - 500px); }\n    .dashboard-content.content-with-secondary-nav-collapse{ width: calc(100% - 110px); }\n    .dashboard-content.content-with-secondary-nav{ width: calc(100% - 330px); }\n\n    .dashboard-header{\n        height: 60px;\n        display: block;\n        background: #fff;\n        display: flex;\n        align-items: center;\n        justify-content: end;\n        padding: 10px 2rem;\n        border-bottom: 1px solid #D1D7EB;\n    }\n\n    .dashboard-title-section{\n        display: flex;\n        align-items: center;\n        justify-content: space-between;\n        padding: 0px 2rem;\n        margin: 5px 0;\n        h2{\n            font-weight: 600;\n            \n            font-size: 1.2rem;\n            padding-left: 0;\n            color: ", ";\n        }\n    }\n\n    .main-content{\n        background: #fff;\n        display: block;\n        position: relative;\n        overflow-y: auto;\n        height: 100%;\n    }\n\n    @media only screen and (max-width: ", "px){\n    .dashboard-content{\n        width: 100% !important;\n        overflow: hidden;\n        position: relative;\n        top: ", ";\n    }\n    .dashboard-content.content-with-nav .main-content{\n        padding-top: 20px;\n    }\n    .dashboard-content.content-with-nav-collapse .main-content{\n        padding-top: 20px;\n    }\n    .main-content{\n        &:before{\n            content:\"\";\n            position: absolute;\n            top: -10px;\n            height: 10px;\n            width: 100%;\n            left:0;\n            background: #fff;\n        }\n    }\n    .dashboard-header{\n        position: fixed;\n        width: 100%;\n        z-index: 47;\n        height: 50px;\n        top: 0;\n        background: #fff;\n    }\n    .dashboard-title-section{\n        padding-top:10px;\n        padding: 10px .5rem 0 .5rem;\n    }\n}\n\n"], ["\n    .dashboard-content{\n    width: calc(100% - 80px);\n    float: right;\n    height: 100vh;\n        .container{\n            box-sizing: border-box;\n            display: flex;\n            flex-direction: column;\n            height: 100%;\n        }\n    }\n\n    .dashboard-content.content-with-primary-only{width: calc(100% - 250px);}\n    .dashboard-content.content-with-primary-collapse{width: calc(100% - 280px);}\n    .dashboard-content.content-with-both-navs{ width: calc(100% - 500px); }\n    .dashboard-content.content-with-secondary-nav-collapse{ width: calc(100% - 110px); }\n    .dashboard-content.content-with-secondary-nav{ width: calc(100% - 330px); }\n\n    .dashboard-header{\n        height: 60px;\n        display: block;\n        background: #fff;\n        display: flex;\n        align-items: center;\n        justify-content: end;\n        padding: 10px 2rem;\n        border-bottom: 1px solid #D1D7EB;\n    }\n\n    .dashboard-title-section{\n        display: flex;\n        align-items: center;\n        justify-content: space-between;\n        padding: 0px 2rem;\n        margin: 5px 0;\n        h2{\n            font-weight: 600;\n            \n            font-size: 1.2rem;\n            padding-left: 0;\n            color: ", ";\n        }\n    }\n\n    .main-content{\n        background: #fff;\n        display: block;\n        position: relative;\n        overflow-y: auto;\n        height: 100%;\n    }\n\n    @media only screen and (max-width: ", "px){\n    .dashboard-content{\n        width: 100% !important;\n        overflow: hidden;\n        position: relative;\n        top: ", ";\n    }\n    .dashboard-content.content-with-nav .main-content{\n        padding-top: 20px;\n    }\n    .dashboard-content.content-with-nav-collapse .main-content{\n        padding-top: 20px;\n    }\n    .main-content{\n        &:before{\n            content:\"\";\n            position: absolute;\n            top: -10px;\n            height: 10px;\n            width: 100%;\n            left:0;\n            background: #fff;\n        }\n    }\n    .dashboard-header{\n        position: fixed;\n        width: 100%;\n        z-index: 47;\n        height: 50px;\n        top: 0;\n        background: #fff;\n    }\n    .dashboard-title-section{\n        padding-top:10px;\n        padding: 10px .5rem 0 .5rem;\n    }\n}\n\n"])), Colors.gray_medium, breakpoint_small, function (props) { return props.showHeader ? "50px" : "0"; });
-function getDashboardContentClass(isPrimaryNavExtend, secondaryNav) {
-    if (!isPrimaryNavExtend) {
-        if (secondaryNav === "display")
-            return "content-with-secondary-nav";
-        else if (secondaryNav === "collapse")
-            return "content-with-secondary-nav-collapse";
-        else if (secondaryNav === "none")
-            return "";
-    }
-    else if (isPrimaryNavExtend) {
-        if (secondaryNav === "display")
-            return "content-with-both-navs";
-        else if (secondaryNav === "collapse")
-            return "content-with-primary-collapse";
-        else
-            return "content-with-primary-only";
-    }
-}
-var DashboardNavigation = function (props) {
-    function ErrorFallback(_a) {
-        var error = _a.error, resetErrorBoundary = _a.resetErrorBoundary;
-        return (React__default$1.createElement("div", { role: "alert" },
-            React__default$1.createElement("p", null, "Oups... Une erreur s'est produite:"),
-            React__default$1.createElement("pre", null, error.message),
-            React__default$1.createElement("button", { onClick: resetErrorBoundary }, "Actualiser")));
-    }
-    return (React__default$1.createElement(DashboardNavigationContainer, { showHeader: props.showHeader },
-        React__default$1.createElement(Nav, { routes: props.navRoutes, path: props.path, subMenus: props.subMenus, connectedUser: props.connectedUser, logout: props.logout, darkMode: props.darkMode, isPrimaryNavExtend: props.isPrimaryNavExtend, logo: props.navLogo, useTranslations: props.useTranslations, translationsNavigation: props.translationsNavigation, toggleDarkMode: props.toggleDarkMode, toggleExtend: props.toggleExtend, roleMap: props.roleMap, QAList: props.QAList }),
-        React__default$1.createElement("div", { className: "dashboard-content " + getDashboardContentClass(props.isPrimaryNavExtend, props.secondaryNav) },
-            React__default$1.createElement("div", { className: "container " + (props.darkMode ? "container-dark" : "") },
-                !!props.showHeader &&
-                    React__default$1.createElement("div", { className: "dashboard-header" }, props.headerComponents),
-                React__default$1.createElement("div", { className: "main-content", style: { backgroundColor: props.mainContentBgColor } },
-                    React__default$1.createElement("div", { className: "dashboard-title-section" },
-                        React__default$1.createElement("h2", null, props.contentTitle),
-                        React__default$1.createElement(Breadcrumb, { breadCrumb: props.breadcrumb })),
-                    React__default$1.createElement(reactErrorBoundary.ErrorBoundary, { FallbackComponent: ErrorFallback, onReset: function () { } },
-                        React__default$1.createElement(React__default.Suspense, { fallback: React__default$1.createElement("div", null, "Chargement...") },
-                            React__default$1.createElement(reactRouterDom.Switch, null,
-                                props.allRoutes.map(function (route, i) {
-                                    return (React__default$1.createElement(reactRouterDom.Route, { exact: true, key: route.url, component: props.componentsRoutes[route.component], path: "/app" + route.url }));
-                                }),
-                                React__default$1.createElement(reactRouterDom.Route, { component: props.notFoundComponent }))),
-                        props.children))))));
-};
-var templateObject_1$3;
-
-var timezone = [{ "value": "Africa/Abidjan", "label": "Africa/Abidjan" },
-    { "value": "Africa/Accra", "label": "Africa/Accra" },
-    { "value": "Africa/Addis_Ababa", "label": "Africa/Addis_Ababa" },
-    { "value": "Africa/Algiers", "label": "Africa/Algiers" },
-    { "value": "Africa/Asmara", "label": "Africa/Asmara" },
-    { "value": "Africa/Asmera", "label": "Africa/Asmera" },
-    { "value": "Africa/Bamako", "label": "Africa/Bamako" },
-    { "value": "Africa/Bangui", "label": "Africa/Bangui" },
-    { "value": "Africa/Banjul", "label": "Africa/Banjul" },
-    { "value": "Africa/Bissau", "label": "Africa/Bissau" },
-    { "value": "Africa/Blantyre", "label": "Africa/Blantyre" },
-    { "value": "Africa/Brazzaville", "label": "Africa/Brazzaville" },
-    { "value": "Africa/Bujumbura", "label": "Africa/Bujumbura" },
-    { "value": "Africa/Cairo", "label": "Africa/Cairo" },
-    { "value": "Africa/Casablanca", "label": "Africa/Casablanca" },
-    { "value": "Africa/Ceuta", "label": "Africa/Ceuta" },
-    { "value": "Africa/Conakry", "label": "Africa/Conakry" },
-    { "value": "Africa/Dakar", "label": "Africa/Dakar" },
-    { "value": "Africa/Dar_es_Salaam", "label": "Africa/Dar_es_Salaam" },
-    { "value": "Africa/Djibouti", "label": "Africa/Djibouti" },
-    { "value": "Africa/Douala", "label": "Africa/Douala" },
-    { "value": "Africa/El_Aaiun", "label": "Africa/El_Aaiun" },
-    { "value": "Africa/Freetown", "label": "Africa/Freetown" },
-    { "value": "Africa/Gaborone", "label": "Africa/Gaborone" },
-    { "value": "Africa/Harare", "label": "Africa/Harare" },
-    { "value": "Africa/Johannesburg", "label": "Africa/Johannesburg" },
-    { "value": "Africa/Juba", "label": "Africa/Juba" },
-    { "value": "Africa/Kampala", "label": "Africa/Kampala" },
-    { "value": "Africa/Khartoum", "label": "Africa/Khartoum" },
-    { "value": "Africa/Kigali", "label": "Africa/Kigali" },
-    { "value": "Africa/Kinshasa", "label": "Africa/Kinshasa" },
-    { "value": "Africa/Lagos", "label": "Africa/Lagos" },
-    { "value": "Africa/Libreville", "label": "Africa/Libreville" },
-    { "value": "Africa/Lome", "label": "Africa/Lome" },
-    { "value": "Africa/Luanda", "label": "Africa/Luanda" },
-    { "value": "Africa/Lubumbashi", "label": "Africa/Lubumbashi" },
-    { "value": "Africa/Lusaka", "label": "Africa/Lusaka" },
-    { "value": "Africa/Malabo", "label": "Africa/Malabo" },
-    { "value": "Africa/Maputo", "label": "Africa/Maputo" },
-    { "value": "Africa/Maseru", "label": "Africa/Maseru" },
-    { "value": "Africa/Mbabane", "label": "Africa/Mbabane" },
-    { "value": "Africa/Mogadishu", "label": "Africa/Mogadishu" },
-    { "value": "Africa/Monrovia", "label": "Africa/Monrovia" },
-    { "value": "Africa/Nairobi", "label": "Africa/Nairobi" },
-    { "value": "Africa/Ndjamena", "label": "Africa/Ndjamena" },
-    { "value": "Africa/Niamey", "label": "Africa/Niamey" },
-    { "value": "Africa/Nouakchott", "label": "Africa/Nouakchott" },
-    { "value": "Africa/Ouagadougou", "label": "Africa/Ouagadougou" },
-    { "value": "Africa/Porto-Novo", "label": "Africa/Porto-Novo" },
-    { "value": "Africa/Sao_Tome", "label": "Africa/Sao_Tome" },
-    { "value": "Africa/Timbuktu", "label": "Africa/Timbuktu" },
-    { "value": "Africa/Tripoli", "label": "Africa/Tripoli" },
-    { "value": "Africa/Tunis", "label": "Africa/Tunis" },
-    { "value": "Africa/Windhoek", "label": "Africa/Windhoek" },
-    { "value": "America/Adak", "label": "America/Adak" },
-    { "value": "America/Anchorage", "label": "America/Anchorage" },
-    { "value": "America/Anguilla", "label": "America/Anguilla" },
-    { "value": "America/Antigua", "label": "America/Antigua" },
-    { "value": "America/Araguaina", "label": "America/Araguaina" },
-    { "value": "America/Argentina/Buenos_Aires", "label": "America/Argentina/Buenos_Aires" },
-    { "value": "America/Argentina/Catamarca", "label": "America/Argentina/Catamarca" },
-    { "value": "America/Argentina/ComodRivadavia", "label": "America/Argentina/ComodRivadavia" },
-    { "value": "America/Argentina/Cordoba", "label": "America/Argentina/Cordoba" },
-    { "value": "America/Argentina/Jujuy", "label": "America/Argentina/Jujuy" },
-    { "value": "America/Argentina/La_Rioja", "label": "America/Argentina/La_Rioja" },
-    { "value": "America/Argentina/Mendoza", "label": "America/Argentina/Mendoza" },
-    { "value": "America/Argentina/Rio_Gallegos", "label": "America/Argentina/Rio_Gallegos" },
-    { "value": "America/Argentina/Salta", "label": "America/Argentina/Salta" },
-    { "value": "America/Argentina/San_Juan", "label": "America/Argentina/San_Juan" },
-    { "value": "America/Argentina/San_Luis", "label": "America/Argentina/San_Luis" },
-    { "value": "America/Argentina/Tucuman", "label": "America/Argentina/Tucuman" },
-    { "value": "America/Argentina/Ushuaia", "label": "America/Argentina/Ushuaia" },
-    { "value": "America/Aruba", "label": "America/Aruba" },
-    { "value": "America/Asuncion", "label": "America/Asuncion" },
-    { "value": "America/Atikokan", "label": "America/Atikokan" },
-    { "value": "America/Atka", "label": "America/Atka" },
-    { "value": "America/Bahia", "label": "America/Bahia" },
-    { "value": "America/Bahia_Banderas", "label": "America/Bahia_Banderas" },
-    { "value": "America/Barbados", "label": "America/Barbados" },
-    { "value": "America/Belem", "label": "America/Belem" },
-    { "value": "America/Belize", "label": "America/Belize" },
-    { "value": "America/Blanc-Sablon", "label": "America/Blanc-Sablon" },
-    { "value": "America/Boa_Vista", "label": "America/Boa_Vista" },
-    { "value": "America/Bogota", "label": "America/Bogota" },
-    { "value": "America/Boise", "label": "America/Boise" },
-    { "value": "America/Buenos_Aires", "label": "America/Buenos_Aires" },
-    { "value": "America/Cambridge_Bay", "label": "America/Cambridge_Bay" },
-    { "value": "America/Campo_Grande", "label": "America/Campo_Grande" },
-    { "value": "America/Cancun", "label": "America/Cancun" },
-    { "value": "America/Caracas", "label": "America/Caracas" },
-    { "value": "America/Catamarca", "label": "America/Catamarca" },
-    { "value": "America/Cayenne", "label": "America/Cayenne" },
-    { "value": "America/Cayman", "label": "America/Cayman" },
-    { "value": "America/Chicago", "label": "America/Chicago" },
-    { "value": "America/Chihuahua", "label": "America/Chihuahua" },
-    { "value": "America/Coral_Harbour", "label": "America/Coral_Harbour" },
-    { "value": "America/Cordoba", "label": "America/Cordoba" },
-    { "value": "America/Costa_Rica", "label": "America/Costa_Rica" },
-    { "value": "America/Creston", "label": "America/Creston" },
-    { "value": "America/Cuiaba", "label": "America/Cuiaba" },
-    { "value": "America/Curacao", "label": "America/Curacao" },
-    { "value": "America/Danmarkshavn", "label": "America/Danmarkshavn" },
-    { "value": "America/Dawson", "label": "America/Dawson" },
-    { "value": "America/Dawson_Creek", "label": "America/Dawson_Creek" },
-    { "value": "America/Denver", "label": "America/Denver" },
-    { "value": "America/Detroit", "label": "America/Detroit" },
-    { "value": "America/Dominica", "label": "America/Dominica" },
-    { "value": "America/Edmonton", "label": "America/Edmonton" },
-    { "value": "America/Eirunepe", "label": "America/Eirunepe" },
-    { "value": "America/El_Salvador", "label": "America/El_Salvador" },
-    { "value": "America/Ensenada", "label": "America/Ensenada" },
-    { "value": "America/Fort_Nelson", "label": "America/Fort_Nelson" },
-    { "value": "America/Fort_Wayne", "label": "America/Fort_Wayne" },
-    { "value": "America/Fortaleza", "label": "America/Fortaleza" },
-    { "value": "America/Glace_Bay", "label": "America/Glace_Bay" },
-    { "value": "America/Godthab", "label": "America/Godthab" },
-    { "value": "America/Goose_Bay", "label": "America/Goose_Bay" },
-    { "value": "America/Grand_Turk", "label": "America/Grand_Turk" },
-    { "value": "America/Grenada", "label": "America/Grenada" },
-    { "value": "America/Guadeloupe", "label": "America/Guadeloupe" },
-    { "value": "America/Guatemala", "label": "America/Guatemala" },
-    { "value": "America/Guayaquil", "label": "America/Guayaquil" },
-    { "value": "America/Guyana", "label": "America/Guyana" },
-    { "value": "America/Halifax", "label": "America/Halifax" },
-    { "value": "America/Havana", "label": "America/Havana" },
-    { "value": "America/Hermosillo", "label": "America/Hermosillo" },
-    { "value": "America/Indiana/Indianapolis", "label": "America/Indiana/Indianapolis" },
-    { "value": "America/Indiana/Knox", "label": "America/Indiana/Knox" },
-    { "value": "America/Indiana/Marengo", "label": "America/Indiana/Marengo" },
-    { "value": "America/Indiana/Petersburg", "label": "America/Indiana/Petersburg" },
-    { "value": "America/Indiana/Tell_City", "label": "America/Indiana/Tell_City" },
-    { "value": "America/Indiana/Vevay", "label": "America/Indiana/Vevay" },
-    { "value": "America/Indiana/Vincennes", "label": "America/Indiana/Vincennes" },
-    { "value": "America/Indiana/Winamac", "label": "America/Indiana/Winamac" },
-    { "value": "America/Indianapolis", "label": "America/Indianapolis" },
-    { "value": "America/Inuvik", "label": "America/Inuvik" },
-    { "value": "America/Iqaluit", "label": "America/Iqaluit" },
-    { "value": "America/Jamaica", "label": "America/Jamaica" },
-    { "value": "America/Jujuy", "label": "America/Jujuy" },
-    { "value": "America/Juneau", "label": "America/Juneau" },
-    { "value": "America/Kentucky/Louisville", "label": "America/Kentucky/Louisville" },
-    { "value": "America/Kentucky/Monticello", "label": "America/Kentucky/Monticello" },
-    { "value": "America/Knox_IN", "label": "America/Knox_IN" },
-    { "value": "America/Kralendijk", "label": "America/Kralendijk" },
-    { "value": "America/La_Paz", "label": "America/La_Paz" },
-    { "value": "America/Lima", "label": "America/Lima" },
-    { "value": "America/Los_Angeles", "label": "America/Los_Angeles" },
-    { "value": "America/Louisville", "label": "America/Louisville" },
-    { "value": "America/Lower_Princes", "label": "America/Lower_Princes" },
-    { "value": "America/Maceio", "label": "America/Maceio" },
-    { "value": "America/Managua", "label": "America/Managua" },
-    { "value": "America/Manaus", "label": "America/Manaus" },
-    { "value": "America/Marigot", "label": "America/Marigot" },
-    { "value": "America/Martinique", "label": "America/Martinique" },
-    { "value": "America/Matamoros", "label": "America/Matamoros" },
-    { "value": "America/Mazatlan", "label": "America/Mazatlan" },
-    { "value": "America/Mendoza", "label": "America/Mendoza" },
-    { "value": "America/Menominee", "label": "America/Menominee" },
-    { "value": "America/Merida", "label": "America/Merida" },
-    { "value": "America/Metlakatla", "label": "America/Metlakatla" },
-    { "value": "America/Mexico_City", "label": "America/Mexico_City" },
-    { "value": "America/Miquelon", "label": "America/Miquelon" },
-    { "value": "America/Moncton", "label": "America/Moncton" },
-    { "value": "America/Monterrey", "label": "America/Monterrey" },
-    { "value": "America/Montevideo", "label": "America/Montevideo" },
-    { "value": "America/Montreal", "label": "America/Montreal" },
-    { "value": "America/Montserrat", "label": "America/Montserrat" },
-    { "value": "America/Nassau", "label": "America/Nassau" },
-    { "value": "America/New_York", "label": "America/New_York" },
-    { "value": "America/Nipigon", "label": "America/Nipigon" },
-    { "value": "America/Nome", "label": "America/Nome" },
-    { "value": "America/Noronha", "label": "America/Noronha" },
-    { "value": "America/North_Dakota/Beulah", "label": "America/North_Dakota/Beulah" },
-    { "value": "America/North_Dakota/Center", "label": "America/North_Dakota/Center" },
-    { "value": "America/North_Dakota/New_Salem", "label": "America/North_Dakota/New_Salem" },
-    { "value": "America/Ojinaga", "label": "America/Ojinaga" },
-    { "value": "America/Panama", "label": "America/Panama" },
-    { "value": "America/Pangnirtung", "label": "America/Pangnirtung" },
-    { "value": "America/Paramaribo", "label": "America/Paramaribo" },
-    { "value": "America/Phoenix", "label": "America/Phoenix" },
-    { "value": "America/Port-au-Prince", "label": "America/Port-au-Prince" },
-    { "value": "America/Port_of_Spain", "label": "America/Port_of_Spain" },
-    { "value": "America/Porto_Acre", "label": "America/Porto_Acre" },
-    { "value": "America/Porto_Velho", "label": "America/Porto_Velho" },
-    { "value": "America/Puerto_Rico", "label": "America/Puerto_Rico" },
-    { "value": "America/Punta_Arenas", "label": "America/Punta_Arenas" },
-    { "value": "America/Rainy_River", "label": "America/Rainy_River" },
-    { "value": "America/Rankin_Inlet", "label": "America/Rankin_Inlet" },
-    { "value": "America/Recife", "label": "America/Recife" },
-    { "value": "America/Regina", "label": "America/Regina" },
-    { "value": "America/Resolute", "label": "America/Resolute" },
-    { "value": "America/Rio_Branco", "label": "America/Rio_Branco" },
-    { "value": "America/Rosario", "label": "America/Rosario" },
-    { "value": "America/Santa_Isabel", "label": "America/Santa_Isabel" },
-    { "value": "America/Santarem", "label": "America/Santarem" },
-    { "value": "America/Santiago", "label": "America/Santiago" },
-    { "value": "America/Santo_Domingo", "label": "America/Santo_Domingo" },
-    { "value": "America/Sao_Paulo", "label": "America/Sao_Paulo" },
-    { "value": "America/Scoresbysund", "label": "America/Scoresbysund" },
-    { "value": "America/Shiprock", "label": "America/Shiprock" },
-    { "value": "America/Sitka", "label": "America/Sitka" },
-    { "value": "America/St_Barthelemy", "label": "America/St_Barthelemy" },
-    { "value": "America/St_Johns", "label": "America/St_Johns" },
-    { "value": "America/St_Kitts", "label": "America/St_Kitts" },
-    { "value": "America/St_Lucia", "label": "America/St_Lucia" },
-    { "value": "America/St_Thomas", "label": "America/St_Thomas" },
-    { "value": "America/St_Vincent", "label": "America/St_Vincent" },
-    { "value": "America/Swift_Current", "label": "America/Swift_Current" },
-    { "value": "America/Tegucigalpa", "label": "America/Tegucigalpa" },
-    { "value": "America/Thule", "label": "America/Thule" },
-    { "value": "America/Thunder_Bay", "label": "America/Thunder_Bay" },
-    { "value": "America/Tijuana", "label": "America/Tijuana" },
-    { "value": "America/Toronto", "label": "America/Toronto" },
-    { "value": "America/Tortola", "label": "America/Tortola" },
-    { "value": "America/Vancouver", "label": "America/Vancouver" },
-    { "value": "America/Virgin", "label": "America/Virgin" },
-    { "value": "America/Whitehorse", "label": "America/Whitehorse" },
-    { "value": "America/Winnipeg", "label": "America/Winnipeg" },
-    { "value": "America/Yakutat", "label": "America/Yakutat" },
-    { "value": "America/Yellowknife", "label": "America/Yellowknife" },
-    { "value": "Antarctica/Casey", "label": "Antarctica/Casey" },
-    { "value": "Antarctica/Davis", "label": "Antarctica/Davis" },
-    { "value": "Antarctica/DumontDUrville", "label": "Antarctica/DumontDUrville" },
-    { "value": "Antarctica/Macquarie", "label": "Antarctica/Macquarie" },
-    { "value": "Antarctica/Mawson", "label": "Antarctica/Mawson" },
-    { "value": "Antarctica/McMurdo", "label": "Antarctica/McMurdo" },
-    { "value": "Antarctica/Palmer", "label": "Antarctica/Palmer" },
-    { "value": "Antarctica/Rothera", "label": "Antarctica/Rothera" },
-    { "value": "Antarctica/South_Pole", "label": "Antarctica/South_Pole" },
-    { "value": "Antarctica/Syowa", "label": "Antarctica/Syowa" },
-    { "value": "Antarctica/Troll", "label": "Antarctica/Troll" },
-    { "value": "Antarctica/Vostok", "label": "Antarctica/Vostok" },
-    { "value": "Arctic/Longyearbyen", "label": "Arctic/Longyearbyen" },
-    { "value": "Asia/Aden", "label": "Asia/Aden" },
-    { "value": "Asia/Almaty", "label": "Asia/Almaty" },
-    { "value": "Asia/Amman", "label": "Asia/Amman" },
-    { "value": "Asia/Anadyr", "label": "Asia/Anadyr" },
-    { "value": "Asia/Aqtau", "label": "Asia/Aqtau" },
-    { "value": "Asia/Aqtobe", "label": "Asia/Aqtobe" },
-    { "value": "Asia/Ashgabat", "label": "Asia/Ashgabat" },
-    { "value": "Asia/Ashkhabad", "label": "Asia/Ashkhabad" },
-    { "value": "Asia/Atyrau", "label": "Asia/Atyrau" },
-    { "value": "Asia/Baghdad", "label": "Asia/Baghdad" },
-    { "value": "Asia/Bahrain", "label": "Asia/Bahrain" },
-    { "value": "Asia/Baku", "label": "Asia/Baku" },
-    { "value": "Asia/Bangkok", "label": "Asia/Bangkok" },
-    { "value": "Asia/Barnaul", "label": "Asia/Barnaul" },
-    { "value": "Asia/Beirut", "label": "Asia/Beirut" },
-    { "value": "Asia/Bishkek", "label": "Asia/Bishkek" },
-    { "value": "Asia/Brunei", "label": "Asia/Brunei" },
-    { "value": "Asia/Calcutta", "label": "Asia/Calcutta" },
-    { "value": "Asia/Chita", "label": "Asia/Chita" },
-    { "value": "Asia/Choibalsan", "label": "Asia/Choibalsan" },
-    { "value": "Asia/Chongqing", "label": "Asia/Chongqing" },
-    { "value": "Asia/Chungking", "label": "Asia/Chungking" },
-    { "value": "Asia/Colombo", "label": "Asia/Colombo" },
-    { "value": "Asia/Dacca", "label": "Asia/Dacca" },
-    { "value": "Asia/Damascus", "label": "Asia/Damascus" },
-    { "value": "Asia/Dhaka", "label": "Asia/Dhaka" },
-    { "value": "Asia/Dili", "label": "Asia/Dili" },
-    { "value": "Asia/Dubai", "label": "Asia/Dubai" },
-    { "value": "Asia/Dushanbe", "label": "Asia/Dushanbe" },
-    { "value": "Asia/Famagusta", "label": "Asia/Famagusta" },
-    { "value": "Asia/Gaza", "label": "Asia/Gaza" },
-    { "value": "Asia/Harbin", "label": "Asia/Harbin" },
-    { "value": "Asia/Hebron", "label": "Asia/Hebron" },
-    { "value": "Asia/Ho_Chi_Minh", "label": "Asia/Ho_Chi_Minh" },
-    { "value": "Asia/Hong_Kong", "label": "Asia/Hong_Kong" },
-    { "value": "Asia/Hovd", "label": "Asia/Hovd" },
-    { "value": "Asia/Irkutsk", "label": "Asia/Irkutsk" },
-    { "value": "Asia/Istanbul", "label": "Asia/Istanbul" },
-    { "value": "Asia/Jakarta", "label": "Asia/Jakarta" },
-    { "value": "Asia/Jayapura", "label": "Asia/Jayapura" },
-    { "value": "Asia/Jerusalem", "label": "Asia/Jerusalem" },
-    { "value": "Asia/Kabul", "label": "Asia/Kabul" },
-    { "value": "Asia/Kamchatka", "label": "Asia/Kamchatka" },
-    { "value": "Asia/Karachi", "label": "Asia/Karachi" },
-    { "value": "Asia/Kashgar", "label": "Asia/Kashgar" },
-    { "value": "Asia/Kathmandu", "label": "Asia/Kathmandu" },
-    { "value": "Asia/Katmandu", "label": "Asia/Katmandu" },
-    { "value": "Asia/Khandyga", "label": "Asia/Khandyga" },
-    { "value": "Asia/Kolkata", "label": "Asia/Kolkata" },
-    { "value": "Asia/Krasnoyarsk", "label": "Asia/Krasnoyarsk" },
-    { "value": "Asia/Kuala_Lumpur", "label": "Asia/Kuala_Lumpur" },
-    { "value": "Asia/Kuching", "label": "Asia/Kuching" },
-    { "value": "Asia/Kuwait", "label": "Asia/Kuwait" },
-    { "value": "Asia/Macao", "label": "Asia/Macao" },
-    { "value": "Asia/Macau", "label": "Asia/Macau" },
-    { "value": "Asia/Magadan", "label": "Asia/Magadan" },
-    { "value": "Asia/Makassar", "label": "Asia/Makassar" },
-    { "value": "Asia/Manila", "label": "Asia/Manila" },
-    { "value": "Asia/Muscat", "label": "Asia/Muscat" },
-    { "value": "Asia/Nicosia", "label": "Asia/Nicosia" },
-    { "value": "Asia/Novokuznetsk", "label": "Asia/Novokuznetsk" },
-    { "value": "Asia/Novosibirsk", "label": "Asia/Novosibirsk" },
-    { "value": "Asia/Omsk", "label": "Asia/Omsk" },
-    { "value": "Asia/Oral", "label": "Asia/Oral" },
-    { "value": "Asia/Phnom_Penh", "label": "Asia/Phnom_Penh" },
-    { "value": "Asia/Pontianak", "label": "Asia/Pontianak" },
-    { "value": "Asia/Pyongyang", "label": "Asia/Pyongyang" },
-    { "value": "Asia/Qatar", "label": "Asia/Qatar" },
-    { "value": "Asia/Qyzylorda", "label": "Asia/Qyzylorda" },
-    { "value": "Asia/Rangoon", "label": "Asia/Rangoon" },
-    { "value": "Asia/Riyadh", "label": "Asia/Riyadh" },
-    { "value": "Asia/Saigon", "label": "Asia/Saigon" },
-    { "value": "Asia/Sakhalin", "label": "Asia/Sakhalin" },
-    { "value": "Asia/Samarkand", "label": "Asia/Samarkand" },
-    { "value": "Asia/Seoul", "label": "Asia/Seoul" },
-    { "value": "Asia/Shanghai", "label": "Asia/Shanghai" },
-    { "value": "Asia/Singapore", "label": "Asia/Singapore" },
-    { "value": "Asia/Srednekolymsk", "label": "Asia/Srednekolymsk" },
-    { "value": "Asia/Taipei", "label": "Asia/Taipei" },
-    { "value": "Asia/Tashkent", "label": "Asia/Tashkent" },
-    { "value": "Asia/Tbilisi", "label": "Asia/Tbilisi" },
-    { "value": "Asia/Tehran", "label": "Asia/Tehran" },
-    { "value": "Asia/Tel_Aviv", "label": "Asia/Tel_Aviv" },
-    { "value": "Asia/Thimbu", "label": "Asia/Thimbu" },
-    { "value": "Asia/Thimphu", "label": "Asia/Thimphu" },
-    { "value": "Asia/Tokyo", "label": "Asia/Tokyo" },
-    { "value": "Asia/Tomsk", "label": "Asia/Tomsk" },
-    { "value": "Asia/Ujung_Pandang", "label": "Asia/Ujung_Pandang" },
-    { "value": "Asia/Ulaanbaatar", "label": "Asia/Ulaanbaatar" },
-    { "value": "Asia/Ulan_Bator", "label": "Asia/Ulan_Bator" },
-    { "value": "Asia/Urumqi", "label": "Asia/Urumqi" },
-    { "value": "Asia/Ust-Nera", "label": "Asia/Ust-Nera" },
-    { "value": "Asia/Vientiane", "label": "Asia/Vientiane" },
-    { "value": "Asia/Vladivostok", "label": "Asia/Vladivostok" },
-    { "value": "Asia/Yakutsk", "label": "Asia/Yakutsk" },
-    { "value": "Asia/Yangon", "label": "Asia/Yangon" },
-    { "value": "Asia/Yekaterinburg", "label": "Asia/Yekaterinburg" },
-    { "value": "Asia/Yerevan", "label": "Asia/Yerevan" },
-    { "value": "Atlantic/Azores", "label": "Atlantic/Azores" },
-    { "value": "Atlantic/Bermuda", "label": "Atlantic/Bermuda" },
-    { "value": "Atlantic/Canary", "label": "Atlantic/Canary" },
-    { "value": "Atlantic/Cape_Verde", "label": "Atlantic/Cape_Verde" },
-    { "value": "Atlantic/Faeroe", "label": "Atlantic/Faeroe" },
-    { "value": "Atlantic/Faroe", "label": "Atlantic/Faroe" },
-    { "value": "Atlantic/Jan_Mayen", "label": "Atlantic/Jan_Mayen" },
-    { "value": "Atlantic/Madeira", "label": "Atlantic/Madeira" },
-    { "value": "Atlantic/Reykjavik", "label": "Atlantic/Reykjavik" },
-    { "value": "Atlantic/South_Georgia", "label": "Atlantic/South_Georgia" },
-    { "value": "Atlantic/St_Helena", "label": "Atlantic/St_Helena" },
-    { "value": "Atlantic/Stanley", "label": "Atlantic/Stanley" },
-    { "value": "Australia/ACT", "label": "Australia/ACT" },
-    { "value": "Australia/Adelaide", "label": "Australia/Adelaide" },
-    { "value": "Australia/Brisbane", "label": "Australia/Brisbane" },
-    { "value": "Australia/Broken_Hill", "label": "Australia/Broken_Hill" },
-    { "value": "Australia/Canberra", "label": "Australia/Canberra" },
-    { "value": "Australia/Currie", "label": "Australia/Currie" },
-    { "value": "Australia/Darwin", "label": "Australia/Darwin" },
-    { "value": "Australia/Eucla", "label": "Australia/Eucla" },
-    { "value": "Australia/Hobart", "label": "Australia/Hobart" },
-    { "value": "Australia/LHI", "label": "Australia/LHI" },
-    { "value": "Australia/Lindeman", "label": "Australia/Lindeman" },
-    { "value": "Australia/Lord_Howe", "label": "Australia/Lord_Howe" },
-    { "value": "Australia/Melbourne", "label": "Australia/Melbourne" },
-    { "value": "Australia/NSW", "label": "Australia/NSW" },
-    { "value": "Australia/North", "label": "Australia/North" },
-    { "value": "Australia/Perth", "label": "Australia/Perth" },
-    { "value": "Australia/Queensland", "label": "Australia/Queensland" },
-    { "value": "Australia/South", "label": "Australia/South" },
-    { "value": "Australia/Sydney", "label": "Australia/Sydney" },
-    { "value": "Australia/Tasmania", "label": "Australia/Tasmania" },
-    { "value": "Australia/Victoria", "label": "Australia/Victoria" },
-    { "value": "Australia/West", "label": "Australia/West" },
-    { "value": "Australia/Yancowinna", "label": "Australia/Yancowinna" },
-    { "value": "Brazil/Acre", "label": "Brazil/Acre" },
-    { "value": "Brazil/DeNoronha", "label": "Brazil/DeNoronha" },
-    { "value": "Brazil/East", "label": "Brazil/East" },
-    { "value": "Brazil/West", "label": "Brazil/West" },
-    { "value": "CET", "label": "CET" },
-    { "value": "CST6CDT", "label": "CST6CDT" },
-    { "value": "Canada/Atlantic", "label": "Canada/Atlantic" },
-    { "value": "Canada/Central", "label": "Canada/Central" },
-    { "value": "Canada/Eastern", "label": "Canada/Eastern" },
-    { "value": "Canada/Mountain", "label": "Canada/Mountain" },
-    { "value": "Canada/Newfoundland", "label": "Canada/Newfoundland" },
-    { "value": "Canada/Pacific", "label": "Canada/Pacific" },
-    { "value": "Canada/Saskatchewan", "label": "Canada/Saskatchewan" },
-    { "value": "Canada/Yukon", "label": "Canada/Yukon" },
-    { "value": "Chile/Continental", "label": "Chile/Continental" },
-    { "value": "Chile/EasterIsland", "label": "Chile/EasterIsland" },
-    { "value": "Cuba", "label": "Cuba" },
-    { "value": "EET", "label": "EET" },
-    { "value": "EST", "label": "EST" },
-    { "value": "EST5EDT", "label": "EST5EDT" },
-    { "value": "Egypt", "label": "Egypt" },
-    { "value": "Eire", "label": "Eire" },
-    { "value": "Etc/GMT", "label": "Etc/GMT" },
-    { "value": "Etc/GMT+0", "label": "Etc/GMT+0" },
-    { "value": "Etc/GMT+1", "label": "Etc/GMT+1" },
-    { "value": "Etc/GMT+10", "label": "Etc/GMT+10" },
-    { "value": "Etc/GMT+11", "label": "Etc/GMT+11" },
-    { "value": "Etc/GMT+12", "label": "Etc/GMT+12" },
-    { "value": "Etc/GMT+2", "label": "Etc/GMT+2" },
-    { "value": "Etc/GMT+3", "label": "Etc/GMT+3" },
-    { "value": "Etc/GMT+4", "label": "Etc/GMT+4" },
-    { "value": "Etc/GMT+5", "label": "Etc/GMT+5" },
-    { "value": "Etc/GMT+6", "label": "Etc/GMT+6" },
-    { "value": "Etc/GMT+7", "label": "Etc/GMT+7" },
-    { "value": "Etc/GMT+8", "label": "Etc/GMT+8" },
-    { "value": "Etc/GMT+9", "label": "Etc/GMT+9" },
-    { "value": "Etc/GMT-0", "label": "Etc/GMT-0" },
-    { "value": "Etc/GMT-1", "label": "Etc/GMT-1" },
-    { "value": "Etc/GMT-10", "label": "Etc/GMT-10" },
-    { "value": "Etc/GMT-11", "label": "Etc/GMT-11" },
-    { "value": "Etc/GMT-12", "label": "Etc/GMT-12" },
-    { "value": "Etc/GMT-13", "label": "Etc/GMT-13" },
-    { "value": "Etc/GMT-14", "label": "Etc/GMT-14" },
-    { "value": "Etc/GMT-2", "label": "Etc/GMT-2" },
-    { "value": "Etc/GMT-3", "label": "Etc/GMT-3" },
-    { "value": "Etc/GMT-4", "label": "Etc/GMT-4" },
-    { "value": "Etc/GMT-5", "label": "Etc/GMT-5" },
-    { "value": "Etc/GMT-6", "label": "Etc/GMT-6" },
-    { "value": "Etc/GMT-7", "label": "Etc/GMT-7" },
-    { "value": "Etc/GMT-8", "label": "Etc/GMT-8" },
-    { "value": "Etc/GMT-9", "label": "Etc/GMT-9" },
-    { "value": "Etc/GMT0", "label": "Etc/GMT0" },
-    { "value": "Etc/Greenwich", "label": "Etc/Greenwich" },
-    { "value": "Etc/UCT", "label": "Etc/UCT" },
-    { "value": "Etc/UTC", "label": "Etc/UTC" },
-    { "value": "Etc/Universal", "label": "Etc/Universal" },
-    { "value": "Etc/Zulu", "label": "Etc/Zulu" },
-    { "value": "Europe/Amsterdam", "label": "Europe/Amsterdam" },
-    { "value": "Europe/Andorra", "label": "Europe/Andorra" },
-    { "value": "Europe/Astrakhan", "label": "Europe/Astrakhan" },
-    { "value": "Europe/Athens", "label": "Europe/Athens" },
-    { "value": "Europe/Belfast", "label": "Europe/Belfast" },
-    { "value": "Europe/Belgrade", "label": "Europe/Belgrade" },
-    { "value": "Europe/Berlin", "label": "Europe/Berlin" },
-    { "value": "Europe/Bratislava", "label": "Europe/Bratislava" },
-    { "value": "Europe/Brussels", "label": "Europe/Brussels" },
-    { "value": "Europe/Bucharest", "label": "Europe/Bucharest" },
-    { "value": "Europe/Budapest", "label": "Europe/Budapest" },
-    { "value": "Europe/Busingen", "label": "Europe/Busingen" },
-    { "value": "Europe/Chisinau", "label": "Europe/Chisinau" },
-    { "value": "Europe/Copenhagen", "label": "Europe/Copenhagen" },
-    { "value": "Europe/Dublin", "label": "Europe/Dublin" },
-    { "value": "Europe/Gibraltar", "label": "Europe/Gibraltar" },
-    { "value": "Europe/Guernsey", "label": "Europe/Guernsey" },
-    { "value": "Europe/Helsinki", "label": "Europe/Helsinki" },
-    { "value": "Europe/Isle_of_Man", "label": "Europe/Isle_of_Man" },
-    { "value": "Europe/Istanbul", "label": "Europe/Istanbul" },
-    { "value": "Europe/Jersey", "label": "Europe/Jersey" },
-    { "value": "Europe/Kaliningrad", "label": "Europe/Kaliningrad" },
-    { "value": "Europe/Kiev", "label": "Europe/Kiev" },
-    { "value": "Europe/Kirov", "label": "Europe/Kirov" },
-    { "value": "Europe/Lisbon", "label": "Europe/Lisbon" },
-    { "value": "Europe/Ljubljana", "label": "Europe/Ljubljana" },
-    { "value": "Europe/London", "label": "Europe/London" },
-    { "value": "Europe/Luxembourg", "label": "Europe/Luxembourg" },
-    { "value": "Europe/Madrid", "label": "Europe/Madrid" },
-    { "value": "Europe/Malta", "label": "Europe/Malta" },
-    { "value": "Europe/Mariehamn", "label": "Europe/Mariehamn" },
-    { "value": "Europe/Minsk", "label": "Europe/Minsk" },
-    { "value": "Europe/Monaco", "label": "Europe/Monaco" },
-    { "value": "Europe/Moscow", "label": "Europe/Moscow" },
-    { "value": "Europe/Nicosia", "label": "Europe/Nicosia" },
-    { "value": "Europe/Oslo", "label": "Europe/Oslo" },
-    { "value": "Europe/Paris", "label": "Europe/Paris" },
-    { "value": "Europe/Podgorica", "label": "Europe/Podgorica" },
-    { "value": "Europe/Prague", "label": "Europe/Prague" },
-    { "value": "Europe/Riga", "label": "Europe/Riga" },
-    { "value": "Europe/Rome", "label": "Europe/Rome" },
-    { "value": "Europe/Samara", "label": "Europe/Samara" },
-    { "value": "Europe/San_Marino", "label": "Europe/San_Marino" },
-    { "value": "Europe/Sarajevo", "label": "Europe/Sarajevo" },
-    { "value": "Europe/Saratov", "label": "Europe/Saratov" },
-    { "value": "Europe/Simferopol", "label": "Europe/Simferopol" },
-    { "value": "Europe/Skopje", "label": "Europe/Skopje" },
-    { "value": "Europe/Sofia", "label": "Europe/Sofia" },
-    { "value": "Europe/Stockholm", "label": "Europe/Stockholm" },
-    { "value": "Europe/Tallinn", "label": "Europe/Tallinn" },
-    { "value": "Europe/Tirane", "label": "Europe/Tirane" },
-    { "value": "Europe/Tiraspol", "label": "Europe/Tiraspol" },
-    { "value": "Europe/Ulyanovsk", "label": "Europe/Ulyanovsk" },
-    { "value": "Europe/Uzhgorod", "label": "Europe/Uzhgorod" },
-    { "value": "Europe/Vaduz", "label": "Europe/Vaduz" },
-    { "value": "Europe/Vatican", "label": "Europe/Vatican" },
-    { "value": "Europe/Vienna", "label": "Europe/Vienna" },
-    { "value": "Europe/Vilnius", "label": "Europe/Vilnius" },
-    { "value": "Europe/Volgograd", "label": "Europe/Volgograd" },
-    { "value": "Europe/Warsaw", "label": "Europe/Warsaw" },
-    { "value": "Europe/Zagreb", "label": "Europe/Zagreb" },
-    { "value": "Europe/Zaporozhye", "label": "Europe/Zaporozhye" },
-    { "value": "Europe/Zurich", "label": "Europe/Zurich" },
-    { "value": "GB", "label": "GB" },
-    { "value": "GB-Eire", "label": "GB-Eire" },
-    { "value": "GMT", "label": "GMT" },
-    { "value": "GMT+0", "label": "GMT+0" },
-    { "value": "GMT-0", "label": "GMT-0" },
-    { "value": "GMT0", "label": "GMT0" },
-    { "value": "Greenwich", "label": "Greenwich" },
-    { "value": "HST", "label": "HST" },
-    { "value": "Hongkong", "label": "Hongkong" },
-    { "value": "Iceland", "label": "Iceland" },
-    { "value": "Indian/Antananarivo", "label": "Indian/Antananarivo" },
-    { "value": "Indian/Chagos", "label": "Indian/Chagos" },
-    { "value": "Indian/Christmas", "label": "Indian/Christmas" },
-    { "value": "Indian/Cocos", "label": "Indian/Cocos" },
-    { "value": "Indian/Comoro", "label": "Indian/Comoro" },
-    { "value": "Indian/Kerguelen", "label": "Indian/Kerguelen" },
-    { "value": "Indian/Mahe", "label": "Indian/Mahe" },
-    { "value": "Indian/Maldives", "label": "Indian/Maldives" },
-    { "value": "Indian/Mauritius", "label": "Indian/Mauritius" },
-    { "value": "Indian/Mayotte", "label": "Indian/Mayotte" },
-    { "value": "Indian/Reunion", "label": "Indian/Reunion" },
-    { "value": "Iran", "label": "Iran" },
-    { "value": "Israel", "label": "Israel" },
-    { "value": "Jamaica", "label": "Jamaica" },
-    { "value": "Japan", "label": "Japan" },
-    { "value": "Kwajalein", "label": "Kwajalein" },
-    { "value": "Libya", "label": "Libya" },
-    { "value": "MET", "label": "MET" },
-    { "value": "MST", "label": "MST" },
-    { "value": "MST7MDT", "label": "MST7MDT" },
-    { "value": "Mexico/BajaNorte", "label": "Mexico/BajaNorte" },
-    { "value": "Mexico/BajaSur", "label": "Mexico/BajaSur" },
-    { "value": "Mexico/General", "label": "Mexico/General" },
-    { "value": "NZ", "label": "NZ" },
-    { "value": "NZ-CHAT", "label": "NZ-CHAT" },
-    { "value": "Navajo", "label": "Navajo" },
-    { "value": "PRC", "label": "PRC" },
-    { "value": "PST8PDT", "label": "PST8PDT" },
-    { "value": "Pacific/Apia", "label": "Pacific/Apia" },
-    { "value": "Pacific/Auckland", "label": "Pacific/Auckland" },
-    { "value": "Pacific/Bougainville", "label": "Pacific/Bougainville" },
-    { "value": "Pacific/Chatham", "label": "Pacific/Chatham" },
-    { "value": "Pacific/Chuuk", "label": "Pacific/Chuuk" },
-    { "value": "Pacific/Easter", "label": "Pacific/Easter" },
-    { "value": "Pacific/Efate", "label": "Pacific/Efate" },
-    { "value": "Pacific/Enderbury", "label": "Pacific/Enderbury" },
-    { "value": "Pacific/Fakaofo", "label": "Pacific/Fakaofo" },
-    { "value": "Pacific/Fiji", "label": "Pacific/Fiji" },
-    { "value": "Pacific/Funafuti", "label": "Pacific/Funafuti" },
-    { "value": "Pacific/Galapagos", "label": "Pacific/Galapagos" },
-    { "value": "Pacific/Gambier", "label": "Pacific/Gambier" },
-    { "value": "Pacific/Guadalcanal", "label": "Pacific/Guadalcanal" },
-    { "value": "Pacific/Guam", "label": "Pacific/Guam" },
-    { "value": "Pacific/Honolulu", "label": "Pacific/Honolulu" },
-    { "value": "Pacific/Johnston", "label": "Pacific/Johnston" },
-    { "value": "Pacific/Kiritimati", "label": "Pacific/Kiritimati" },
-    { "value": "Pacific/Kosrae", "label": "Pacific/Kosrae" },
-    { "value": "Pacific/Kwajalein", "label": "Pacific/Kwajalein" },
-    { "value": "Pacific/Majuro", "label": "Pacific/Majuro" },
-    { "value": "Pacific/Marquesas", "label": "Pacific/Marquesas" },
-    { "value": "Pacific/Midway", "label": "Pacific/Midway" },
-    { "value": "Pacific/Nauru", "label": "Pacific/Nauru" },
-    { "value": "Pacific/Niue", "label": "Pacific/Niue" },
-    { "value": "Pacific/Norfolk", "label": "Pacific/Norfolk" },
-    { "value": "Pacific/Noumea", "label": "Pacific/Noumea" },
-    { "value": "Pacific/Pago_Pago", "label": "Pacific/Pago_Pago" },
-    { "value": "Pacific/Palau", "label": "Pacific/Palau" },
-    { "value": "Pacific/Pitcairn", "label": "Pacific/Pitcairn" },
-    { "value": "Pacific/Pohnpei", "label": "Pacific/Pohnpei" },
-    { "value": "Pacific/Ponape", "label": "Pacific/Ponape" },
-    { "value": "Pacific/Port_Moresby", "label": "Pacific/Port_Moresby" },
-    { "value": "Pacific/Rarotonga", "label": "Pacific/Rarotonga" },
-    { "value": "Pacific/Saipan", "label": "Pacific/Saipan" },
-    { "value": "Pacific/Samoa", "label": "Pacific/Samoa" },
-    { "value": "Pacific/Tahiti", "label": "Pacific/Tahiti" },
-    { "value": "Pacific/Tarawa", "label": "Pacific/Tarawa" },
-    { "value": "Pacific/Tongatapu", "label": "Pacific/Tongatapu" },
-    { "value": "Pacific/Truk", "label": "Pacific/Truk" },
-    { "value": "Pacific/Wake", "label": "Pacific/Wake" },
-    { "value": "Pacific/Wallis", "label": "Pacific/Wallis" },
-    { "value": "Pacific/Yap", "label": "Pacific/Yap" },
-    { "value": "Poland", "label": "Poland" },
-    { "value": "Portugal", "label": "Portugal" },
-    { "value": "ROC", "label": "ROC" },
-    { "value": "ROK", "label": "ROK" },
-    { "value": "Singapore", "label": "Singapore" },
-    { "value": "Turkey", "label": "Turkey" },
-    { "value": "UCT", "label": "UCT" },
-    { "value": "US/Alaska", "label": "US/Alaska" },
-    { "value": "US/Aleutian", "label": "US/Aleutian" },
-    { "value": "US/Arizona", "label": "US/Arizona" },
-    { "value": "US/Central", "label": "US/Central" },
-    { "value": "US/East-Indiana", "label": "US/East-Indiana" },
-    { "value": "US/Eastern", "label": "US/Eastern" },
-    { "value": "US/Hawaii", "label": "US/Hawaii" },
-    { "value": "US/Indiana-Starke", "label": "US/Indiana-Starke" },
-    { "value": "US/Michigan", "label": "US/Michigan" },
-    { "value": "US/Mountain", "label": "US/Mountain" },
-    { "value": "US/Pacific", "label": "US/Pacific" },
-    { "value": "US/Pacific-New", "label": "US/Pacific-New" },
-    { "value": "US/Samoa", "label": "US/Samoa" },
-    { "value": "UTC", "label": "UTC" },
-    { "value": "Universal", "label": "Universal" },
-    { "value": "W-SU", "label": "W-SU" },
-    { "value": "WET", "label": "WET" },
-    { "value": "Zulu", "label": "Zulu" }];
-
-var SelectTimezone = function (props) {
-    var defaultValue = props.defaultValue, onChange = props.onChange, inputRef = props.inputRef;
-    var _a = React__default.useState(defaultValue !== null && defaultValue !== void 0 ? defaultValue : null), value = _a[0], setValue = _a[1];
-    React__default.useEffect(function () {
-        onChange(value);
-    }, [value, defaultValue]);
-    return (React__default$1.createElement(React__default$1.Fragment, null,
-        React__default$1.createElement(RSelect, { options: timezone, value: value, inputRef: inputRef, onChange: function (e) { return setValue(e); }, zIndex: 3 })));
-};
-
-var Container = styled$1("div")(templateObject_1$4 || (templateObject_1$4 = __makeTemplateObject(["\n    position: fixed;\n    left: ", ";\n    width: ", ";\n    top: 0;\n    height: 100vh;\n    background: ", ";\n    border-right: 1px solid rgba(22,125,255,0.30);\n    transition: 0.4s;\n    z-index: 2;\n    .compress-icon{\n        position: relative;\n        float: right;\n        margin-top: 1rem;\n        margin-right: ", ";\n        font-size: 1.1rem;\n        color: ", ";\n        cursor: pointer;\n    }\n    .extend-title{\n        display: ", ";\n        transform-origin: 0 0;\n        transform: rotate(90deg);\n        position: absolute;\n        top: 3rem;\n        left: 1.6rem;\n        color: ", ";\n    }\n    ul{\n        list-style: none;\n        margin: 0;\n        padding: 0;\n        padding-top: 10px;\n        display: ", ";\n        white-space: nowrap;\n        li{\n            padding: 0px 10px;\n            &.title{\n                color: ", ";\n                font-size: 1.2rem;\n                font-weight: 500;\n                margin-top: 10px;\n                margin-bottom: 5px;\n                width: max-content;\n            }\n            &.link{\n                transition: .2s background ease;\n                height: 2.5rem;\n                line-height: 2.5rem;\n                margin: 0 10px;\n                border-radius: 5px;\n                color: ", ";\n                cursor: pointer;\n                &:hover{\n                    background: ", ";\n                }\n                &.active{\n                    background: ", ";\n                }\n            }\n            &.divider{\n                height: 1px;\n                width: auto;\n                /* background:  ", "; */\n                margin: 10px 0;\n            }\n        }\n    }\n    @media only screen and (max-width: 540px){\n        position: absolute;\n        width: 100%;\n        height: 30px;\n        top: 0px;\n        left: 0;\n        .extend-title{\n            transform: rotate(0deg);\n            top: 6px;\n            display: block !important;\n        }\n\n        ul{\n            background:#fff;\n            border-bottom: 1px solid rgba(22, 125, 255, 0.15);\n            height: max-content;\n        }\n    }\n"], ["\n    position: fixed;\n    left: ", ";\n    width: ", ";\n    top: 0;\n    height: 100vh;\n    background: ", ";\n    border-right: 1px solid rgba(22,125,255,0.30);\n    transition: 0.4s;\n    z-index: 2;\n    .compress-icon{\n        position: relative;\n        float: right;\n        margin-top: 1rem;\n        margin-right: ", ";\n        font-size: 1.1rem;\n        color: ", ";\n        cursor: pointer;\n    }\n    .extend-title{\n        display: ", ";\n        transform-origin: 0 0;\n        transform: rotate(90deg);\n        position: absolute;\n        top: 3rem;\n        left: 1.6rem;\n        color: ", ";\n    }\n    ul{\n        list-style: none;\n        margin: 0;\n        padding: 0;\n        padding-top: 10px;\n        display: ", ";\n        white-space: nowrap;\n        li{\n            padding: 0px 10px;\n            &.title{\n                color: ", ";\n                font-size: 1.2rem;\n                font-weight: 500;\n                margin-top: 10px;\n                margin-bottom: 5px;\n                width: max-content;\n            }\n            &.link{\n                transition: .2s background ease;\n                height: 2.5rem;\n                line-height: 2.5rem;\n                margin: 0 10px;\n                border-radius: 5px;\n                color: ", ";\n                cursor: pointer;\n                &:hover{\n                    background: ", ";\n                }\n                &.active{\n                    background: ", ";\n                }\n            }\n            &.divider{\n                height: 1px;\n                width: auto;\n                /* background:  ", "; */\n                margin: 10px 0;\n            }\n        }\n    }\n    @media only screen and (max-width: 540px){\n        position: absolute;\n        width: 100%;\n        height: 30px;\n        top: 0px;\n        left: 0;\n        .extend-title{\n            transform: rotate(0deg);\n            top: 6px;\n            display: block !important;\n        }\n\n        ul{\n            background:#fff;\n            border-bottom: 1px solid rgba(22, 125, 255, 0.15);\n            height: max-content;\n        }\n    }\n"])), function (props) { return props.isPrimaryNavExtend ? '250px' : '80px'; }, function (props) { return props.collapse ? '30px' : '250px'; }, function (props) { return props.darkmode ? Colors.gray_dark_subcolor : props.color === "light" ? "#fff" : "#101114"; }, function (props) { return props.collapse ? "0.6rem" : "1rem"; }, function (props) { return props.color === "light" ? "#8ba6b8" : "#fff"; }, function (props) { return props.collapse ? "block" : "none"; }, function (props) { return props.color === "light" ? "#8ba6b8" : "#fff"; }, function (props) { return props.collapse ? 'none' : 'block'; }, function (props) { return props.color === "light" ? Colors.gray_medium : "#fff"; }, function (props) { return props.darkmode ? Colors.gray[100] : props.color === "light" ? Colors.gray_medium : Colors.gray[100]; }, function (props) { return props.color === "light" ? "rgba(0,0,0,.05)" : "rgba(255,255,255,0.05)"; }, polished__default.transparentize(.9, "#000"), function (props) { return props.color === "light" ? "rgba(0,0,0,.1)" : Colors.gray[600]; });
-var SecondaryNav = function (props) {
-    var _a = React__default.useState(reactDeviceDetect__default.isMobile ? true : false), isCollapse = _a[0], setIsCollapse = _a[1];
-    React__default.useEffect(function () {
-        isCollapse ? props.dispatchStatus("collapse") : props.dispatchStatus("display");
-    }, [isCollapse]);
-    return (React__default$1.createElement(Container, { color: props.color, collapse: isCollapse, darkmode: props.darkMode, isPrimaryNavExtend: props.isPrimaryNavExtend },
-        isCollapse ? React__default$1.createElement("i", { className: "ri-skip-forward-line compress-icon", onClick: function () { return setIsCollapse(!isCollapse); }, title: "\u00C9tendre" }) : React__default$1.createElement("i", { className: "ri-skip-back-line compress-icon", onClick: function () { return setIsCollapse(!isCollapse); }, title: "Retraicir" }),
-        React__default$1.createElement("span", { className: "extend-title" }, props.extendTitle),
-        React__default$1.createElement("div", { style: { clear: 'both' } }),
-        props.children));
-};
-var templateObject_1$4;
-
-___$insertStyle("@charset \"UTF-8\";\n.navbar {\n  position: fixed;\n  width: 80px;\n  height: 100vh;\n  background: var(--color-primary) !important;\n  border-right: 2px solid rgba(0, 117, 255, 0.2);\n  transition: 0.4s;\n  z-index: 50;\n  border-right: 1px solid #eeeeee;\n}\n.navbar .brand {\n  height: 60px;\n  background: var(--color-primary) !important;\n}\n.navbar .brand img {\n  position: relative;\n  max-width: 40px;\n  left: 50%;\n  top: 50%;\n  transform: translate(-50%, -50%);\n}\n.navbar .listsContainer {\n  display: flex;\n  justify-content: space-between;\n  flex-direction: column;\n  height: calc(100% - 60px);\n}\n.navbar .listsContainer ul.topList, .navbar .listsContainer ul.bottomList {\n  width: 100%;\n  margin: 0;\n  padding: 0;\n}\n.navbar .listsContainer ul.topList li.li-container, .navbar .listsContainer ul.bottomList li.li-container {\n  position: relative;\n  width: 100%;\n  list-style: none;\n}\n.navbar .listsContainer ul.topList li.li-container a, .navbar .listsContainer ul.topList li.li-container span, .navbar .listsContainer ul.bottomList li.li-container a, .navbar .listsContainer ul.bottomList li.li-container span {\n  position: relative;\n  cursor: pointer;\n  width: 70%;\n  border-radius: 3px;\n  margin: 5px auto;\n  display: flex;\n  align-items: start;\n  text-decoration: none;\n}\n.navbar .listsContainer ul.topList li.li-container a .icon, .navbar .listsContainer ul.topList li.li-container span .icon, .navbar .listsContainer ul.bottomList li.li-container a .icon, .navbar .listsContainer ul.bottomList li.li-container span .icon {\n  min-width: 30px;\n  color: #fff;\n  font-size: 20px;\n  transition: 0.2s all ease;\n  position: relative;\n  height: 2.3rem;\n  line-height: 2.8rem;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.navbar .listsContainer ul.topList li.li-container a .icon .item-title, .navbar .listsContainer ul.topList li.li-container span .icon .item-title, .navbar .listsContainer ul.bottomList li.li-container a .icon .item-title, .navbar .listsContainer ul.bottomList li.li-container span .icon .item-title {\n  display: none;\n}\n.navbar .listsContainer ul.topList li.li-container a.active, .navbar .listsContainer ul.topList li.li-container span.active, .navbar .listsContainer ul.bottomList li.li-container a.active, .navbar .listsContainer ul.bottomList li.li-container span.active {\n  background: rgba(255, 255, 255, 0.2);\n}\n.navbar .listsContainer ul.topList li.li-container a.active .icon, .navbar .listsContainer ul.topList li.li-container span.active .icon, .navbar .listsContainer ul.bottomList li.li-container a.active .icon, .navbar .listsContainer ul.bottomList li.li-container span.active .icon {\n  color: #fff;\n}\n.navbar .listsContainer ul.topList li.li-container a.active .icon:before, .navbar .listsContainer ul.topList li.li-container span.active .icon:before, .navbar .listsContainer ul.bottomList li.li-container a.active .icon:before, .navbar .listsContainer ul.bottomList li.li-container span.active .icon:before {\n  display: block;\n}\n.navbar .listsContainer ul.topList li.li-container a.active:hover, .navbar .listsContainer ul.topList li.li-container span.active:hover, .navbar .listsContainer ul.bottomList li.li-container a.active:hover, .navbar .listsContainer ul.bottomList li.li-container span.active:hover {\n  background: rgba(255, 255, 255, 0.2);\n}\n.navbar .listsContainer ul.topList li.li-container a:hover, .navbar .listsContainer ul.bottomList li.li-container a:hover {\n  background: rgba(255, 255, 255, 0.05);\n}\n.navbar .listsContainer .submenu-extended {\n  display: flex;\n}\n.navbar .listsContainer .submenu-extended .submenu-line {\n  width: 1px;\n  margin-left: 50px;\n  margin-right: 5%;\n  background-color: #fff;\n}\n.navbar .listsContainer .submenu-extended .submenu-ul-extended {\n  flex: 0.8;\n  padding: 0;\n  margin: 0;\n}\n.navbar .listsContainer .submenu-extended .submenu-ul-extended .submenu-li {\n  display: flex;\n  color: #fff;\n  list-style: none;\n}\n.navbar .listsContainer .submenu-extended .submenu-ul-extended .submenu-li a {\n  margin: auto;\n  width: 90%;\n  padding: 5px;\n}\n.navbar .listsContainer .submenu-extended .submenu-ul-extended .submenu-li .submenu-title {\n  flex: 1;\n  justify-content: left;\n}\n.navbar .listsContainer .submenu {\n  display: block;\n  position: absolute;\n  left: 110%;\n  width: 300%;\n  top: 100%;\n  background: #6d2c63;\n  box-shadow: 0 0px 0.5px rgba(0, 0, 0, 0.049), 0 0px 1.4px rgba(0, 0, 0, 0.07), 0 0px 3.3px rgba(0, 0, 0, 0.091), 0 0px 11px rgba(0, 0, 0, 0.14);\n  border-radius: 3px;\n}\n.navbar .listsContainer .submenu .submenu-ul {\n  padding: 0;\n}\n.navbar .listsContainer .submenu .submenu-ul .submenu-li {\n  margin-top: 5px;\n  margin-bottom: 5px;\n  justify-content: center;\n  width: 100%;\n  color: white;\n  list-style: none;\n}\n.navbar .listsContainer .submenu .submenu-ul .submenu-li a {\n  margin: auto;\n  width: 90%;\n  padding: 5px;\n}\n.navbar .listsContainer .submenu .submenu-ul .submenu-li .submenu-title {\n  width: 100%;\n  margin: 5px;\n  justify-content: left;\n}\n.navbar .listsContainer ul.topList {\n  margin-top: 1.5rem;\n}\n.navbar .listsContainer ul.topList li.li-container::after {\n  content: attr(data-title);\n  width: max-content;\n  background: #fff;\n  box-shadow: 0 0px 3.4px rgba(0, 0, 0, 0.051), 0 0px 12.9px rgba(0, 0, 0, 0.081), 0 0px 40px rgba(0, 0, 0, 0.15);\n  border-radius: 3px;\n  padding: 0.3rem 0.7rem;\n  color: var(--gray-medium);\n  position: absolute;\n  top: 65%;\n  transform: translateY(-50%);\n  transition: all 0.1s ease-in-out;\n  left: 110%;\n  text-align: center;\n  visibility: hidden;\n  opacity: 0;\n  transform: translateY(-50%) scale(0);\n}\n.navbar .listsContainer ul.topList li.li-container:hover::after {\n  visibility: visible;\n  opacity: 1;\n  transform: translateY(-50%) scale(1);\n}\n.navbar .listsContainer .bottomList {\n  margin-bottom: 1.5rem !important;\n}\n.navbar .listsContainer .bottomList .user-nav {\n  position: relative;\n  z-index: 99;\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup {\n  position: absolute;\n  min-width: 20rem;\n  width: max-content;\n  padding: 0 5px;\n  border-radius: 3px;\n  left: 110%;\n  top: -60%;\n  transform: translateY(-60%);\n  background: #fff;\n  box-shadow: 0 0px 0.5px rgba(0, 0, 0, 0.049), 0 0px 1.4px rgba(0, 0, 0, 0.07), 0 0px 3.3px rgba(0, 0, 0, 0.091), 0 0px 11px rgba(0, 0, 0, 0.14);\n  border: 1px solid #eeeeee;\n  box-sizing: border-box;\n  visibility: hidden;\n  opacity: 0;\n  transition: visibility 0s, opacity 0.2s linear;\n  transition-delay: 0.2s;\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup span {\n  display: block;\n  text-align: center;\n  margin: inherit;\n  width: 100%;\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup span.user-name {\n  font-size: 1rem;\n  color: var(--gray-medium);\n  padding-top: 10px;\n  height: initial;\n  white-space: nowrap;\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup span.user-role {\n  color: #9b9b9b;\n  padding-bottom: 10px;\n  height: initial;\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup span:hover {\n  background: none !important;\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup .user-actions {\n  padding: 5px;\n  padding-left: 15px;\n  color: var(--gray-medium);\n  cursor: pointer;\n  line-height: 30px;\n  display: flex;\n  align-items: center;\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup .user-actions i {\n  margin-right: 10px;\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup .user-actions:hover {\n  background: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.2);\n  color: var(--primary);\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup .user-actions:last-of-type {\n  color: var(--color-red) !important;\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup .user-actions:last-of-type:hover {\n  background: hsla(var(--color-red-h), var(--color-red-s), var(--color-red-l), 0.2);\n}\n.navbar .listsContainer .bottomList .user-nav .user-popup-active {\n  display: block;\n}\n.navbar .listsContainer .bottomList .user-nav:hover .user-popup {\n  visibility: visible;\n  opacity: 1;\n}\n.navbar .listsContainer .bottomList .quick-action-li {\n  position: relative;\n  z-index: 99;\n}\n.navbar .listsContainer .bottomList .quick-action-li .qa-popup {\n  padding-top: 10px;\n  cursor: grab;\n  background: #fff;\n  position: absolute;\n  display: block;\n  left: 110%;\n  bottom: 0;\n  box-shadow: 0 0px 0.5px rgba(0, 0, 0, 0.049), 0 0px 1.4px rgba(0, 0, 0, 0.07), 0 0px 3.3px rgba(0, 0, 0, 0.091), 0 0px 11px rgba(0, 0, 0, 0.14);\n  border-radius: 3px;\n}\n.navbar .listsContainer .bottomList .quick-action-li .qa-popup .quick-action {\n  color: var(--gray-medium) !important;\n}\n.navbar .listsContainer .bottomList .quick-action-li .qa-popup .quick-action:hover {\n  background: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.9);\n  color: var(--primary) !important;\n}\n.navbar .listsContainer .bottomList .quick-action-li .qa-popup .stay-ahead {\n  font-size: 20px;\n  width: 30px;\n  height: 30px;\n  position: absolute;\n  top: 3px;\n  right: 3px;\n  background: #f0f0f0;\n  border-radius: 20%;\n  text-align: center;\n  color: black;\n}\n.navbar .listsContainer .bottomList .quick-action-li .quick-actions-popup {\n  padding-top: 10px;\n  padding-bottom: 10px;\n  position: absolute;\n  border-radius: 3px;\n  left: 110%;\n  top: 0;\n  transform: translateY(-100%);\n  background: #fff;\n  box-shadow: 0 0px 0.5px rgba(0, 0, 0, 0.049), 0 0px 1.4px rgba(0, 0, 0, 0.07), 0 0px 3.3px rgba(0, 0, 0, 0.091), 0 0px 11px rgba(0, 0, 0, 0.14);\n  border: 1px solid #eeeeee;\n  box-sizing: border-box;\n  visibility: hidden;\n  opacity: 0;\n  transition: visibility 0s, opacity 0.2s linear;\n  transition-delay: 0.2s;\n}\n.navbar .listsContainer .bottomList .quick-action-li .quick-actions-popup .quick-action {\n  color: var(--gray-medium) !important;\n}\n.navbar .listsContainer .bottomList .quick-action-li .quick-actions-popup .quick-action:hover {\n  background: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.9);\n  color: var(--primary) !important;\n}\n.navbar .listsContainer .bottomList .quick-action-li .quick-actions-popup-active {\n  display: block;\n}\n.navbar .listsContainer .bottomList .quick-action-li:hover .quick-actions-popup {\n  visibility: visible;\n  opacity: 1;\n}\n.navbar .listsContainer .bottomList .quick-action-li {\n  position: relative;\n  z-index: 99;\n}\n.navbar .listsContainer .bottomList .quick-action-li .quick-actions-popup {\n  padding-top: 10px;\n  padding-bottom: 10px;\n  position: absolute;\n  border-radius: 3px;\n  left: 110%;\n  top: 0;\n  transform: translateY(-100%);\n  background: #fff;\n  box-shadow: 0 0px 0.5px rgba(0, 0, 0, 0.049), 0 0px 1.4px rgba(0, 0, 0, 0.07), 0 0px 3.3px rgba(0, 0, 0, 0.091), 0 0px 11px rgba(0, 0, 0, 0.14);\n  border: 1px solid #eeeeee;\n  box-sizing: border-box;\n  visibility: hidden;\n  opacity: 0;\n  transition: visibility 0s, opacity 0.2s linear;\n  transition-delay: 0.2s;\n}\n.navbar .listsContainer .bottomList .quick-action-li .quick-actions-popup .quick-action {\n  color: var(--gray-medium) !important;\n}\n.navbar .listsContainer .bottomList .quick-action-li .quick-actions-popup .quick-action:hover {\n  background: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.1);\n  color: var(--color-primary) !important;\n}\n.navbar .listsContainer .bottomList .quick-action-li .quick-actions-popup-active {\n  display: block;\n}\n.navbar .listsContainer .bottomList .quick-action-li:hover .quick-actions-popup {\n  visibility: visible;\n  opacity: 1;\n}\n\n.toggle-navigation {\n  position: fixed;\n  left: 10px;\n  right: 20px;\n  height: 60px;\n  width: 30px;\n  z-index: 51;\n  cursor: pointer;\n  text-align: center;\n  color: var(--color-gray-dark);\n  line-height: 60px;\n  font-size: 22px;\n}\n.toggle-navigation svg {\n  transform: translateY(2px);\n}\n.toggle-navigation svg .cls-1 {\n  fill: #6D2C63;\n}\n.toggle-navigation svg .cls-2 {\n  fill: #999999;\n}\n\n.navbar-extend {\n  width: 250px !important;\n}\n.navbar-extend ul.topList li.li-container a, .navbar-extend ul.topList li.li-container span, .navbar-extend ul.bottomList li.li-container a, .navbar-extend ul.bottomList li.li-container span {\n  width: 90% !important;\n}\n.navbar-extend ul.topList li.li-container a .icon, .navbar-extend ul.topList li.li-container span .icon, .navbar-extend ul.bottomList li.li-container a .icon, .navbar-extend ul.bottomList li.li-container span .icon {\n  text-align: left !important;\n}\n.navbar-extend ul.topList li.li-container a .icon .item-title, .navbar-extend ul.topList li.li-container span .icon .item-title, .navbar-extend ul.bottomList li.li-container a .icon .item-title, .navbar-extend ul.bottomList li.li-container span .icon .item-title {\n  display: block !important;\n  font-size: 0.9rem;\n  line-height: 2rem;\n  white-space: nowrap;\n  padding-left: 20px;\n}\n.navbar-extend ul.topList li.li-container a .icon i, .navbar-extend ul.topList li.li-container span .icon i, .navbar-extend ul.bottomList li.li-container a .icon i, .navbar-extend ul.bottomList li.li-container span .icon i {\n  margin: auto 15px !important;\n}\n.navbar-extend ul.topList li.li-container:after, .navbar-extend ul.bottomList li.li-container:after {\n  display: none !important;\n}\n\n@media (max-width: 540px) {\n  .navbar .listsContainer .bottomList {\n    margin-bottom: 0 !important;\n  }\n\n  .navbar {\n    position: fixed !important;\n    left: -120% !important;\n    border: none !important;\n    z-index: 50;\n    width: 100%;\n  }\n  .navbar.active {\n    left: 0 !important;\n  }\n  .navbar ul.topList {\n    height: 67vh;\n    overflow-y: scroll;\n  }\n  .navbar ul.topList li.li-container {\n    height: 60px !important;\n  }\n  .navbar ul.topList li.li-container a {\n    width: 90% !important;\n  }\n  .navbar ul.topList li.li-container a, .navbar ul.topList li.li-container span {\n    display: flex;\n    justify-content: left;\n    height: 60px !important;\n  }\n  .navbar ul.topList li.li-container a .icon, .navbar ul.topList li.li-container span .icon {\n    max-width: max-content;\n    height: 55px !important;\n    background: none !important;\n    margin-left: 20px;\n  }\n  .navbar ul.topList li.li-container a .icon i, .navbar ul.topList li.li-container span .icon i {\n    position: relative;\n    display: block;\n    width: 30px !important;\n    height: 40px !important;\n    margin: 5px 10px !important;\n    line-height: 40px !important;\n  }\n  .navbar ul.topList li.li-container a .icon:before, .navbar ul.topList li.li-container span .icon:before {\n    display: none !important;\n  }\n  .navbar ul.topList li.li-container:after {\n    content: attr(data-title);\n    position: absolute !important;\n    color: #fff !important;\n    background: none !important;\n    display: block !important;\n    top: 55% !important;\n    box-shadow: none !important;\n    transform: translateY(-50%);\n    left: 6rem !important;\n    visibility: visible !important;\n    display: block !important;\n    opacity: 1 !important;\n    transform: translateY(-52%) scale(1) !important;\n  }\n  .navbar ul.bottomList {\n    background: #fff;\n    padding-bottom: 0.5rem !important;\n  }\n  .navbar ul.bottomList li.quick-action-li {\n    margin-bottom: 75px;\n  }\n  .navbar ul.bottomList li.quick-action-li .quick-actions-popup {\n    width: 100% !important;\n    display: none !important;\n    left: 50% !important;\n    top: inherit !important;\n    bottom: 0 !important;\n    background: #fff !important;\n    transform: translateX(-50%) !important;\n    visibility: visible !important;\n    opacity: 1 !important;\n    border: none !important;\n    box-shadow: none !important;\n  }\n  .navbar ul.bottomList li.help-li, .navbar ul.bottomList li.quick-action-li {\n    display: none;\n  }\n  .navbar ul.bottomList li.user-nav span.icon {\n    display: none !important;\n  }\n  .navbar ul.bottomList li.user-nav .user-popup {\n    width: 100% !important;\n    display: block !important;\n    left: 50% !important;\n    top: inherit !important;\n    bottom: 0 !important;\n    background: #fff !important;\n    transform: translateX(-50%) !important;\n    visibility: visible !important;\n    opacity: 1 !important;\n    border: none !important;\n    box-shadow: none !important;\n  }\n  .navbar ul.bottomList li.user-nav .user-popup .toggle-darkmode-container {\n    border: none !important;\n    width: 100% !important;\n    margin: 10px 0;\n  }\n  .navbar ul.bottomList li.user-nav .user-popup .toggle-navbar-container {\n    display: none;\n  }\n  .navbar ul.bottomList li.user-nav .user-popup a {\n    font-size: 1rem;\n  }\n}\nform {\n  position: relative;\n}\n\nbutton:focus {\n  outline: 0;\n}\n\n.form-group {\n  padding: 15px 10px;\n}\n.form-group label {\n  color: var(--color-gray-medium);\n  display: flex;\n  align-items: center;\n}\n.form-group.error label {\n  color: var(--colorvar(--color-red));\n}\n\ninput[type=text],\ninput[type=password],\ninput[type=email],\ninput[type=search],\ninput[type=date],\ninput[type=datetime-local],\ninput[type=time],\ninput[type=tel],\ninput[type=color],\ninput[type=number],\ninput[type=month],\ninput[type=week],\ninput[type=url] {\n  width: 97%;\n  height: 3rem;\n  border: 0.09rem solid #dbdee7;\n  display: block;\n  padding-left: 10px;\n  color: var(--color-gray-dark);\n  position: relative;\n  border-radius: 3px;\n  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n}\ninput[type=text]::placeholder,\ninput[type=password]::placeholder,\ninput[type=email]::placeholder,\ninput[type=search]::placeholder,\ninput[type=date]::placeholder,\ninput[type=datetime-local]::placeholder,\ninput[type=time]::placeholder,\ninput[type=tel]::placeholder,\ninput[type=color]::placeholder,\ninput[type=number]::placeholder,\ninput[type=month]::placeholder,\ninput[type=week]::placeholder,\ninput[type=url]::placeholder {\n  color: #A9A9A9;\n  opacity: 0.8;\n}\ninput[type=text]:focus,\ninput[type=password]:focus,\ninput[type=email]:focus,\ninput[type=search]:focus,\ninput[type=date]:focus,\ninput[type=datetime-local]:focus,\ninput[type=time]:focus,\ninput[type=tel]:focus,\ninput[type=color]:focus,\ninput[type=number]:focus,\ninput[type=month]:focus,\ninput[type=week]:focus,\ninput[type=url]:focus {\n  color: #1e2022;\n  border-color: rgba(55, 125, 255, 0.4);\n  outline: 0;\n  box-shadow: 0 0 10px rgba(55, 125, 255, 0.1);\n}\ninput[type=text]:disabled,\ninput[type=password]:disabled,\ninput[type=email]:disabled,\ninput[type=search]:disabled,\ninput[type=date]:disabled,\ninput[type=datetime-local]:disabled,\ninput[type=time]:disabled,\ninput[type=tel]:disabled,\ninput[type=color]:disabled,\ninput[type=number]:disabled,\ninput[type=month]:disabled,\ninput[type=week]:disabled,\ninput[type=url]:disabled {\n  background: #ebebeb;\n  border: 1px solid #e6e6e6;\n}\n\ninput[type=date]::-webkit-inner-spin-button,\ninput[type=date]::-webkit-outer-spin-button,\ninput[type=datetime-local]::-webkit-inner-spin-button,\ninput[type=datetime-local]::-webkit-outer-spin-button,\ninput[type=week]::-webkit-inner-spin-button,\ninput[type=week]::-webkit-outer-spin-button,\ninput[type=time]::-webkit-inner-spin-button,\ninput[type=time]::-webkit-outer-spin-button,\ninput[type=month]::-webkit-inner-spin-button,\ninput[type=month]::-webkit-outer-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\ninput.form-success {\n  border-right: 6px var(--color-green) solid;\n}\n\ninput.form-error {\n  border-color: var(--color-red);\n  color: var(--color-red) !important;\n}\ninput.form-error::placeholder {\n  color: var(--color-red);\n  opacity: 0.8;\n}\n\ninput:-webkit-autofill,\ninput:-webkit-autofill:hover,\ninput:-webkit-autofill:focus,\ninput:-webkit-autofill:active {\n  transition: background-color 5000s ease-in-out 0s;\n}\n\n.form-addon {\n  display: flex;\n  align-items: inherit;\n  justify-content: start;\n}\n.form-addon .form-input {\n  flex: 1;\n}\n.form-addon .form-addon-item {\n  line-height: 3rem;\n  background: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.8);\n  color: #fff;\n  padding: 0 5px;\n}\n.form-addon .form-addon-item button {\n  background: none;\n  color: #fff;\n  border: none;\n}\n.form-addon .form-addon-item.item-left {\n  border-radius: 3px 0 0 3px;\n}\n.form-addon .form-addon-item.item-right {\n  border-radius: 0 3px 3px 0;\n}\n\ninput[type=color] {\n  width: 4rem;\n  height: 2rem;\n  padding-left: 0;\n}\n\ninput[type=file],\ninput[type=range] {\n  display: block;\n}\n\ntextarea {\n  width: 97%;\n  border: 1px solid #dbdee7;\n  border-radius: 3px;\n  padding: 10px;\n  resize: vertical;\n  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n}\ntextarea::placeholder {\n  color: #A9A9A9;\n  opacity: 0.8;\n}\ntextarea:focus {\n  color: #1e2022;\n  border-color: rgba(55, 125, 255, 0.4);\n  outline: 0;\n  box-shadow: 0 0 10px rgba(55, 125, 255, 0.1);\n}\ntextarea:disabled {\n  background: #ebebeb;\n  border: 1px solid #e6e6e6;\n}\n\nselect {\n  min-width: 100px;\n  margin-bottom: 5px;\n  height: 3.1rem;\n  border: none;\n  background: #F0F0F0;\n  border-radius: 5px;\n  padding-left: 10px;\n  padding-right: 10px;\n  transition: 0.2s;\n  width: 100%;\n}\nselect::placeholder {\n  color: #C8C8C8;\n  opacity: 0.8;\n}\nselect:focus {\n  outline: 0;\n}\n\nform p {\n  position: relative;\n  /* permet de positionner la checkbox cachée */\n}\n\n.check-group {\n  display: block;\n  width: max-content;\n  padding: 5px;\n  margin-bottom: 5px;\n  border-radius: 3px;\n}\n.check-group:hover {\n  background: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.06);\n}\n.check-group:hover label:before {\n  border: 1px solid var(--color-primary);\n}\n.check-group.disabled:hover {\n  background: none !important;\n}\n.check-group.disabled:hover label:before {\n  border: 1px solid #CCCFDB !important;\n}\n.check-group.disabled label {\n  text-decoration: line-through;\n}\n\n.check-group input {\n  padding: 0;\n  height: initial;\n  width: initial;\n  margin-bottom: 0;\n  display: none;\n  cursor: pointer;\n}\n\n.check-group label {\n  position: relative;\n  cursor: pointer;\n  color: #435f71;\n  white-space: nowrap;\n}\n\n.check-group label:before {\n  content: \"\";\n  -webkit-appearance: none;\n  border: 1px solid #CCCFDB;\n  transition: all 0.2s ease;\n  padding: 9px;\n  display: inline-block;\n  position: relative;\n  vertical-align: middle;\n  cursor: pointer;\n  margin-right: 5px;\n  border-radius: 4px;\n  transform: scale(1) translateY(-2px);\n}\n\n.check-group.not-indeterminate input:checked + label:before {\n  background: var(--color-primary);\n}\n\n.check-group.indeterminate input:checked + label:before {\n  background: var(--color-primary);\n}\n\n.check-group.not-indeterminate input:checked + label {\n  color: var(--color-primary);\n}\n\n.check-group.not-indeterminate input:checked + label:after {\n  content: \"\";\n  display: block;\n  position: absolute;\n  top: 1px;\n  left: 7px;\n  width: 4px;\n  height: 10px;\n  border: solid #fff;\n  border-width: 0 2px 2px 0;\n  transform: rotate(45deg);\n}\n\n.check-group.indeterminate input:checked + label:after {\n  content: \"\";\n  display: block;\n  position: absolute;\n  top: 9px;\n  left: 4px;\n  width: 11px;\n  height: 2px;\n  background: #fff;\n}\n\n.radio-container {\n  position: relative;\n  padding-left: 10px;\n  padding-right: 10px;\n  margin-bottom: 12px;\n  line-height: 25px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.radio-container.disabled span {\n  text-decoration: line-through !important;\n}\n.radio-container.disabled span:hover {\n  background: none !important;\n}\n\n.radio-container input {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n}\n\nlabel.radio-container {\n  display: flex;\n  cursor: pointer;\n  font-weight: 500;\n  position: relative;\n  overflow: hidden;\n  margin-bottom: 0.375em;\n}\nlabel.radio-container input {\n  position: absolute;\n  left: -9999px;\n}\nlabel.radio-container input:checked + span {\n  background-color: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.2);\n}\nlabel.radio-container input:checked + span:before {\n  box-shadow: inset 0 0 0 0.4375em var(--color-primary);\n}\nlabel.radio-container span {\n  display: flex;\n  align-items: center;\n  padding: 0.375em 0.75em 0.375em 0.375em;\n  border-radius: 99em;\n  transition: 0.1s ease;\n  color: var(--color-gray-medium);\n  font-weight: 400;\n}\nlabel.radio-container span:hover {\n  background-color: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.2);\n}\nlabel.radio-container span:before {\n  display: flex;\n  flex-shrink: 0;\n  content: \"\";\n  background-color: #fff;\n  width: 1.5em;\n  height: 1.5em;\n  border-radius: 50%;\n  margin-right: 0.375em;\n  transition: 0.1s ease;\n  box-shadow: inset 0 0 0 0.125em var(--color-primary);\n}\n\n.input-helper {\n  padding-left: 5px;\n  display: block;\n  color: #BEBEBE;\n}\n\ninput[type=range] {\n  -webkit-appearance: none;\n  /* Override default CSS styles */\n  appearance: none;\n  width: 100%;\n  /* Full-width */\n  height: 2px;\n  /* Specified height */\n  background: var(--color-gray-dark) -subcolor;\n  outline: none;\n  /* Remove outline */\n  -webkit-transition: 0.2s;\n  /* 0.2 seconds transition on hover */\n  transition: opacity 0.2s;\n}\ninput[type=range]:hover {\n  opacity: 1;\n  /* Fully shown on mouse-over */\n}\n\ninput[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n  appearance: none;\n  width: 22px;\n  height: 22px;\n  border-radius: 20px;\n  background: #fff;\n  border: 5px solid var(--color-gray-dark);\n  cursor: pointer;\n}\n\ninput[type=range]::-moz-range-thumb {\n  width: 22px;\n  height: 22px;\n  border-radius: 20px;\n  background: var(--color-gray-dark);\n}\n\n/* ------------- */\n@media only screen and (max-width: var(--breakpoint-small)) {\n  .input-group.group-align input {\n    float: right;\n    width: 70%;\n  }\n}\n[type=checkbox] {\n  position: absolute;\n  left: -9999px;\n}\n\n.switches {\n  max-width: 25%;\n  width: 95%;\n  padding-left: 0px;\n  border-radius: 5px;\n  color: #435F71;\n  list-style: none;\n}\n\n.switches li {\n  position: relative;\n  counter-increment: switchCounter;\n}\n\n.switches label {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 10px;\n  cursor: pointer;\n}\n\n.switches span:last-child {\n  position: relative;\n  width: 50px;\n  height: 26px;\n  border-radius: 15px;\n  transition: all 0.3s;\n  background: #a9acad;\n}\n\n.switches span:last-child::before,\n.switches span:last-child::after {\n  content: \"\";\n  position: absolute;\n}\n\n.switches span:last-child::before {\n  left: 1px;\n  top: 1px;\n  width: 24px;\n  height: 24px;\n  background: #e8e9ed;\n  border-radius: 50%;\n  z-index: 1;\n  transition: transform 0.3s;\n}\n\n.switches span:last-child::after {\n  top: 50%;\n  right: 8px;\n  width: 12px;\n  height: 12px;\n  transform: translateY(-50%);\n  background-size: 12px 12px;\n}\n\n.switches [type=checkbox]:checked + label span:last-child {\n  background: #00d084;\n}\n\n.switches [type=checkbox]:checked + label span:last-child::before {\n  transform: translateX(24px);\n}\n\n.switches [type=checkbox]:checked + label span:last-child::after {\n  width: 14px;\n  height: 14px;\n  /*right: auto;*/\n  left: 8px;\n  background-image: url(\"https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/checkmark-switcher.svg\");\n  background-size: 14px 14px;\n}\n\n@media only screen and (max-width: 540px) {\n  .switches {\n    max-width: 95%;\n  }\n}\nnav.breadcrumb ul {\n  list-style: none;\n  border: none !important;\n  padding-left: 5px;\n  padding-bottom: 10px;\n  margin-bottom: 0px;\n}\nnav.breadcrumb ul li {\n  display: inline-block;\n  font-size: 14px;\n  border: none !important;\n  padding: 0;\n}\nnav.breadcrumb ul li :not(.active) {\n  font-weight: 400;\n}\nnav.breadcrumb ul li :not(.active):after {\n  content: \"/\";\n  padding-right: 0.5rem;\n  padding-left: 0.5rem;\n  color: var(--color-primary);\n}\nnav.breadcrumb ul li.active {\n  color: #A9A9A9;\n}\nnav.breadcrumb ul li.active a:after {\n  display: none;\n}\n\n@media (max-width: 540px) {\n  nav.breadcrumb {\n    display: none;\n    padding-top: 0;\n    padding-left: 10px;\n    background: none;\n    color: #fff;\n  }\n  nav.breadcrumb ul {\n    padding-left: 0 !important;\n  }\n  nav.breadcrumb ul li.active {\n    color: #fff;\n  }\n}");
-
-var Radio = function (props) {
-    var label = props.label, value = props.value, rhfRegister = props.rhfRegister, disabled = props.disabled, checked = props.checked, onChange = props.onChange;
-    return (React__default$1.createElement("label", { className: "radio-container " + (disabled ? "disabled" : ""), style: props.containerStyle },
-        React__default$1.createElement("input", __assign({ type: "radio", value: value, disabled: disabled, checked: checked, onChange: !disabled && onChange }, rhfRegister)),
-        React__default$1.createElement("span", null, label)));
-};
-
 var Checkbox = function (props) {
     var id = props.id, containerStyle = props.containerStyle, containerClassName = props.containerClassName, label = props.label, value = props.value, onChange = props.onChange, checked = props.checked, rhfRegister = props.rhfRegister, isInderterminate = props.isInderterminate, disabled = props.disabled;
-    return (React__default$1.createElement("div", { className: "check-group " + (!!containerClassName ? containerClassName : "") + " " + (isInderterminate ? "indeterminate" : "not-indeterminate") + " " + (!!disabled ? "disabled" : ""), style: containerStyle },
-        React__default$1.createElement("input", __assign({ type: "checkbox", id: id, value: value, disabled: disabled, onChange: !disabled && onChange, checked: checked }, rhfRegister)),
-        React__default$1.createElement("label", { htmlFor: id }, label)));
+    return (React__default.createElement("div", { className: "check-group ".concat(!!containerClassName ? containerClassName : "", " ").concat(isInderterminate ? "indeterminate" : "not-indeterminate", " ").concat(!!disabled ? "disabled" : ""), style: containerStyle },
+        React__default.createElement("input", __assign({ type: "checkbox", id: id, value: value, disabled: disabled, onChange: !disabled && onChange, checked: checked }, rhfRegister)),
+        React__default.createElement("label", { htmlFor: id }, label)));
 };
-
-var HorizonDateContainer = styled$1('div')(templateObject_1$5 || (templateObject_1$5 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    color: ", ";\n    span.action-arrow{\n        cursor: pointer;\n        i{\n            font-size: 24px;\n            display: flex;\n            border-radius: 3px;\n            padding: 0 3px;\n            transition: .2s background ease-in-out;\n            &:hover{\n                background: rgba(0,0,0,.08);\n            }\n            &:active{\n                color: ", ";\n            }\n        }\n    }\n    span.week-number{\n        background: ", ";\n        color: ", ";\n        padding: 1px 5px;\n        border-radius: 3px;\n    }\n    h4{\n        padding: 0 10px;\n        text-align: center;\n        font-weight: 500;\n    }\n"], ["\n    display: flex;\n    align-items: center;\n    color: ", ";\n    span.action-arrow{\n        cursor: pointer;\n        i{\n            font-size: 24px;\n            display: flex;\n            border-radius: 3px;\n            padding: 0 3px;\n            transition: .2s background ease-in-out;\n            &:hover{\n                background: rgba(0,0,0,.08);\n            }\n            &:active{\n                color: ", ";\n            }\n        }\n    }\n    span.week-number{\n        background: ", ";\n        color: ", ";\n        padding: 1px 5px;\n        border-radius: 3px;\n    }\n    h4{\n        padding: 0 10px;\n        text-align: center;\n        font-weight: 500;\n    }\n"])), Colors.gray_medium, Colors.blue, Colors.gray[100], Colors.gray_medium);
-var HorizonCalendarViewer = function (props) {
-    var onPrevClick = props.onPrevClick, onNextClick = props.onNextClick, horizon = props.horizon, displayType = props.displayType, currentViewMode = props.currentViewMode, translation = props.translation;
-    var _a = React__default.useState(null), weekNumber = _a[0], setWeekNumber = _a[1];
-    React__default.useEffect(function () {
-        if (!!horizon) {
-            var _from = Object.assign({}, horizon.from);
-            setWeekNumber(moment$1(_from).add(1, "day").format('ww'));
-        }
-    }, [horizon]);
-    return (React__default$1.createElement(HorizonDateContainer, null,
-        React__default$1.createElement("span", { className: "action-arrow", onClick: onPrevClick },
-            React__default$1.createElement("i", { className: "ri-arrow-left-s-line" })),
-        React__default$1.createElement("span", { className: "action-arrow", onClick: onNextClick },
-            React__default$1.createElement("i", { className: "ri-arrow-right-s-line" })),
-        reactDeviceDetect__default.isMobile ?
-            React__default$1.createElement("h4", null, horizon.from.format("DD/MM")) :
-            horizon.from.format("DD/MM") == horizon.to.format("DD/MM") ?
-                React__default$1.createElement("h4", null, horizon.from.format("dddd DD MMMM")) :
-                React__default$1.createElement("h4", null,
-                    !!translation ? translation.from : "Du",
-                    " ",
-                    horizon.from.format("DD/MM"),
-                    " ",
-                    !!translation ? translation.to : "au",
-                    " ",
-                    horizon.to.format("DD/MM")),
-        currentViewMode === "week" && React__default$1.createElement("span", { className: "week-number" },
-            "S. ",
-            weekNumber)));
-};
-var templateObject_1$5;
-
-var BoundaryWrapper = function (props) {
-    var children = props.children;
-    function ErrorFallback(_a) {
-        var error = _a.error, resetErrorBoundary = _a.resetErrorBoundary;
-        return (React__default$1.createElement("div", { role: "alert" },
-            React__default$1.createElement("p", null, "Oups... An error occured..."),
-            React__default$1.createElement("pre", null, error.message),
-            React__default$1.createElement("button", { onClick: resetErrorBoundary }, "Reload")));
-    }
-    return (React__default$1.createElement(reactErrorBoundary.ErrorBoundary, { FallbackComponent: ErrorFallback, onReset: function () { } }, children));
-};
-
-exports.BoundaryWrapper = BoundaryWrapper;
-exports.Checkbox = Checkbox;
-exports.DashboardNavigation = DashboardNavigation;
-exports.HorizonCalendarViewer = HorizonCalendarViewer;
-exports.Input = Input;
-exports.InputLabel = InputLabel;
-exports.InputWithoutRegister = InputWithoutRegister;
-exports.RSelect = RSelect;
-exports.Radio = Radio;
-exports.SecondaryNav = SecondaryNav;
-exports.SelectTimezone = SelectTimezone;
-
-});
-
-unwrapExports(dist);
-var dist_1 = dist.BoundaryWrapper;
-var dist_2 = dist.Checkbox;
-var dist_3 = dist.DashboardNavigation;
-var dist_4 = dist.HorizonCalendarViewer;
-var dist_5 = dist.Input;
-var dist_6 = dist.InputLabel;
-var dist_7 = dist.InputWithoutRegister;
-var dist_8 = dist.RSelect;
-var dist_9 = dist.Radio;
-var dist_10 = dist.SecondaryNav;
-var dist_11 = dist.SelectTimezone;
 
 var ListContainer = styled.div(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n            font-weight: 400;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n            font-weight: 400;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n"])));
 var CheckboxFilter = function (props) {
@@ -23249,7 +22054,7 @@ var CheckboxFilter = function (props) {
         });
     };
     return (React__default.createElement(ListContainer, null,
-        React__default.createElement(CheckContainer, { darkMode: darkMode }, props.filter.checkboxValues.map(function (check, i) { return (React__default.createElement(dist_2, { name: check.value, label: check.label, id: check.value, onChange: function () { return handleChange(check.value); }, checked: filtersState.filtersState[props.filter.name]["main"].value.includes(check.value) })); }))));
+        React__default.createElement(CheckContainer, { darkMode: darkMode }, props.filter.checkboxValues.map(function (check, i) { return (React__default.createElement(Checkbox, { name: check.value, label: check.label, id: check.value, onChange: function () { return handleChange(check.value); }, checked: filtersState.filtersState[props.filter.name]["main"].value.includes(check.value) })); }))));
 };
 var templateObject_1$1;
 
@@ -23331,13 +22136,13 @@ var BooleanRadioFilter = function (props) {
                 React__default.createElement("label", null, radio.label),
                 React__default.createElement("div", { style: { display: 'flex', paddingTop: 5 } },
                     React__default.createElement("label", { className: "radio-container" },
-                        React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_YES", name: "radio_type_" + radio.name + "_YES", value: "YES", checked: radio.status === "YES", onChange: function () { return handleChange(i, "YES"); } }),
+                        React__default.createElement("input", { type: "radio", id: "radio_type_".concat(radio.name, "_YES"), name: "radio_type_".concat(radio.name, "_YES"), value: "YES", checked: radio.status === "YES", onChange: function () { return handleChange(i, "YES"); } }),
                         React__default.createElement("span", null, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.yes) !== null && _a !== void 0 ? _a : translations.yes)),
                     React__default.createElement("label", { className: "radio-container" },
-                        React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_NO", name: "radio_type_" + radio.name + "_NO", value: "NO", checked: radio.status === "NO", onChange: function () { return handleChange(i, "NO"); } }),
+                        React__default.createElement("input", { type: "radio", id: "radio_type_".concat(radio.name, "_NO"), name: "radio_type_".concat(radio.name, "_NO"), value: "NO", checked: radio.status === "NO", onChange: function () { return handleChange(i, "NO"); } }),
                         React__default.createElement("span", null, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.no) !== null && _b !== void 0 ? _b : translations.no)),
                     React__default.createElement("label", { className: "radio-container" },
-                        React__default.createElement("input", { type: "radio", id: "radio_type_" + radio.name + "_NA", name: "radio_type_" + radio.name + "_NA", value: "NA", checked: radio.status === "NA", onChange: function () { return handleChange(i, "NA"); } }),
+                        React__default.createElement("input", { type: "radio", id: "radio_type_".concat(radio.name, "_NA"), name: "radio_type_".concat(radio.name, "_NA"), value: "NA", checked: radio.status === "NA", onChange: function () { return handleChange(i, "NA"); } }),
                         React__default.createElement("span", null, (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.na) !== null && _c !== void 0 ? _c : translations.na)))));
         }))));
 };
@@ -23450,7 +22255,7 @@ var IndeterminateCheckbox = React__default.forwardRef(function (_a, ref) {
 });
 var Table = React.forwardRef(function (props, ref) {
     var _a;
-    var columns = props.columns, data = props.data, renderRowSubComponent = props.renderRowSubComponent, hiddenColumns = props.hiddenColumns, filters = props.filters, filterParsedType = props.filterParsedType, translationsProps = props.translationsProps, selectableRows = props.selectableRows, asyncLoading = props.asyncLoading, _b = props.counterColumnToItemGoLeft, counterColumnToItemGoLeft = _b === void 0 ? 2 : _b;
+    var columns = props.columns, data = props.data, renderRowSubComponent = props.renderRowSubComponent, hiddenColumns = props.hiddenColumns, filters = props.filters, filterParsedType = props.filterParsedType, translationsProps = props.translationsProps, selectableRows = props.selectableRows, smallTextsHeader = props.smallTextsHeader, asyncLoading = props.asyncLoading, _b = props.counterColumnToItemGoLeft, counterColumnToItemGoLeft = _b === void 0 ? 2 : _b;
     var _c = React.useState(null), openedFilter = _c[0], setOpenedFilter = _c[1];
     var node = React.useRef();
     var SstState = React.useContext(FiltersContext);
@@ -23531,7 +22336,7 @@ var Table = React.forwardRef(function (props, ref) {
                 var filter = filters === null || filters === void 0 ? void 0 : filters.filter(function (f) { return f.idAccessor === column.id; })[0];
                 return (React__default.createElement("th", __assign({}, column.getHeaderProps(), { className: "SST_header_cell", key: j }),
                     React__default.createElement("div", { className: "SST_header_container noselect", style: { justifyContent: !!column.alignment ? column.alignment : "left" } },
-                        React__default.createElement("span", __assign({ className: "SST_header_title " + (!!((_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]) ? "pointer" : "") }, column.getHeaderProps(), { onClick: function () {
+                        React__default.createElement("span", __assign({ className: "SST_header_title ".concat(!!((_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]) ? "pointer" : "", " ").concat(smallTextsHeader ? "SST_header_title_small" : "") }, column.getHeaderProps(), { onClick: function () {
                                 var _a;
                                 if (!!SstState.sorterState[column.id])
                                     toggleSorterValue(column.id, (_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]);
@@ -23542,7 +22347,7 @@ var Table = React.forwardRef(function (props, ref) {
                                 : React__default.createElement("i", { className: "ri-arrow-up-s-fill sorter_icon" })
                             : ''),
                         !!filter &&
-                            React__default.createElement("i", { onClick: function () { return setOpenedFilter(openedFilter === column.id ? null : column.id); }, className: "ri-filter-line fitler_icon " + (filter.idAccessor === openedFilter ? "SST_filter_active" : "") })),
+                            React__default.createElement("i", { onClick: function () { return setOpenedFilter(openedFilter === column.id ? null : column.id); }, className: "ri-filter-line fitler_icon ".concat(filter.idAccessor === openedFilter ? "SST_filter_active" : "") })),
                     !!filter && filter.idAccessor === openedFilter &&
                         React__default.createElement("div", { className: "SST_header_filter_modal" },
                             React__default.createElement(ItemFilter, { key: (_e = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) === null || _e === void 0 ? void 0 : _e.name, filter: (_f = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) !== null && _f !== void 0 ? _f : null, filterParsedType: filterParsedType, translationsProps: translationsProps, isOnRightOfViewport: !counterColumnToItemGoLeft ? false : j >= (headerGroup.headers.length - counterColumnToItemGoLeft), darkMode: false, onClose: function () { return setOpenedFilter(null); } }))));
@@ -23638,448 +22443,6 @@ var ColumnsSelector = function (props) {
     })));
 };
 
-var core = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var isSafari = exports.isSafari = function isSafari() {
-  return (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-  );
-};
-
-var isJsons = exports.isJsons = function isJsons(array) {
-  return Array.isArray(array) && array.every(function (row) {
-    return (typeof row === "undefined" ? "undefined" : _typeof(row)) === 'object' && !(row instanceof Array);
-  });
-};
-
-var isArrays = exports.isArrays = function isArrays(array) {
-  return Array.isArray(array) && array.every(function (row) {
-    return Array.isArray(row);
-  });
-};
-
-var jsonsHeaders = exports.jsonsHeaders = function jsonsHeaders(array) {
-  return Array.from(array.map(function (json) {
-    return Object.keys(json);
-  }).reduce(function (a, b) {
-    return new Set([].concat(_toConsumableArray(a), _toConsumableArray(b)));
-  }, []));
-};
-
-var jsons2arrays = exports.jsons2arrays = function jsons2arrays(jsons, headers) {
-  headers = headers || jsonsHeaders(jsons);
-
-  var headerLabels = headers;
-  var headerKeys = headers;
-  if (isJsons(headers)) {
-    headerLabels = headers.map(function (header) {
-      return header.label;
-    });
-    headerKeys = headers.map(function (header) {
-      return header.key;
-    });
-  }
-
-  var data = jsons.map(function (object) {
-    return headerKeys.map(function (header) {
-      return getHeaderValue(header, object);
-    });
-  });
-  return [headerLabels].concat(_toConsumableArray(data));
-};
-
-var getHeaderValue = exports.getHeaderValue = function getHeaderValue(property, obj) {
-  var foundValue = property.replace(/\[([^\]]+)]/g, ".$1").split(".").reduce(function (o, p, i, arr) {
-    var value = o[p];
-    if (value === undefined || value === null) {
-      arr.splice(1);
-    } else {
-      return value;
-    }
-  }, obj);
-
-  return foundValue === undefined ? property in obj ? obj[property] : '' : foundValue;
-};
-
-var elementOrEmpty = exports.elementOrEmpty = function elementOrEmpty(element) {
-  return typeof element === 'undefined' || element === null ? '' : element;
-};
-
-var joiner = exports.joiner = function joiner(data) {
-  var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ',';
-  var enclosingCharacter = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '"';
-
-  return data.filter(function (e) {
-    return e;
-  }).map(function (row) {
-    return row.map(function (element) {
-      return elementOrEmpty(element);
-    }).map(function (column) {
-      return "" + enclosingCharacter + column + enclosingCharacter;
-    }).join(separator);
-  }).join("\n");
-};
-
-var arrays2csv = exports.arrays2csv = function arrays2csv(data, headers, separator, enclosingCharacter) {
-  return joiner(headers ? [headers].concat(_toConsumableArray(data)) : data, separator, enclosingCharacter);
-};
-
-var jsons2csv = exports.jsons2csv = function jsons2csv(data, headers, separator, enclosingCharacter) {
-  return joiner(jsons2arrays(data, headers), separator, enclosingCharacter);
-};
-
-var string2csv = exports.string2csv = function string2csv(data, headers, separator, enclosingCharacter) {
-  return headers ? headers.join(separator) + "\n" + data : data.replace(/"/g, '""');
-};
-
-var toCSV = exports.toCSV = function toCSV(data, headers, separator, enclosingCharacter) {
-  if (isJsons(data)) return jsons2csv(data, headers, separator, enclosingCharacter);
-  if (isArrays(data)) return arrays2csv(data, headers, separator, enclosingCharacter);
-  if (typeof data === 'string') return string2csv(data, headers, separator);
-  throw new TypeError("Data should be a \"String\", \"Array of arrays\" OR \"Array of objects\" ");
-};
-
-var buildURI = exports.buildURI = function buildURI(data, uFEFF, headers, separator, enclosingCharacter) {
-  var csv = toCSV(data, headers, separator, enclosingCharacter);
-  var type = isSafari() ? 'application/csv' : 'text/csv';
-  var blob = new Blob([uFEFF ? "\uFEFF" : '', csv], { type: type });
-  var dataURI = "data:" + type + ";charset=utf-8," + (uFEFF ? "\uFEFF" : '') + csv;
-
-  var URL = window.URL || window.webkitURL;
-
-  return typeof URL.createObjectURL === 'undefined' ? dataURI : URL.createObjectURL(blob);
-};
-});
-
-unwrapExports(core);
-var core_1 = core.isSafari;
-var core_2 = core.isJsons;
-var core_3 = core.isArrays;
-var core_4 = core.jsonsHeaders;
-var core_5 = core.jsons2arrays;
-var core_6 = core.getHeaderValue;
-var core_7 = core.elementOrEmpty;
-var core_8 = core.joiner;
-var core_9 = core.arrays2csv;
-var core_10 = core.jsons2csv;
-var core_11 = core.string2csv;
-var core_12 = core.toCSV;
-var core_13 = core.buildURI;
-
-var metaProps = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PropsNotForwarded = exports.defaultProps = exports.propTypes = undefined;
-
-
-
-var _react2 = _interopRequireDefault(React__default);
-
-
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var propTypes$1 = exports.propTypes = {
-  data: (0, propTypes.oneOfType)([propTypes.string, propTypes.array, propTypes.func]).isRequired,
-  headers: propTypes.array,
-  target: propTypes.string,
-  separator: propTypes.string,
-  filename: propTypes.string,
-  uFEFF: propTypes.bool,
-  onClick: propTypes.func,
-  asyncOnClick: propTypes.bool,
-  enclosingCharacter: propTypes.string
-};
-
-var defaultProps = exports.defaultProps = {
-  separator: ',',
-  filename: 'generatedBy_react-csv.csv',
-  uFEFF: true,
-  asyncOnClick: false,
-  enclosingCharacter: '"'
-};
-
-var PropsNotForwarded = exports.PropsNotForwarded = ['data', 'headers'];
-});
-
-unwrapExports(metaProps);
-var metaProps_1 = metaProps.PropsNotForwarded;
-var metaProps_2 = metaProps.defaultProps;
-var metaProps_3 = metaProps.propTypes;
-
-var Download = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-
-
-var _react2 = _interopRequireDefault(React__default);
-
-
-
-
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var defaultProps = {
-  target: '_blank'
-};
-
-var CSVDownload = function (_React$Component) {
-  _inherits(CSVDownload, _React$Component);
-
-  function CSVDownload(props) {
-    _classCallCheck(this, CSVDownload);
-
-    var _this = _possibleConstructorReturn(this, (CSVDownload.__proto__ || Object.getPrototypeOf(CSVDownload)).call(this, props));
-
-    _this.state = {};
-    return _this;
-  }
-
-  _createClass(CSVDownload, [{
-    key: 'buildURI',
-    value: function buildURI() {
-      return core.buildURI.apply(undefined, arguments);
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _props = this.props,
-          data = _props.data,
-          headers = _props.headers,
-          separator = _props.separator,
-          enclosingCharacter = _props.enclosingCharacter,
-          uFEFF = _props.uFEFF,
-          target = _props.target,
-          specs = _props.specs,
-          replace = _props.replace;
-
-      this.state.page = window.open(this.buildURI(data, uFEFF, headers, separator, enclosingCharacter), target, specs, replace);
-    }
-  }, {
-    key: 'getWindow',
-    value: function getWindow() {
-      return this.state.page;
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return null;
-    }
-  }]);
-
-  return CSVDownload;
-}(_react2.default.Component);
-
-CSVDownload.defaultProps = Object.assign(metaProps.defaultProps, defaultProps);
-CSVDownload.propTypes = metaProps.propTypes;
-exports.default = CSVDownload;
-});
-
-unwrapExports(Download);
-
-var Link = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-
-
-var _react2 = _interopRequireDefault(React__default);
-
-
-
-
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var CSVLink = function (_React$Component) {
-  _inherits(CSVLink, _React$Component);
-
-  function CSVLink(props) {
-    _classCallCheck(this, CSVLink);
-
-    var _this = _possibleConstructorReturn(this, (CSVLink.__proto__ || Object.getPrototypeOf(CSVLink)).call(this, props));
-
-    _this.buildURI = _this.buildURI.bind(_this);
-    return _this;
-  }
-
-  _createClass(CSVLink, [{
-    key: 'buildURI',
-    value: function buildURI() {
-      return core.buildURI.apply(undefined, arguments);
-    }
-  }, {
-    key: 'handleLegacy',
-    value: function handleLegacy(event) {
-      var isAsync = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-      if (window.navigator.msSaveOrOpenBlob) {
-        event.preventDefault();
-
-        var _props = this.props,
-            data = _props.data,
-            headers = _props.headers,
-            separator = _props.separator,
-            filename = _props.filename,
-            enclosingCharacter = _props.enclosingCharacter,
-            uFEFF = _props.uFEFF;
-
-
-        var csvData = isAsync && typeof data === 'function' ? data() : data;
-
-        var blob = new Blob([uFEFF ? '\uFEFF' : '', (0, core.toCSV)(csvData, headers, separator, enclosingCharacter)]);
-        window.navigator.msSaveBlob(blob, filename);
-
-        return false;
-      }
-    }
-  }, {
-    key: 'handleAsyncClick',
-    value: function handleAsyncClick(event) {
-      var _this2 = this;
-
-      var done = function done(proceed) {
-        if (proceed === false) {
-          event.preventDefault();
-          return;
-        }
-        _this2.handleLegacy(event, true);
-      };
-
-      this.props.onClick(event, done);
-    }
-  }, {
-    key: 'handleSyncClick',
-    value: function handleSyncClick(event) {
-      var stopEvent = this.props.onClick(event) === false;
-      if (stopEvent) {
-        event.preventDefault();
-        return;
-      }
-      this.handleLegacy(event);
-    }
-  }, {
-    key: 'handleClick',
-    value: function handleClick() {
-      var _this3 = this;
-
-      return function (event) {
-        if (typeof _this3.props.onClick === 'function') {
-          return _this3.props.asyncOnClick ? _this3.handleAsyncClick(event) : _this3.handleSyncClick(event);
-        }
-        _this3.handleLegacy(event);
-      };
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this4 = this;
-
-      var _props2 = this.props,
-          data = _props2.data,
-          headers = _props2.headers,
-          separator = _props2.separator,
-          filename = _props2.filename,
-          uFEFF = _props2.uFEFF,
-          children = _props2.children,
-          onClick = _props2.onClick,
-          asyncOnClick = _props2.asyncOnClick,
-          enclosingCharacter = _props2.enclosingCharacter,
-          rest = _objectWithoutProperties(_props2, ['data', 'headers', 'separator', 'filename', 'uFEFF', 'children', 'onClick', 'asyncOnClick', 'enclosingCharacter']);
-
-      var isNodeEnvironment = typeof window === 'undefined';
-      var href = isNodeEnvironment ? '' : this.buildURI(data, uFEFF, headers, separator, enclosingCharacter);
-
-      return _react2.default.createElement(
-        'a',
-        _extends({
-          download: filename
-        }, rest, {
-          ref: function ref(link) {
-            return _this4.link = link;
-          },
-          target: '_self',
-          href: href,
-          onClick: this.handleClick()
-        }),
-        children
-      );
-    }
-  }]);
-
-  return CSVLink;
-}(_react2.default.Component);
-
-CSVLink.defaultProps = metaProps.defaultProps;
-CSVLink.propTypes = metaProps.propTypes;
-exports.default = CSVLink;
-});
-
-unwrapExports(Link);
-
-var lib = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CSVLink = exports.CSVDownload = undefined;
-
-
-
-var _Download2 = _interopRequireDefault(Download);
-
-
-
-var _Link2 = _interopRequireDefault(Link);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var CSVDownload = exports.CSVDownload = _Download2.default;
-var CSVLink = exports.CSVLink = _Link2.default;
-});
-
-unwrapExports(lib);
-var lib_1 = lib.CSVLink;
-var lib_2 = lib.CSVDownload;
-
-var reactCsv = lib;
-var reactCsv_1 = reactCsv.CSVLink;
-
 var Container = styled.div(templateObject_1$4 || (templateObject_1$4 = __makeTemplateObject(["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"], ["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"])));
 var SettingsInteractor = function (props) {
     var node = React__default.useRef();
@@ -24110,16 +22473,15 @@ var DropdownMenu = function (props) {
     var fetchData = function (e) {
         props.handleExport(e)
             .then(function (data) {
-            var _activeColumns = columns.filter(function (col) { return !hiddenColumns.includes(col.accessor); }).map(function (c) { var _a; return ({ name: !!c.Header ? c.Header : (_a = c.accessor) !== null && _a !== void 0 ? _a : "N/A", accessor: c.accessor, exportedValue: c.exportFormat }); });
+            var _activeColumns = columns.filter(function (col) { return !hiddenColumns.includes(col.accessor); }).map(function (c) { var _a, _b; return ({ name: !!c.Header ? c.Header : (_a = c === null || c === void 0 ? void 0 : c.accessor) !== null && _a !== void 0 ? _a : "N/A", accessor: (_b = c === null || c === void 0 ? void 0 : c.accessor) !== null && _b !== void 0 ? _b : "", exportedValue: c.exportFormat }); });
             var _preparedDataToExported = data.content.map(function (item) {
-                var _a;
+                var _a, _b, _c, _d, _e;
                 var _pushedObject = {};
                 var _loop_1 = function (i) {
-                    var _value = _activeColumns[i].accessor.split(".").reduce(function (a, b) { return a[b]; }, item), _exporter = _activeColumns[i].exportedValue;
-                    console.log(!!_exporter ? _exporter(_value) : null);
-                    if (!!_value)
+                    var _value = (_c = (_b = (_a = _activeColumns === null || _activeColumns === void 0 ? void 0 : _activeColumns[i]) === null || _a === void 0 ? void 0 : _a.accessor) === null || _b === void 0 ? void 0 : _b.split(".")) === null || _c === void 0 ? void 0 : _c.reduce(function (a, b) { var _a; return (_a = a === null || a === void 0 ? void 0 : a[b]) !== null && _a !== void 0 ? _a : ""; }, item), _exporter = (_d = _activeColumns === null || _activeColumns === void 0 ? void 0 : _activeColumns[i]) === null || _d === void 0 ? void 0 : _d.exportedValue;
+                    if (!!_value) {
                         if (Array.isArray(_value)) {
-                            _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : (_a = _value.map(function (v) { var _a; return v === null || v === void 0 ? void 0 : v[(_a = columns.filter(function (c) { return c.accessor === _activeColumns[i].accessor; })[0]) === null || _a === void 0 ? void 0 : _a.exportAccessor]; })) === null || _a === void 0 ? void 0 : _a.join(",");
+                            _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : (_e = _value.map(function (v) { var _a; return v === null || v === void 0 ? void 0 : v[(_a = columns.filter(function (c) { return c.accessor === _activeColumns[i].accessor; })[0]) === null || _a === void 0 ? void 0 : _a.exportAccessor]; })) === null || _e === void 0 ? void 0 : _e.join(",");
                         }
                         else if (typeof (_value) === "object") {
                             _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : JSON.stringify(_value);
@@ -24127,6 +22489,7 @@ var DropdownMenu = function (props) {
                         else {
                             _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : _value;
                         }
+                    }
                     else
                         _pushedObject[_activeColumns[i].name] = "";
                 };
@@ -24135,10 +22498,10 @@ var DropdownMenu = function (props) {
                 }
                 return _pushedObject;
             });
-            setDownloadedData(_preparedDataToExported);
-            timers.setTimeout(function () {
-                nodeBtn.current.link.click();
-            });
+            var ws = XLSX.utils.json_to_sheet(_preparedDataToExported);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Data");
+            XLSX.writeFile(wb, "exported_table".concat(!!tableId ? "_" + tableId : "", ".xlsx"));
         });
     };
     React.useEffect(function () {
@@ -24158,7 +22521,7 @@ var DropdownMenu = function (props) {
         destroyTableFiltersStorage(props.tableId);
         location.reload();
     };
-    return (React__default.createElement("div", { className: "table-settings-dropdown " + (darkMode ? "dark" : ""), style: { height: menuHeight } },
+    return (React__default.createElement("div", { className: "table-settings-dropdown ".concat(darkMode ? "dark" : ""), style: { height: menuHeight } },
         React__default.createElement(reactTransitionGroup.CSSTransition, { in: activeMenu === "main", unmountOnExit: true, timeout: 200, classNames: "menu-primary", onEnter: calcHeight },
             React__default.createElement("div", { className: "menu" },
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-eye-line" }), rightIcon: React__default.createElement("i", { className: "ri-arrow-right-s-line" }), goToMenu: "columns" }, (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _a === void 0 ? void 0 : _a.toggleColumns) !== null && _b !== void 0 ? _b : translations.settings.toggleColumns),
@@ -24194,36 +22557,34 @@ var DropdownMenu = function (props) {
             React__default.createElement("div", { className: "menu" },
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "ri-arrow-left-s-line" }), goToMenu: "main" }, (_v = (_u = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _u === void 0 ? void 0 : _u.back) !== null && _v !== void 0 ? _v : translations.settings.back),
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "" }) },
-                    React__default.createElement("span", { onClick: function () { return fetchData("one"); } }, (_x = (_w = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _w === void 0 ? void 0 : _w.exportOne) !== null && _x !== void 0 ? _x : translations.settings.exportOne),
-                    React__default.createElement(reactCsv_1, { data: downloadedData, ref: nodeBtn, separator: ";", filename: "exported_table" + (!!tableId ? "_" + tableId : "") })),
+                    React__default.createElement("span", { onClick: function () { return fetchData("one"); } }, (_x = (_w = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _w === void 0 ? void 0 : _w.exportOne) !== null && _x !== void 0 ? _x : translations.settings.exportOne)),
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "" }) },
-                    React__default.createElement("span", { onClick: function () { return fetchData("all"); } }, (_z = (_y = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _y === void 0 ? void 0 : _y.exportAll) !== null && _z !== void 0 ? _z : translations.settings.exportAll),
-                    React__default.createElement(reactCsv_1, { data: downloadedData, ref: nodeBtn, separator: ";", filename: "exported_table" + (!!tableId ? "_" + tableId : "") }))))));
+                    React__default.createElement("span", { onClick: function () { return fetchData("all"); } }, (_z = (_y = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _y === void 0 ? void 0 : _y.exportAll) !== null && _z !== void 0 ? _z : translations.settings.exportAll))))));
 };
 var templateObject_1$4;
 
 function translateOptionsToOperator(opt, val) {
     switch (opt) {
         case 'contains':
-            return "=like=\"*" + val + "*\"";
+            return "=like=\"*".concat(val, "*\"");
         case 'startWith':
-            return "=like=\"" + val + "*\"";
+            return "=like=\"".concat(val, "*\"");
         case 'finishWith':
-            return "=like=\"*" + val + "\"";
+            return "=like=\"*".concat(val, "\"");
         case 'equal':
-            return "==" + val;
+            return "==".concat(val);
         case 'moreThan':
-            return ">=" + val;
+            return ">=".concat(val);
         case 'lessThan':
-            return "<=" + val;
+            return "<=".concat(val);
         case 'between':
-            return "=bw=(" + val.split('-')[0] + "," + val.split('-')[1] + ")";
+            return "=bw=(".concat(val.split('-')[0], ",").concat(val.split('-')[1], ")");
         case 'atDay':
-            return "=bw=(" + moment(val).startOf('day').toISOString() + "," + moment(val).add(1, 'day').startOf('day').toISOString() + ")";
+            return "=bw=(".concat(moment(val).startOf('day').toISOString(), ",").concat(moment(val).add(1, 'day').startOf('day').toISOString(), ")");
         case 'minDay':
-            return ">=" + moment(val).startOf('day').toISOString();
+            return ">=".concat(moment(val).startOf('day').toISOString());
         case 'maxDay':
-            return "<=" + moment(val).endOf('day').toISOString();
+            return "<=".concat(moment(val).endOf('day').toISOString());
         default:
             return opt;
     }
@@ -24231,10 +22592,10 @@ function translateOptionsToOperator(opt, val) {
 function parseCommons(name, filter) {
     var parse = '';
     if (filter["main"].value.length > 0)
-        parse += "" + name + translateOptionsToOperator(filter["main"].option, filter["main"].value) + ";";
+        parse += "".concat(name).concat(translateOptionsToOperator(filter["main"].option, filter["main"].value), ";");
     filter["optionals"].map(function (optional) {
         if (optional.value.length > 0) {
-            parse += "" + name + translateOptionsToOperator(optional.option, optional.value) + ";";
+            parse += "".concat(name).concat(translateOptionsToOperator(optional.option, optional.value), ";");
         }
     });
     return parse;
@@ -24242,7 +22603,7 @@ function parseCommons(name, filter) {
 function parseCheckbox(name, filter, isContain) {
     var parse = '';
     if (filter["main"].value.length > 0) {
-        parse += name + "=" + (isContain ? "in" : "ct") + "=(" + filter["main"].value.join(',') + ");";
+        parse += "".concat(name, "=").concat(isContain ? "in" : "ct", "=(").concat(filter["main"].value.join(','), ");");
     }
     return parse;
 }
@@ -24250,7 +22611,7 @@ function parseBooleanRadios(filter) {
     var parse = '';
     filter["main"].value.map(function (boolean) {
         if (boolean.status !== "NA") {
-            parse += boolean.name + "==" + (boolean.status === "YES" ? "true" : "false") + ";";
+            parse += "".concat(boolean.name, "==").concat(boolean.status === "YES" ? "true" : "false", ";");
         }
     });
     return parse;
@@ -24258,7 +22619,7 @@ function parseBooleanRadios(filter) {
 function parseGeoloc(name, filter) {
     var parse = '';
     if (filter["main"].value.lat !== 0 && filter["main"].value.lng !== 0) {
-        parse += name + "=gin=(" + filter["main"].value.lng + "," + filter["main"].value.lat + ", " + filter["main"].option + ");";
+        parse += "".concat(name, "=gin=(").concat(filter["main"].value.lng, ",").concat(filter["main"].value.lat, ", ").concat(filter["main"].option, ");");
     }
     return parse;
 }
@@ -24390,7 +22751,7 @@ var FiltersViewers = function (props) {
                 if (["text", "number", "date"].includes(value["type"])) {
                     if (!!value["main"].value && value["main"].value !== "") {
                         var _isLocked = lockedFilters === null || lockedFilters === void 0 ? void 0 : lockedFilters.includes(key);
-                        _array.push(React__default.createElement("div", { className: "filters-label " + (_isLocked ? "locked-label" : ""), key: i },
+                        _array.push(React__default.createElement("div", { className: "filters-label ".concat(_isLocked ? "locked-label" : ""), key: i },
                             React__default.createElement("span", null,
                                 value["label"],
                                 ":"),
@@ -24785,14 +23146,14 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                                 React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: onLineSpacingChange, translationsProps: translationsProps, enabledExport: props.enabledExport, handleExport: exportData, darkMode: props.darkMode, tableId: props.tableId, lineSpacing: lineSpacing, showVerticalBorders: showVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange })),
                             props.isFilter && !!props.filtersList && props.filtersList.length > 0 &&
                                 React__default.createElement(React__default.Fragment, null,
-                                    React__default.createElement(FiltersContainer, { darkMode: props.darkMode, className: ((_l = props.filtersContainerClassName) !== null && _l !== void 0 ? _l : "") + " SST_filters_container" },
+                                    React__default.createElement(FiltersContainer, { darkMode: props.darkMode, className: "".concat((_l = props.filtersContainerClassName) !== null && _l !== void 0 ? _l : "", " SST_filters_container") },
                                         React__default.createElement(FiltersViewers, { translationsProps: translationsProps, darkMode: props.darkMode, lockedFilters: lockedFilters }),
                                         reactDeviceDetect.isMobile &&
                                             React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, darkMode: props.darkMode, isMobile: reactDeviceDetect.isMobile }))))),
                 React__default.createElement(React__default.Fragment, null,
                     !!props.selectableRows && !!props.selectedRowsAction && haveSelectedRows &&
                         React__default.createElement("div", { className: "SST_selected_rows_buttons" }, props.selectedRowsAction),
-                    React__default.createElement(Table, { ref: tableRef, data: !data ? [] : data.content, clickableHeader: onHeaderClick, columns: reactDeviceDetect.isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns, filters: props.filtersList, filterParsedType: props.filterParsedType, translationsProps: translationsProps, selectableRows: props.selectableRows, setHaveSelectedRows: setHaveSelectedRows, showVerticalBorders: showVerticalBorders, asyncLoading: loading, onRowClick: props.onRowClick, counterColumnToItemGoLeft: props.counterColumnToItemGoLeft })),
+                    React__default.createElement(Table, { ref: tableRef, data: !data ? [] : data.content, clickableHeader: onHeaderClick, columns: reactDeviceDetect.isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns, filters: props.filtersList, filterParsedType: props.filterParsedType, translationsProps: translationsProps, selectableRows: props.selectableRows, setHaveSelectedRows: setHaveSelectedRows, showVerticalBorders: showVerticalBorders, asyncLoading: loading, smallTextsHeader: props.smallTextsHeader, onRowClick: props.onRowClick, counterColumnToItemGoLeft: props.counterColumnToItemGoLeft })),
                 React__default.createElement("div", { className: "footerTable" },
                     React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement("i", { className: "ri-arrow-left-s-line", style: { transform: "translateY(2px)" } }), nextLabel: React__default.createElement("i", { className: "ri-arrow-right-s-line", style: { transform: "translateY(2px)" } }), breakLabel: "...", breakClassName: "break-me", pageCount: data === null || data === void 0 ? void 0 : data.totalPages, marginPagesDisplayed: marginPagesDisplayed, pageRangeDisplayed: pageRangeDisplayed, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
                     !!totalElements && !props.withoutTotalElements && React__default.createElement("span", { className: 'font-italic medium' },

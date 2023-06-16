@@ -1,17 +1,17 @@
 import React, {useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
-import Table from './Table'
+import Table from './components/Table'
 import ReactPaginate from 'react-paginate';
 import { FiltersContainer, PerPageContainer, TableContainer, TableStyles } from './assets/styled-components';
 import _ from 'lodash';
-import FiltersInteract from './FiltersInteract';
-import SettingsInteractor from './SettingsInteractor';
-import FiltersViewers from './FiltersViewers';
+import FiltersInteract from './components/FiltersInteract';
+import SettingsInteractor from './components/SettingsInteractor';
+import FiltersViewers from './components/FiltersViewers';
 import { parseFilterRSQL } from './parserRSQL';
 import { parseFilterFuzzy } from './parserFuzzy';
 import FiltersContext from './context/filterscontext';
 import {translations} from "./assets/translations"
 import { isMobile } from 'react-device-detect';
-import { TableHandler } from './Table';
+import { TableHandler } from './components/Table';
 import { GPaginationObject, LineSpacing } from './types/entities';
 import { DataRequestParam, DefaultFiltersOptions, FilterStateItem, SorterRecord } from './types/entities';
 import { createDefaultFilter, cleanFilterOnlyWithLocked } from './helpers/createDefaultFilters';
@@ -130,7 +130,6 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         setOffset(0)
         setParsedFilters(filters)
         updateDataOnChange({offset,perPage,filters,sorter: submitSorter})
-
 
     }
     
@@ -301,6 +300,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                             setHaveSelectedRows={setHaveSelectedRows}
                             showVerticalBorders={showVerticalBorders}
                             asyncLoading={loading}
+                            smallTextsHeader={props.smallTextsHeader}
                             onRowClick={props.onRowClick}
                             counterColumnToItemGoLeft={props.counterColumnToItemGoLeft}/>
                         </>

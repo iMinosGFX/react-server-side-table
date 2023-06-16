@@ -2,14 +2,13 @@ import React, {useState, useEffect, useRef, useContext} from 'react'
 import styled from 'styled-components';
 import {CSSTransition} from "react-transition-group"
 import ColumnsSelector from './ColumnsSelector';
-import { Translations } from './types/props';
-import { translations } from './assets/translations';
-import { LineSpacing } from './types/entities';
-import { destroyTableFiltersStorage } from './helpers/SSTlocalStorageManagement';
-import { ExportType } from './types/components-props';
-import { CSVLink } from "react-csv";
-import { setTimeout } from 'timers';
-import FiltersContext from './context/filterscontext';
+import { Translations } from '../types/props';
+import { translations } from '../assets/translations';
+import { LineSpacing } from '../types/entities';
+import { destroyTableFiltersStorage } from '../helpers/SSTlocalStorageManagement';
+import { ExportType } from '../types/components-props';
+import FiltersContext from '../context/filterscontext';
+import XLSX from "xlsx";
 
 const Container = styled.div`
     position: relative;
@@ -114,17 +113,15 @@ const DropdownMenu = (props: PropsDropdown) => {
     const fetchData = (e: ExportType) => {
         props.handleExport(e)
         .then(data => {
-            let _activeColumns = columns.filter(col => !hiddenColumns.includes(col.accessor)).map(c => ({name: !!c.Header ? c.Header : c.accessor ?? "N/A", accessor: c.accessor, exportedValue: c.exportFormat}))
+            let _activeColumns = columns.filter(col => !hiddenColumns.includes(col.accessor)).map(c => ({name: !!c.Header ? c.Header : c?.accessor ?? "N/A", accessor: c?.accessor ?? "", exportedValue: c.exportFormat}))
 
             let _preparedDataToExported = data.content.map(item => {
                 let _pushedObject = {}
                 for(let i = 0; i < _activeColumns.length; i++) {
-                    let _value =  _activeColumns[i].accessor.split(".").reduce((a,b) => a[b], item),
-                        _exporter = _activeColumns[i].exportedValue
+                    let _value =  _activeColumns?.[i]?.accessor?.split(".")?.reduce((a,b) => a?.[b] ?? "", item),
+                        _exporter = _activeColumns?.[i]?.exportedValue
 
-                        console.log(!!_exporter ?  _exporter(_value) : null)
-
-                    if(!!_value)
+                    if(!!_value){
                         if(Array.isArray(_value)){
                             _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : _value.map(v => v?.[columns.filter(c => c.accessor === _activeColumns[i].accessor)[0]?.exportAccessor])?.join(",")
                         } else if(typeof(_value) === "object"){
@@ -132,15 +129,15 @@ const DropdownMenu = (props: PropsDropdown) => {
                         } else {
                             _pushedObject[_activeColumns[i].name] = !!_exporter ? _exporter(_value) : _value
                         }
-                    else _pushedObject[_activeColumns[i].name] = ""
+                    } else 
+                        _pushedObject[_activeColumns[i].name] = ""
                 }
                 return _pushedObject
             })
-            setDownloadedData(_preparedDataToExported)
-            setTimeout(() => {
-                //@ts-ignore
-                nodeBtn.current.link.click()
-            })
+            const ws = XLSX.utils.json_to_sheet(_preparedDataToExported);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Data");
+            XLSX.writeFile(wb, `exported_table${!!tableId ? "_"+tableId : ""}.xlsx`);
         }) 
     }
 
@@ -255,22 +252,10 @@ const DropdownMenu = (props: PropsDropdown) => {
                     <DropdownItem
                         leftIcon={<i className="" />}>
                             <span onClick={() => fetchData("one")}>{translationsProps?.settings?.exportOne ?? translations.settings.exportOne}</span>
-                            <CSVLink
-                                data={downloadedData}
-                                ref={nodeBtn}
-                                separator={";"}
-                                filename={`exported_table${!!tableId ? "_"+tableId : ""}`}>
-                            </CSVLink>
                     </DropdownItem>
                     <DropdownItem
                         leftIcon={<i className="" />}>
                             <span onClick={() => fetchData("all")}>{translationsProps?.settings?.exportAll ?? translations.settings.exportAll}</span>
-                            <CSVLink
-                                data={downloadedData}
-                                ref={nodeBtn}
-                                separator={";"}
-                                filename={`exported_table${!!tableId ? "_"+tableId : ""}`}>
-                            </CSVLink>
                     </DropdownItem>
                 </div>
             </CSSTransition>

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import _ from "lodash"
-import { ColumnsSelectorProps } from './types/components-props';
-import { registerTableFilters } from './helpers/SSTlocalStorageManagement';
+import { ColumnsSelectorProps } from '../types/components-props';
+import { registerTableFilters } from '../helpers/SSTlocalStorageManagement';
 
 const ColumnsSelector = (props: ColumnsSelectorProps) => {
 

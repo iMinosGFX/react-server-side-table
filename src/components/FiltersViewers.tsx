@@ -1,13 +1,13 @@
 import React, { useContext } from 'react'
 import _ from "lodash";
-import FiltersContext from "./context/filterscontext"
+import FiltersContext from "../context/filterscontext"
 import styled from 'styled-components';
-import {translations} from "./assets/translations"
-import { Translations } from './types/props';
-import { parseFilterRSQL } from './parserRSQL';
-import { parseFilterFuzzy } from './parserFuzzy';
+import {translations} from "../assets/translations"
+import { Translations } from '../types/props';
+import { parseFilterRSQL } from '../parserRSQL';
+import { parseFilterFuzzy } from '../parserFuzzy';
 import { transparentize } from 'polished';
-import { FiltersViewersProps } from './types/components-props';
+import { FiltersViewersProps } from '../types/components-props';
 
 const Container = styled('div')<{darkMode: boolean}>`
     width: 100%;
