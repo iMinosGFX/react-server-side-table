@@ -7,28 +7,7 @@ import FiltersContext from "../context/filterscontext"
 import { Sorter } from '../types/entities';
 import { translations } from '../assets/translations';
 import { TableProps } from '../types/components-props';
-
-const IndeterminateCheckbox = React.forwardRef(
-  // @ts-ignore
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef()
-    const resolvedRef = ref || defaultRef
-    
-    useEffect(() => {
-      // @ts-ignore
-      resolvedRef.current.indeterminate = indeterminate
-    }, [resolvedRef, indeterminate])
-    
-    return (
-      <>
-        {/* @ts-ignore */}
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
-    )
-  }
-)
-
-const selectedFlatRowsHistory = new Set();
+import {IndeterminateCheckbox} from "./IndeterminateCheckbox"
 
 export type TableHandler = {
   getSelectedRows: () => any[]
@@ -38,11 +17,15 @@ export type TableHandler = {
 const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
 
   const { 
-    columns, data, 
-    renderRowSubComponent, hiddenColumns, 
-    filters, filterParsedType, 
-    translationsProps, selectableRows,
-    smallTextsHeader, asyncLoading, counterColumnToItemGoLeft = 2
+    columns, 
+    data, 
+    renderRowSubComponent, 
+    hiddenColumns, 
+    newFilters,
+    translationsProps, 
+    selectableRows,
+    smallTextsHeader, 
+    asyncLoading, 
   } = props
 
   const [openedFilter, setOpenedFilter] = useState<string>(null)
@@ -97,8 +80,6 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
       },
       useExpanded,
       useRowSelect,
-      // useResizeColumns,
-      // useFlexLayout,
       hooks => {
         !!selectableRows && hooks.visibleColumns.push(columns => [
           {
@@ -155,8 +136,10 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
           {headerGroups.map((headerGroup,i) => (
             <tr {...headerGroup.getHeaderGroupProps()} ref={node} key={i}>
               {headerGroup.headers.map((column,j) => {
-                const filter = filters?.filter(f => f.idAccessor === column.id)[0]
-                return(
+                const filterName = SstState?.newFilterState?.filter(f => f.idAccessor === column.id)?.[0]?.name ?? null,
+                      filterAccessor = SstState?.newFilterState?.filter(f => f.idAccessor === column.id)?.[0]?.idAccessor ?? null,
+                      filterType = SstState?.newFilterState?.filter(f => f.idAccessor === column.id)?.[0]?.type ?? null
+                return( 
                   <th {...column.getHeaderProps()} className="SST_header_cell" key={j}>
                     <div className="SST_header_container noselect" style={{justifyContent: !!column.alignment ? column.alignment : "left"}}>
                       <span 
@@ -175,19 +158,18 @@ const Table = forwardRef<TableHandler, TableProps>((props, ref) => {
                           : <i className="ri-arrow-up-s-fill sorter_icon" />
                           : ''}
                       </span>
-                      {!!filter && 
+                      {!!filterName && 
                         <i 
                         onClick={() => setOpenedFilter(openedFilter === column.id ? null : column.id)} 
-                        className={`ri-filter-line fitler_icon ${filter.idAccessor === openedFilter ? "SST_filter_active" : ""}`} />}
+                        className={`ri-filter-line fitler_icon ${filterAccessor === openedFilter ? "SST_filter_active" : ""}`} />}
                     </div>
-                    {!!filter && filter.idAccessor === openedFilter &&
+                    {!!filterAccessor?.[0] && filterAccessor === openedFilter &&
                       <div className="SST_header_filter_modal">
                         <ItemFilter 
-                          key={filters.filter(f => f.idAccessor === column.id)[0]?.name} 
-                          filter={filters.filter(f => f.idAccessor === column.id)[0] ?? null} 
-                          filterParsedType={filterParsedType}
+                          key={i} 
+                          filterName={filterName}
+                          filterType={filterType}
                           translationsProps={translationsProps}
-                          isOnRightOfViewport={!counterColumnToItemGoLeft ? false : j >= (headerGroup.headers.length - counterColumnToItemGoLeft)}
                           darkMode={false}
                           onClose={() => setOpenedFilter(null)}/>
                       </div>

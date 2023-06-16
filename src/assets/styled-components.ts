@@ -47,19 +47,16 @@ const TableContainer = styled("div")<{darkMode: boolean}>`
         width: 100%;
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        padding-right: 10px;
-        flex-direction: column;
-        .SST_actions_buttons{
+        align-items: center;
+        margin-bottom: 6px;
+        .actions-headers-container{
             display: flex;
+            justify-content: end;
             align-items: center;
-            & > * {
-                margin: 0 5px;
-            }
         }
     }
     .SST_selected_rows_buttons{
-        padding: .4rem;
+        padding: 0 4px;
         display: flex;
         align-items: center;
         & > * {
@@ -90,7 +87,9 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
   table {
     border-spacing: 0;
     width:100%;
-      thead{
+    border-left: 1px solid ${props => props.darkMode ? "#141b24" : "#E7EAF3"} !important;
+    border-right: 1px solid ${props => props.darkMode ? "#141b24" : "#E7EAF3"} !important;
+    thead{
         border-top: 1px solid ${props => props.darkMode ? "#141b24" : "#E7EAF3"} !important;
         border-bottom: 1px solid #E7EAF3 !important;
         height: 50px;
@@ -108,7 +107,7 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
                     margin:0 2px;
                 }
                 .SST_header_title{
-                    text-transform: uppercase;
+                    /* text-transform: uppercase; */
                     display: flex;
                     align-items: center;
                     font-size: 13px;
@@ -122,7 +121,6 @@ const TableStyles = styled("div")<{lineSpacing: string, darkMode: boolean}>`
                 i{
                     &.fitler_icon{
                         cursor: pointer;
-                        margin-left: 3px;
                         padding: 2px 5px;
                         border-radius: 3px;
                         transition: .2s;
@@ -276,7 +274,6 @@ const ListItem = styled('div')<any>`
     color: #798c97;
     transition: all 200ms ease;
     position: relative;
-    /* background:${props => props.type === "top" && "#FFF"}; */
     &:after{
         color: #798c97;
         border-right: 1px solid currentcolor;
@@ -298,10 +295,10 @@ const ListItem = styled('div')<any>`
         color: #216A9A;
     }
     .SST_list_filter_item_popup{
-        width: ${props => props.filterParsedType==="rsql" ? "400px" : "300px"};
+        width: ${props => props.filterParsedType==="rsql" ? "max-content" : "300px"};
         background-color: #fff;
         border-radius: 2px;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
         position: absolute;
         top: ${props => props.type === "left" ? "0px" : "110%"};
         left: ${props => props.isOnRightOfViewport ? "-310px" : props.type === "left" ? "105%" : "0"};
@@ -377,7 +374,7 @@ const FilterContainer = styled('div')<{darkMode?: boolean, filterParsedType: fil
         input[type='text'], input[type='date'], input[type="number"]{
             height: ${props => props.filterParsedType === "rsql" ? "38px" : "35px"};
             line-height: ${props => props.filterParsedType === "rsql" ? "38px" : "35px"};
-            width: ${props => props.filterParsedType=== "rsql" ? "350px" : "70%"};
+            width: ${props => props.filterParsedType=== "rsql" ? "200px" : "70%"};
             padding-left: 5px;
             float: right;
             margin-bottom: 10px;
@@ -385,9 +382,10 @@ const FilterContainer = styled('div')<{darkMode?: boolean, filterParsedType: fil
         }
 
         .filterSelectChoice__control{
-            width: 150px;
-            border: .09rem solid #dbdee7;
+            width: 120px;
             max-height: 35px;
+            background: #F0F0F0;
+            border: none;
         }
         .filterSelectChoice__value-container{
             max-height: 35px;
@@ -403,7 +401,8 @@ const FilterContainer = styled('div')<{darkMode?: boolean, filterParsedType: fil
             }
         }
         .filterSelectChoice__control--is-focused{
-
+            border: none;
+            box-shadow: none;
         }
         .filterSelectChoice__indicator-separator{
             display: none;
@@ -459,6 +458,7 @@ const PerPageContainer = styled.div`
     white-space: nowrap;
 	label{
 		padding-right: 10px;
+        color: var(--color-primary);
 	}
 	select{
 		height: 40px;
@@ -466,9 +466,6 @@ const PerPageContainer = styled.div`
         padding-left: 0 !important;
         padding-right: 0 !important;
 	}
-    .perPageSelect {
-        color: #A3A6C0;
-    }
 `
 
 

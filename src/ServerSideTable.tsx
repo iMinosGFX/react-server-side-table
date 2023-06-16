@@ -1,77 +1,95 @@
-import React, {useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
+import React, {useState, useRef, useImperativeHandle, forwardRef, useLayoutEffect, ReactElement } from 'react'
 import Table from './components/Table'
 import ReactPaginate from 'react-paginate';
 import { FiltersContainer, PerPageContainer, TableContainer, TableStyles } from './assets/styled-components';
 import _ from 'lodash';
-import FiltersInteract from './components/FiltersInteract';
 import SettingsInteractor from './components/SettingsInteractor';
 import FiltersViewers from './components/FiltersViewers';
-import { parseFilterRSQL } from './parserRSQL';
-import { parseFilterFuzzy } from './parserFuzzy';
+import { newParseFilterRSQL } from './newParserRSQL';
 import FiltersContext from './context/filterscontext';
 import {translations} from "./assets/translations"
 import { isMobile } from 'react-device-detect';
 import { TableHandler } from './components/Table';
-import { GPaginationObject, LineSpacing } from './types/entities';
-import { DataRequestParam, DefaultFiltersOptions, FilterStateItem, SorterRecord } from './types/entities';
-import { createDefaultFilter, cleanFilterOnlyWithLocked } from './helpers/createDefaultFilters';
+import { GPaginationObject, LineSpacing, NewFilterItem } from './types/entities';
+import { DataRequestParam, DefaultFiltersOptions, SorterRecord } from './types/entities';
+import {  newCreateDefaultFilter } from './helpers/createDefaultFilters';
 import { ExportType, SSTHandler, SSTProps } from './types/components-props';
-import { destroyTableFiltersStorage,  getTableFilters, registerTableFilters } from './helpers/SSTlocalStorageManagement';
+import { destroyTableFiltersStorage,  getTableData,  registerTableFilters } from './helpers/SSTlocalStorageManagement';
+import useDidMountEffect from './helpers/useDidMountEffect';
 
 FiltersContext.displayName = "ServerSideTableContext";
 
 const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 
-    const {translationsProps, marginPagesDisplayed = 2, pageRangeDisplayed = 2} = props     
+    const {
+        translationsProps, 
+        marginPagesDisplayed = 2, 
+        pageRangeDisplayed = 2,
+        columns = [],
+        containerClassName,
+        counterColumnToItemGoLeft,
+        isFilter = true,
+        isRenderSubComponent,
+        selectableRows,
+        selectedRowsAction,
+        showAddBtn,
+        smallTextsHeader,
+        filtersContainerClassName,
+        defaultProps,
+        darkMode,
+        renderSubComponent,
+        mobileColumns,
+        tableId,
+        withoutHeader,
+        withoutTotalElements,
+        enabledExport,
+        onDataChange,
+        onAddClick,
+        onRowClick,
+        optionnalsHeaderContent,
+        showVerticalBorders,
+        newFiltersList,
+        newDefaultFilters,
+        asDefaultFilters = false
+    } = props     
 
-    // @ts-ignore
-    const [filtersState, setFiltersState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : 
-                                                                    !!props.tableId ? getTableFilters(props.tableId) : 
-                                                                    !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : {})
-    // @ts-ignore
-    const [submitFiltersState, setSubmitFilterState] = useState<FilterStateItem>(!!props.tableId && !!props.defaultProps ? _.cloneDeep(props.defaultProps.filters) :
-                                                                                !!props.tableId ? getTableFilters(props.tableId)  : 
-                                                                                !!props.defaultProps?.filters ? _.cloneDeep(props.defaultProps.filters) : {})
+    const [newFilterState, setNewFilterState] = useState<NewFilterItem[]>([])
+    const [newAppliedFilterState, setNewAppliedFilterState] = useState<NewFilterItem[]>([])
 
                                                                     
-    const [sorterState, setSorterState] = useState<SorterRecord>(!!props.defaultProps?.sort ? props.defaultProps.sort : null )
-    const [submitSorter, setSubmitSorter] = useState<string[]>(!!props.defaultProps?.sort ? Object.values(props.defaultProps.sort)
+    const [sorterState, setSorterState] = useState<SorterRecord>(defaultProps?.sort ? defaultProps.sort : null )
+
+    const [submitSorter, setSubmitSorter] = useState<string[]>(defaultProps?.sort ? Object.values(defaultProps.sort)
                                                                                                     .filter(sorter => !!sorter.value)
                                                                                                     .map(sorter => sorter.attribut + ',' + sorter.value) : [])
-	
     
     const [offset, setOffset] = useState<number>(0);
     const [totalElements, setTotalElements] = useState<number>(null)
-    const [perPage, setPerPage] = useState<number>(!!props.defaultProps?.perPageItems ? props.defaultProps.perPageItems : !!props.perPageItems ? props.perPageItems : 999);
-    const [parsedFilters, setParsedFilters] = useState<any>(null)
     const tableRef = useRef<TableHandler>(null)
     const [data, setData] = useState<GPaginationObject<any>>(null)
-    const lockedFilters: string[] = (!!props.defaultProps ? Object.keys(props?.defaultProps.filters).filter(f => props?.defaultProps.filters[f]["locked"]) : [])
     const [loading, setLoading] = useState<boolean>(false)
     const [haveSelectedRows, setHaveSelectedRows] = useState<boolean>(false)
-    const [hiddenColumns, setHiddenColumns] = useState<string[]>(!!props.defaultProps?.hideColumns ? props.defaultProps.hideColumns : [])
-    const [lineSpacing, setLineSpacing] = useState<LineSpacing>(!!props.defaultProps?.lineSpacing ? props.defaultProps.lineSpacing : "medium")
-    const [showVerticalBorders, setShowVerticalBorders] = useState<boolean>(!!props.showVerticalBorders ? true : !!props.defaultProps?.showVerticalBorders ? props.defaultProps.showVerticalBorders : false)
+    const [perPage, setPerPage] = useState<number>(getTableData(tableId)?.perPageItems ?? defaultProps?.perPageItems ?? 20);
+    const [hiddenColumns, setHiddenColumns] = useState<string[]>(getTableData(tableId)?.hideColumns ?? defaultProps?.hideColumns ?? [])
+    const [lineSpacing, setLineSpacing] = useState<LineSpacing>(getTableData(tableId)?.lineSpacing ?? defaultProps?.lineSpacing ?? "medium")
+    const [isShowVerticalBorders, setShowVerticalBorders] = useState<boolean>(getTableData(tableId)?.showVerticalBorders ?? defaultProps?.showVerticalBorders ?? false)
     const isInitialMount = useRef(true);
 
-    useEffect(() => {
-        if(!props.defaultProps && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0){
-            setFiltersState(createDefaultFilter(props.filtersList, props.defaultProps?.filters, props.tableId, props.filterParsedType))
+    useLayoutEffect(() => {
+        if(!!newFiltersList && !!newFiltersList.length && (!asDefaultFilters || (asDefaultFilters && !!newDefaultFilters && !!newDefaultFilters.length))){
+            if(!!getTableData(tableId)?.filters?.length){
+                setNewFilterState(newCreateDefaultFilter(getTableData(tableId).filters, newDefaultFilters, true))
+                setNewAppliedFilterState(newCreateDefaultFilter(getTableData(tableId).filters, newDefaultFilters, true))
+            } else {
+                setNewFilterState(newCreateDefaultFilter(newFiltersList, newDefaultFilters))
+                setNewAppliedFilterState(newCreateDefaultFilter(newFiltersList, newDefaultFilters))
+            }
         }
-    }, [props.filtersList])
+    }, [newDefaultFilters, newFiltersList, asDefaultFilters])
 
-    useEffect(() => {
-        if(isInitialMount.current)
-            return
-        else if(!!props.defaultProps){
-            setFiltersState(_.cloneDeep(props.defaultProps.filters))
-            setSubmitFilterState(_.cloneDeep(props.defaultProps.filters))
-        }
-    }, [props.defaultProps])
-
-    const updateDataOnChange = (requestParam: DataRequestParam) => {
+    const updateDataOnChange = (requestParam: DataRequestParam, caller: string) => {
         setLoading(true)
-        props.onDataChange(requestParam)
+        onDataChange(requestParam)
             .then(data => {
                 if(!!data && !!data?.content){
                     setData(data)
@@ -87,82 +105,71 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         setOffset(selectedPage)
     };
     
-	useEffect(() => {
+	useLayoutEffect(() => {
         if(isInitialMount.current)
             isInitialMount.current = false
         else {
-            updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
-
+            updateDataOnChange({offset,perPage, query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter}, 'offset & perpage')
         }
     }, [offset, perPage])
 
     useImperativeHandle(ref, () => ({
         reloadData() {
-            updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
+            updateDataOnChange({offset,perPage,query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter}, 'reloadData')
         },
         getSelectedRows(): any[] {
             return tableRef.current.getSelectedRows()
         }
     }))
 
-    useEffect(() => {
-        if(isInitialMount.current)
-            isInitialMount.current = false
-        else if(!!submitFiltersState){
-            //Filter can be a string query or object with mulitple properties inside
-            if(!!submitFiltersState && !_.isEmpty(submitFiltersState))
-                registerTableFilters({filters: submitFiltersState, perPageItems: perPage}, props.tableId)
-            let filters = props.filterParsedType === "rsql" 
-            ? parseFilterRSQL(submitFiltersState)
-            : parseFilterFuzzy(submitFiltersState)
-            if(props.filterParsedType === "rsql" || props.filterParsedType === "fuzzy"){
-                setParsedFilters(filters)
-                setOffset(0)
-                updateDataOnChange({offset,perPage,filters, sorter: submitSorter})
-            }  else {
-                setOffset(0)
-                updateDataOnChange({offset,perPage,filters: null, sorter: submitSorter})
-            }
-        } 
-    }, [submitFiltersState])
+    useDidMountEffect(() => {
+        updateDataOnChange({
+            offset,
+            perPage,
+            sorter: submitSorter,
+            query: newParseFilterRSQL(newAppliedFilterState)
+        }, 'new applied')
+    }, [newAppliedFilterState])
 
-    const handleFilterSubmit = (filters: any) => {
-        setOffset(0)
-        setParsedFilters(filters)
-        updateDataOnChange({offset,perPage,filters,sorter: submitSorter})
-
-    }
-    
-    const changeMainFilter = (name: string, content: {option:DefaultFiltersOptions, value:string}) => {
-        let _filter = filtersState[name]
-        _filter["main"] = {option: content.option, value:content.value}
-        setFiltersState({
-            ...filtersState,
-            [name]: _filter
-        })
+    const changeFilter = (name: string, id: number, content: {option:DefaultFiltersOptions, value:string}) => {
+        let _filter = newFilterState.filter(f => f.id === id && f.name === name)[0]
+        _filter = {..._filter, option: content.option, value:content.value}
+        setNewFilterState(_.cloneDeep(newFilterState.map(f => (f.id === _filter.id && f.name === _filter.name ) ? _filter : f)))
     }
 
-    const changeOptionalsFilters = (name: string, content: {option:DefaultFiltersOptions, value:string}[]) => {
-        let _filter = filtersState[name]
-        _filter["optionals"] = content
-        setFiltersState({
-            ...filtersState,
-            [name]: _filter
-        })
+    const onClearFilter = (name: string, id: number, index?:number, clearRadio?:boolean) => {
+
+        let _filtersForName =  [...newFilterState].filter(f => f.name === name),
+            _filter = [..._filtersForName].filter(f => f.id === id)[0]
+        
+        if(_filtersForName.length === 1){ //If just one filter for this name, clear value
+            _filter = {..._filter, value: clearRadio ? "NA" : null}
+            setNewFilterState(_.cloneDeep([...newFilterState].map(f => (f.id === _filter.id && f.name === _filter.name ) ? _filter : f)))
+            setNewAppliedFilterState(_.cloneDeep([...newFilterState].map(f => (f.id === _filter.id && f.name === _filter.name ) ? _filter : f)))
+        
+        } else { //If more one than filter for this name, delete by index
+            let _currentArray = [...newFilterState]
+            _currentArray.splice(index, 1)
+            setNewFilterState(_currentArray)
+            setNewAppliedFilterState(_currentArray)
+        }
+        
     }
 
     const onClickApply = () => {
-        let _object = _.cloneDeep(filtersState)
-        setSubmitFilterState(_object)
-        return;
+        let _array = _.cloneDeep(newFilterState)
+        setNewFilterState(_array)
+        setNewAppliedFilterState(_array)
+        if(!!tableId){
+            registerTableFilters({filters: _array}, tableId)
+        }
     }
 
     const onClearAll = () => {
-        let _initialFilters = cleanFilterOnlyWithLocked(props.filtersList, props.defaultProps.filters, lockedFilters)
-        setFiltersState(_.cloneDeep(_initialFilters))
-        setSubmitFilterState(!!lockedFilters ? _.cloneDeep(_initialFilters) : {})
-        destroyTableFiltersStorage(props.tableId)
-        return;
+        let _initialFilters = newCreateDefaultFilter(newFiltersList, newDefaultFilters)
+        setNewFilterState(_.cloneDeep(_initialFilters))
+        setNewAppliedFilterState(_.cloneDeep(_initialFilters))
+        destroyTableFiltersStorage(tableId)
     }
 
     const onSortChange = (e: SorterRecord) => {
@@ -171,9 +178,8 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
             .map(sorter => sorter.attribut + ',' + sorter.value)
         setSorterState(e)
         setSubmitSorter(_test)
-
-        registerTableFilters({sort: e}, props.tableId)
-        updateDataOnChange({offset,perPage,filters: parsedFilters, sorter: _test})
+        registerTableFilters({sort: e}, tableId)
+        updateDataOnChange({offset, perPage,query: newParseFilterRSQL(newAppliedFilterState), sorter: _test}, 'onSortChange')
 
     }
 
@@ -183,17 +189,17 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
 
     const onLineSpacingChange = (e: LineSpacing) => {
         setLineSpacing(e)
-        registerTableFilters({lineSpacing: e}, props.tableId)
+        registerTableFilters({lineSpacing: e}, tableId)
     }
 
     const onShowVerticalBorderChange = (e: boolean) => {
         setShowVerticalBorders(e)
-        registerTableFilters({showVerticalBorders: e}, props.tableId)
+        registerTableFilters({showVerticalBorders: e}, tableId)
     }
 
     function exportData(e: ExportType): Promise<any> {
         if(e === "one"){
-            return props.onDataChange({offset,perPage,filters: parsedFilters, sorter: submitSorter})
+            return onDataChange({offset,perPage,query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter})
             .then(data => {
                 if(!!data && !!data?.content){
                     return data
@@ -202,12 +208,12 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                 }
             })
         } else {
-            return props.onDataChange({offset: 0, perPage: 999,filters: parsedFilters, sorter: submitSorter})
+            return onDataChange({offset: 0, perPage: 999,query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter})
             .then(firstData => {
                 if(firstData.totalElements > 999){
                     let _apiCalls = []
                     for(let i = 1; i < firstData.totalPages; i++) 
-                        _apiCalls.push(props.onDataChange({offset: i, perPage: 999,filters: parsedFilters, sorter: submitSorter}))
+                        _apiCalls.push(onDataChange({offset: i, perPage: 999,query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter}))
                     return Promise.all(_apiCalls)
                     .then(datas => {
                         let _concatArrays = firstData.content ?? []
@@ -221,88 +227,136 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         }
     }
 
+    function renderSelectedRowsActions(): ReactElement {
+        return (
+            <div className={`multi-button ${!!haveSelectedRows ? '' : 'disabled'}`}>
+                {Object.values(selectedRowsAction).map((action) => (
+                    <button className={`btn-sm ${!!action.color ? `btn-${action.color}` : ''}`} onClick={action.onClick}>
+                        {!!action?.icon && <div className="btn__icon">{action.icon}</div>}
+                        <div className="btn__text">{action.text}</div>
+                    </button>
+                ))}
+            </div>
+        )
+    }
+
+    function renderOptionsHeaderActions(): ReactElement{
+        return (
+            <div className='multi-button'>
+                {Object.values(optionnalsHeaderContent).map((action) => (
+                    <button className={`btn-sm ${!!action.color ? `btn-${action.color}` : ''}`} onClick={action.onClick}>
+                        {!!action?.icon && <div className="btn__icon">{action.icon}</div>}
+                        <div className="btn__text">{action.text}</div>
+                    </button>
+                ))}
+            </div>
+        )
+    }
+
+    function onAddFilter(filterName: string){
+        let _currentLastFilter = newFilterState
+                                .filter(f => f.name === filterName)
+                                .sort((a,b) => a.id - b.id)
+                                .slice(-1)[0]
+        
+        setNewFilterState([
+            ..._.cloneDeep(newFilterState),
+            {..._currentLastFilter, id: _currentLastFilter.id+1, value: null}
+        ])
+    }
+
+    const syncNewStateFilters = (filters: NewFilterItem[]) => {
+        setNewFilterState(filters)
+    }
+
     return(
         <FiltersContext.Provider value={{
-            filtersState: filtersState,
-            submitFiltersState: submitFiltersState,
+            filtersState: null,
+            submitFiltersState: null,
+            newFilterState: newFilterState,
+            newSubmitFilterState: newAppliedFilterState,
             sorterState: sorterState,
             changeSort: onSortChange,
-            changeMainFilter: changeMainFilter,
-            changeOptionalsFilters: changeOptionalsFilters,
+            changeFilter: changeFilter,
+            onClearFilter: onClearFilter,
             onClearAll: onClearAll,
             onClickApply: onClickApply,
+            onAddFilter: onAddFilter,
+            syncNewStateFilters: syncNewStateFilters
+            
         }}>
-            <TableContainer darkMode={props.darkMode} className="SST_container">
-                <TableStyles lineSpacing={lineSpacing} className={props.containerClassName} darkMode={props.darkMode}>
-                    {!props.withoutHeader && 
+            <TableContainer darkMode={darkMode} className="SST_container">
+                <TableStyles lineSpacing={lineSpacing} className={containerClassName} darkMode={darkMode}>
+                    {!withoutHeader && 
                         <div className="SST_HEADER">
-                            <div className="SST_actions_buttons">
-                                {props.showAddBtn && 
-                                    <button className="btn bg-plain-primary sst_main_button"  onClick={() => props.onAddClick()}>
-                                            {translationsProps?.add ?? translations.add}
-                                    </button>}
-                                {!!props.optionnalsHeaderContent && props.optionnalsHeaderContent}
-                            </div>
-                            <div style={{display: 'flex', alignItems: 'center', width: "100%", justifyContent: "space-between", flexDirection: "row-reverse"}} className="table-actions-container">
-                                <div className="icons">
-                                    {!isMobile &&
-                                        <SettingsInteractor 
-                                            columns={props.columns}
-                                            hiddenColumns={hiddenColumns}
-                                            onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
-                                            onLineSpacingChange={onLineSpacingChange}
+                            {isFilter && 
+                                <FiltersContainer darkMode={darkMode} className={`${filtersContainerClassName ?? ""} SST_filters_container`}>
+                                    <FiltersViewers translationsProps={translationsProps} darkMode={darkMode}/>
+                                    {/* {isMobile && 
+                                        <FiltersInteract 
+                                            filters={filtersList} 
+                                            onSubmit={e => handleFilterSubmit(e)} 
+                                            filterParsedType={filterParsedType}
                                             translationsProps={translationsProps}
-                                            enabledExport={props.enabledExport}
-                                            handleExport={exportData}
-                                            darkMode={props.darkMode}
-                                            tableId={props.tableId}
-                                            lineSpacing={lineSpacing}
-                                            showVerticalBorders={showVerticalBorders}
-                                            onShowVerticalBorderChange={onShowVerticalBorderChange}/>
+                                            darkMode={darkMode}
+                                            isMobile={isMobile}/>
+                                    } */}
+                                </FiltersContainer>
+                            }
+                            <div className="actions-headers-container">
+                                {selectableRows && selectedRowsAction &&
+                                    <div className="SST_selected_rows_buttons">
+                                        {renderSelectedRowsActions()}
+                                    </div>
+                                }
+                                {optionnalsHeaderContent && renderOptionsHeaderActions()}
+                                <div className="multi-button">
+                                    {showAddBtn && 
+                                        <button className="btn-primary" style={{margin: "0 10px"}}  onClick={() => onAddClick()}>
+                                                <div className="btn__icon"><i className='ri-add-line'/></div>
+                                                <div className="btn__text">{translationsProps?.add ?? translations.add}</div>
+                                        </button>
                                     }
                                 </div>
-                                {props.isFilter && !!props.filtersList && props.filtersList.length > 0 && 
-                                <>
-                                    <FiltersContainer darkMode={props.darkMode} className={`${props.filtersContainerClassName ?? ""} SST_filters_container`}>
-                                        <FiltersViewers translationsProps={translationsProps} darkMode={props.darkMode} lockedFilters={lockedFilters}/>
-                                        {isMobile && 
-                                            <FiltersInteract 
-                                                filters={props.filtersList} 
-                                                onSubmit={e => handleFilterSubmit(e)} 
-                                                filterParsedType={props.filterParsedType}
+                                <div className="table-actions-container">
+                                    <div className="icons">
+                                        {!isMobile &&
+                                            <SettingsInteractor 
+                                                columns={columns}
+                                                hiddenColumns={hiddenColumns}
+                                                onHiddenColumnsChange={(e: string[]) => setHiddenColumns(e)}
+                                                onLineSpacingChange={onLineSpacingChange}
                                                 translationsProps={translationsProps}
-                                                darkMode={props.darkMode}
-                                                isMobile={isMobile}/>
+                                                enabledExport={enabledExport}
+                                                handleExport={exportData}
+                                                darkMode={darkMode}
+                                                tableId={tableId}
+                                                lineSpacing={lineSpacing}
+                                                showVerticalBorders={isShowVerticalBorders}
+                                                onShowVerticalBorderChange={onShowVerticalBorderChange}/>
                                         }
-                                    </FiltersContainer>
-                                </>
-                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     }
                         <>
-                        {!!props.selectableRows && !!props.selectedRowsAction && haveSelectedRows &&
-                            <div className="SST_selected_rows_buttons">
-                                {props.selectedRowsAction}
-                            </div>
-                        }
-                        <Table 
-                            ref={tableRef}
-                            data={!data ? [] : data.content} 
-                            clickableHeader={onHeaderClick}
-                            columns={isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns} 
-                            renderRowSubComponent={props.isRenderSubComponent ? props.renderSubComponent : ""}
-                            hiddenColumns={hiddenColumns}
-                            filters={props.filtersList}
-                            filterParsedType={props.filterParsedType} 
-                            translationsProps={translationsProps}
-                            selectableRows={props.selectableRows}
-                            setHaveSelectedRows={setHaveSelectedRows}
-                            showVerticalBorders={showVerticalBorders}
-                            asyncLoading={loading}
-                            smallTextsHeader={props.smallTextsHeader}
-                            onRowClick={props.onRowClick}
-                            counterColumnToItemGoLeft={props.counterColumnToItemGoLeft}/>
+                            <Table 
+                                ref={tableRef}
+                                data={!data ? [] : data.content} 
+                                clickableHeader={onHeaderClick}
+                                columns={isMobile && mobileColumns ? mobileColumns : columns} 
+                                renderRowSubComponent={isRenderSubComponent ? renderSubComponent : ""}
+                                hiddenColumns={hiddenColumns}
+                                newFilters={newFilterState}
+                                translationsProps={translationsProps}
+                                selectableRows={selectableRows}
+                                setHaveSelectedRows={setHaveSelectedRows}
+                                showVerticalBorders={showVerticalBorders}
+                                asyncLoading={loading}
+                                smallTextsHeader={smallTextsHeader}
+                                onRowClick={onRowClick}
+                                counterColumnToItemGoLeft={counterColumnToItemGoLeft}/>
                         </>
                     <div className="footerTable">
                         <ReactPaginate
@@ -317,7 +371,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                             containerClassName={"paginationTable"}
                             subContainerClassName={"pages paginationTable"}
                             activeClassName={"active"} />
-                        {!!totalElements && !props.withoutTotalElements && <span className='font-italic medium'>Total : {totalElements} élement{totalElements > 1 && "s"}</span>}
+                        {!!totalElements && !withoutTotalElements && <span className='font-italic medium'>Total : {totalElements} élement{totalElements > 1 && "s"}</span>}
                         <PerPageContainer>
                             <label htmlFor="perPageSelect">{translationsProps?.linePerPage ?? translations.linePerPage}</label>
                             <select 
@@ -325,7 +379,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                                 value={perPage} 
                                 onChange={(e) => {
                                     setPerPage(parseInt(e.target.value))
-                                    registerTableFilters({perPageItems: parseInt(e.target.value)}, props.tableId)
+                                    registerTableFilters({perPageItems: parseInt(e.target.value)}, tableId)
                                 }}
                                 style={{background: "#fff", width: 30}}>
                                 <option value="5">5</option>

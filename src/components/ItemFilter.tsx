@@ -1,24 +1,22 @@
-import React, {useRef, useContext} from 'react'
-import TextFilter from '../filters/TextFilter';
-import NumberFilter from '../filters/NumberFilter';
+import React, {useRef, useContext, useState, useLayoutEffect} from 'react'
 import CheckboxFilter from '../filters/CheckboxFilter';
-import DateFilter from '../filters/DateFilter';
 import _ from "lodash"
 import BooleanRadioFilter from '../filters/BooleanRadioFilter';
 import FiltersContext from "../context/filterscontext"
 import { Translations } from '../types/props';
 import { translations } from '../assets/translations';
-import { FieldItem, ListItem } from '../assets/styled-components';
-import { FilterItem, filtersType } from '../types/entities';
+import { ListItem } from '../assets/styled-components';
+import { FilterType, NewFilterItem } from '../types/entities';
+import CommonInputsFilter from '../filters/CommonInputsFilter';
 
 type Props = {
-    filter: FilterItem
+    // filter: FilterItem
+    filterName: string
+    filterType: FilterType
     ref?: any
-    filterParsedType: filtersType
     translationsProps?: Translations
     darkMode: boolean
     isOnRightOfViewport?: boolean
-    isField?: boolean
     onClose?():void
 }
 
@@ -33,84 +31,70 @@ function getOptionsByType(type: string): string{
     }
 }
 
-
 const ItemFilter = (props: Props) => {
+
+    const {
+        filterName,
+        filterType,
+        translationsProps,
+        darkMode,
+        isOnRightOfViewport,
+        onClose,
+
+    } = props
 
     const node = useRef()
     const filtersState = useContext(FiltersContext)
-    const {translationsProps, darkMode, isOnRightOfViewport, onClose} = props
+    const [filters, setFilters] = useState<NewFilterItem[]>(filtersState.newFilterState.filter(f => f.name === filterName))
 
-    const handleClear = () => {
-        filtersState.changeMainFilter(props.filter.name, {option: getOptionsByType(props.filter.type), value:""})
-        filtersState.changeOptionalsFilters(props.filter.name, [])
-        filtersState.onClickApply()
+    useLayoutEffect(() => {
+        setFilters(filtersState.newFilterState.filter(f => f.name === filterName))
+    }, [filtersState])
+
+    const handleClear = (filterId: number) => {
+        filtersState.onClearFilter(filterName, filterId)
+        onClose()
     }
 
     const handleAddFilters = () => {
-        filtersState.changeOptionalsFilters(props.filter.name, [
-            ...filtersState.filtersState[props.filter.name]["optionals"],
-            {option:getOptionsByType(props.filter.type), value:""}
-        ])
+        filtersState.onAddFilter(filterName)
     }
 
-    const handleRemoveOptionalFilter = (index: number) => {
-        if(filtersState.filtersState[props.filter.name]["optionals"].length === 1){
-            filtersState.changeOptionalsFilters(props.filter.name, [])
-            return;
-        }
-        let _filtersArray = filtersState.filtersState[props.filter.name]["optionals"]
-        _filtersArray.splice(index, 1)
-        filtersState.changeOptionalsFilters(props.filter.name, _filtersArray)
+    const handleRemoveFilter = (filter: NewFilterItem) => {
+        let _currentFilters = [...filtersState.newFilterState]
+            _.remove(_currentFilters, {id: filter.id, name: filter.name})
+        filtersState.syncNewStateFilters(_currentFilters)
     }
 
     const handleClearCheckboxFilter = () => {
-        filtersState.changeMainFilter(props.filter.name, {option: getOptionsByType(props.filter.type), value:""})
-        filtersState.onClickApply()
+        filtersState.onClearFilter(filterName, filters[0].id)
+        onClose()
     }
 
     const handleClearRadioFilter = () => {
-        filtersState.changeMainFilter(props.filter.name, {option: "", value: props.filter.radioValues.map(value => ({name: value.value, status: "NA", label: value.label}))})
-        filtersState.onClickApply()
+        filtersState.onClearFilter(filterName, filters[0].id, null, true)
+        onClose()
     }
 
     const handleClearGeolocFilter = () => {
-        filtersState.changeMainFilter(props.filter.name, {option: "1", value: {lat: 0, lng: 0, display:""}})
+        // filtersState.changeMainFilter(newFilter.name, {option: "1", value: {lat: 0, lng: 0, display:""}})
         filtersState.onClickApply()
     }
 
-    function FilterRender(filter: FilterItem, index: "main" | number) {
+    function FilterRender(filter: NewFilterItem) {
         switch(filter.type){
-            case 'text': 
+            case 'text': case 'number': case 'date': 
                 return(
-                    <TextFilter 
+                    <CommonInputsFilter 
                         filter={filter} 
-                        index={index === "main" ? "main" : index} 
+                        id={filter.id} 
                         onEnterPress={() => {filtersState.onClickApply(); onClose()}}
-                        filterParsedType={props.filterParsedType} 
+                        filterParsedType={"rsql"} 
+                        type={filter.type}
                         translationsProps={translationsProps}
                         darkMode={darkMode}/>
                 )
-            case 'number':
-                return(
-                    <NumberFilter 
-                        filter={filter} 
-                        index={index === "main" ? "main" : index} 
-                        onEnterPress={() => {filtersState.onClickApply(); onClose()}}
-                        filterParsedType={props.filterParsedType}
-                        translationsProps={translationsProps}
-                        darkMode={darkMode}/>
-                )
-            case 'date': 
-                return(
-                    <DateFilter
-                        filter={filter} 
-                        index={index === "main" ? "main" : index} 
-                        onEnterPress={() => {filtersState.onClickApply(); onClose()}}
-                        filterParsedType={props.filterParsedType}
-                        translationsProps={translationsProps}
-                        darkMode={darkMode}/>
-                    )
-            case 'checkbox': case 'checkboxCtn': 
+            case 'checkbox': case 'checkboxCtn': case 'checkboxCtnIntegers': case 'checkboxCtnStrings': 
                 return(
                     <CheckboxFilter 
                         filter={filter}
@@ -126,49 +110,44 @@ const ItemFilter = (props: Props) => {
         }
     }
 
-    if(!!props.isField){
-        return(
-                <>
-                <FieldItem className="SST_field_filter_item">
-                    <label>{props.filter.label} {props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && <span className="addFilter" style={{cursor: "pointer"}} onClick={handleAddFilters}>+</span>}</label>
-                    {FilterRender(props.filter, "main")}
-                </FieldItem>
-                {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (
-                    <FieldItem key={i} className="SST_field_filter_item SST_field_filter_optional_item">
-                        <label>{props.filter.label} <span style={{cursor: "pointer"}} onClick={() => handleRemoveOptionalFilter(i)}>-</span></label>
-                        {FilterRender(props.filter, i)}
-                    </FieldItem>
-                ))}
-                </>
-            )
-        } else {
-            return(
-                <ListItem ref={node} className="SST_list_filter_item" filterParsedType={props.filterParsedType} isOnRightOfViewport={isOnRightOfViewport}>
+    return(
+        <ListItem ref={node} className="SST_list_filter_item" filterParsedType={"rsql"} isOnRightOfViewport={isOnRightOfViewport}>
+                <div className="filterPopup SST_list_filter_item_popup">
 
-                        <div className="filterPopup SST_list_filter_item_popup">
-                            {FilterRender(props.filter, "main")}
-                            {filtersState.filtersState[props.filter.name].optionals.map((optional, i) => (
-                                <React.Fragment key={i}>
-                                    <span className="addFilter">{translationsProps?.and ?? translations.and} <span onClick={() => handleRemoveOptionalFilter(i)}>-</span></span>
-                                    {FilterRender(props.filter, i)}
-                                </React.Fragment>
-                            ))}
-        
-                            {props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && <span className="addFilter" onClick={handleAddFilters}>+</span>}
-                            
-                            <div style={{display: "flex", justifyContent: 'right', alignItems: 'center', margin: "auto", paddingTop: 5, fontSize: 14}}>
-                                <span 
-                                    className="primary" 
-                                    onClick={() => props.filter.type === "checkbox" ? handleClearCheckboxFilter() : props.filter.type === "booleanRadio" ? handleClearRadioFilter() : props.filter.type === "geoloc" ? handleClearGeolocFilter() : handleClear()}  
-                                    style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
-                                        {translationsProps?.clear ?? translations.clear}
-                                </span>
-                                <button className="btn align bg-primary light validBtn" onClick={() => {filtersState.onClickApply(); onClose()}}>{translationsProps?.apply ?? translations.apply}</button>
-                            </div>
-                        </div>
-                </ListItem>
-            )
-        }
+                    {filters.map((filter, i) => (
+                        <>
+                            {(i !== 0 && ["text", "date", "number"].includes(filterType)) && <span className="addFilter">{translationsProps?.and ?? translations.and} <span onClick={() => handleRemoveFilter(filter)}>-</span></span>}
+                            {FilterRender(filter)}
+                            {["text", "date", "number"].includes(filterType) && <span className="addFilter" onClick={handleAddFilters}>+</span>}
+                        </>
+                    ))}
+
+                    <div style={{display: "flex", justifyContent: 'right', alignItems: 'center', margin: "auto", paddingTop: 5, fontSize: 14}}>
+                        <span 
+                            className="primary" 
+                            onClick={() => {
+                                if(["checkbox","checkboxCtn","checkboxCtnIntegers", "checkboxCtnStrings"].includes(filterType)){
+                                    handleClearCheckboxFilter()
+                                    return
+                                }
+                                if(filterType === "booleanRadio"){
+                                    handleClearRadioFilter()
+                                    return
+                                }
+                                if(filterType === "geoloc"){
+                                    handleClearGeolocFilter()
+                                    return
+                                }
+                                handleClear(filters?.[0].id)
+                            }} 
+                            style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
+                                {translationsProps?.clear ?? translations.clear}
+                        </span>
+                        <button className="btn align bg-primary light validBtn" onClick={() => {filtersState.onClickApply(); onClose()}}>{translationsProps?.apply ?? translations.apply}</button>
+                    </div>
+                </div>
+        </ListItem>
+    )
 }
 
 export default ItemFilter

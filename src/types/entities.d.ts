@@ -43,11 +43,11 @@ export interface SorterRecord {
 export interface DataRequestParam {
     offset: number, 
     perPage: number, 
-    filters: string | object, 
+    query: string, 
     sorter?:string[]
 }
 
-export type FilterType = "text" | "number" | "date" | "checkbox"
+export type FilterType = "text" | "number" | "date" | "checkbox" | "checkboxCtn" | "checkboxCtnIntegers"| "checkboxCtnStrings" | "booleanRadio" | "geoloc"
 export type TextFilter = "contains" | "equal" | "startWith" | "finishWith"
 export type NumberFilter = "equal" | "moreThan" | "lessThan" | "between"
 export type DateFilter = "atDay" | "minDay" | "maxDay"
@@ -64,7 +64,7 @@ export interface FilterStateItem {
     [key:string]: {
         type?: FilterType,
         label?: string,
-        parsedValue?: string | Object,
+        optionsValues?: {value: string, label:string}[],
         main?: FilterStateItemValue              
         optionals?: FilterStateItemValue[]
         locked?: boolean
@@ -85,16 +85,35 @@ export type GPaginationObject<T> = {
     content: T[]
 }
 
+
 export type FilterItem = {
     name: string, 
     label: string, 
-    type: "text" | "number" | "date" | "checkbox" | "checkboxCtn" | "booleanRadio" | "geoloc", 
-    checkboxValues?: {value: string, label:string}[],
-    radioValues?: {value:string, label:string}[],
+    type: FilterType, 
+    optionsValues?: {value: string, label:string}[],
     defaultOpen?:boolean
-    widthPercentage?: number
     idAccessor?:string
-    parsedValue?: string | Object
+    parsedValue?:string
+}
+
+export type NewFilterItem = {
+    value: string
+    label:string
+    name: string
+    type: FilterType,
+    optionsValues?: {value: string, label:string}[],
+    idAccessor?:string
+    locked?:boolean
+    option: string
+    id?:number
+    parsedValue?:string
+}
+
+export type NewDefaultFilterItem = {
+    name: string
+    value: any
+    locked?:boolean
+    parsedValue?:string
 }
 
 export type LineSpacing = "high" | "medium" | "small"

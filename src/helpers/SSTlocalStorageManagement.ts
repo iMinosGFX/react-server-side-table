@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { LineSpacing, SorterRecord } from '../types/entities';
+import { LineSpacing, NewFilterItem, SorterRecord } from '../types/entities';
 
 type Data = {
-    filters?: any,
+    filters?: NewFilterItem[],
     sort?: SorterRecord
     hideColumns?: string[]
     showVerticalBorders?: boolean
@@ -23,12 +23,12 @@ export function registerTableFilters(data: Data, tableName: string): void {
     if(!!data && !_.isEmpty(data)){
         let table = getTableData(tableName)
         localStorage.setItem(tableName, JSON.stringify({
-            filters: !!data.filters ? data.filters : !!table?.filters ? table.filters : null,
-            sort: !!data.sort ? data.sort : !!table?.sort ? table.sort : null,
-            hideColumns: !!data.hideColumns ? data.hideColumns : !!table?.hideColumns ? table.hideColumns : [],
-            showVerticalBorders: data.showVerticalBorders !== undefined ? data.showVerticalBorders : table?.showVerticalBorders !== undefined ? table.showVerticalBorders : false,
-            lineSpacing: !!data.lineSpacing ? data.lineSpacing : !!table?.lineSpacing ? table.lineSpacing : "medium",
-            perPageItems: !!data.perPageItems ? data.perPageItems : !!table?.perPageItems ? table.perPageItems : null
+            filters: data?.filters ?? table?.filters ?? [],
+            sort: data?.sort ?? table?.sort ?? null,
+            hideColumns: data?.hideColumns ?? table?.hideColumns ?? [],
+            showVerticalBorders: data?.showVerticalBorders ?? table?.showVerticalBorders ?? false,
+            lineSpacing: data?.lineSpacing ?? table?.lineSpacing ?? "medium",
+            perPageItems: data?.perPageItems ?? table?.perPageItems ?? null
         }))
     }
 }

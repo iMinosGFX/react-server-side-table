@@ -1,22 +1,23 @@
-import { DataRequestParam, FilterItem, FilterStateItem, filtersType, GPaginationObject, LineSpacing, SorterRecord } from "./entities"
+import { DataRequestParam, FilterItem, FilterStateItem, filtersType, FilterType, GPaginationObject, LineSpacing, NewDefaultFilterItem, NewFilterItem, SorterRecord } from './entities';
 import { Translations } from "./props"
 
-export type TextFilterProps = {
-    filter: FilterItem
+export type CommonInputFilterProps = {
+    filter: NewFilterItem
     onEnterPress(): void
-    index: "main" | number
+    id: number
     filterParsedType: filtersType
     translationsProps: Translations
     darkMode: boolean
+    type: FilterType
 }
 
 export type CheckboxFilterProps = {
-    filter: FilterItem
+    filter: NewFilterItem
     darkMode: boolean
 }
 
 export type BooleanRadioFilterProps = {
-    filter: FilterItem
+    filter: NewFilterItem
     translationsProps: Translations
     darkMode: boolean
 }
@@ -48,19 +49,24 @@ export type SSTExporter = {
     exportFormat: any
 }
 
+type SSTCustomActions = {
+    text: string, 
+    onClick(): void
+    icon?: JSX.Element, 
+    color?: string,
+}
+
 export type SSTProps = {
     columns: any[]
     isFilter?: boolean
-    filtersList?: FilterItem[]
+    // filtersList?: FilterItem[]
     isSorter?:boolean
     defaultSorter?: string
-    perPageItems?: 5 | 10 | 20 | 50
     isRenderSubComponent?:boolean
     renderSubComponent?: any
     onDataChange(requestParam: DataRequestParam): Promise<GPaginationObject<any>>
     showAddBtn?: boolean
     onAddClick?(): void
-    filterParsedType?: filtersType
     darkMode?: boolean
     withoutHeader?:boolean
     translationsProps?: Translations
@@ -71,9 +77,9 @@ export type SSTProps = {
     containerClassName?:string
     filtersContainerClassName?:string
     tableId?: string // Only for save filter & sort
-    optionnalsHeaderContent?: JSX.Element[]
+    optionnalsHeaderContent?: {[key: string]: SSTCustomActions}
     selectableRows?: boolean
-    selectedRowsAction?: JSX.Element[]
+    selectedRowsAction?: {[key: string]: SSTCustomActions}
     showVerticalBorders?: boolean
     defaultProps?: DefaultProps
     counterColumnToItemGoLeft?: number
@@ -81,6 +87,9 @@ export type SSTProps = {
     pageRangeDisplayed?:number
     withoutTotalElements?: boolean
     smallTextsHeader?:boolean
+    newFiltersList?: NewFilterItem[]
+    newDefaultFilters?: NewDefaultFilterItem[]
+    asDefaultFilters?:boolean
 }
 
 
@@ -94,10 +103,11 @@ export type TableProps = {
     columns: any
     data: any
     renderRowSubComponent: any
-    filters?: FilterItem[]
+    // filters?: FilterItem[]
+    newFilters?: NewFilterItem[]
     hiddenColumns: string[]
     clickableHeader(e: any): void
-    filterParsedType: filtersType
+    // filterParsedType: filtersType
     translationsProps?: Translations
     selectableRows?: boolean
     showVerticalBorders?: boolean
@@ -109,12 +119,11 @@ export type TableProps = {
 }
 
 type DefaultProps = {
-    filters: FilterStateItem,
-    sort: SorterRecord,
-    hideColumns: string[] 
-    showVerticalBorders: boolean
-    lineSpacing: LineSpacing
-    perPageItems: number
+    sort?: SorterRecord,
+    hideColumns?: string[] 
+    showVerticalBorders?: boolean
+    lineSpacing?: LineSpacing
+    perPageItems?: number
 }
 
 export type ExportType = "all" | "one"

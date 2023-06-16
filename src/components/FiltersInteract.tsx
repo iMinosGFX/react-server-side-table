@@ -127,17 +127,17 @@ const FiltersInteract = (props: FiltersInteractProps) => {
                     {isMobile && <p onClick={() => setIsFilterOpen(!isFilterOpen)}>Filtres {isFilterOpen ? <i className="ri-arrow-up-s-line" /> : <i className="ri-arrow-down-s-line" />}</p>}
                     {isFilterOpen && 
                         <>
-                        <FieldContainer className="SST_field_filters">
+                        {/* <FieldContainer className="SST_field_filters">
                             {filters.map(filter => (
                                 <ItemFilter 
                                     key={filter.name} 
                                     filter={filter} 
-                                    filterParsedType={props.filterParsedType}
+                                    filterParsedType={"rsql"}
                                     translationsProps={translationsProps}
                                     isField
                                     darkMode={darkMode}/>
                             ))}
-                        </FieldContainer>
+                        </FieldContainer> */}
                         <SearchContainer darkMode={darkMode} className="SST_submit_filters_btn">
                             <span onClick={() => filterContext.onClickApply()}> <i className="ri-search-2-line"/> <label>Rechercher</label></span>
                         </SearchContainer>

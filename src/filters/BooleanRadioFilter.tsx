@@ -38,8 +38,12 @@ margin: 10px 0;
 
 const BooleanRadioFilter = (props: BooleanRadioFilterProps) => {
 
+    const {
+        translationsProps, 
+        darkMode, 
+        filter
+    } = props
     const filtersState = useContext(FiltersContext)
-    const {translationsProps, darkMode} = props
     const node = useRef()
     const [open, setOpen] = useState<boolean>(false)
 
@@ -56,62 +60,31 @@ const BooleanRadioFilter = (props: BooleanRadioFilterProps) => {
         return () => document.removeEventListener("mousedown", handleClick);
     }, []);
 
-    const handleChange = (index: string, status:string) => {
-        let _preventArray = filtersState.filtersState[props.filter.name]["main"]
-        _preventArray["value"][index].status = status
-        filtersState.changeMainFilter(props.filter.name, _preventArray)
+    const handleChange = (status: "YES" | "NO" | "NA") => {
+        filtersState.changeFilter(props.filter.name, filter.id, {
+            option: filter.option,
+            value: status
+        })
     }
 
-    // if(filtersPosition === "field"){
-    //     return(
-    //         <FieldContainer ref={node} onClick={() => {setOpen(true)}} darkMode={darkMode}>
-    //             <label>{(!!filtersState.submitFiltersState && !!filtersState.submitFiltersState?.[props.filter.name]) ? filtersState.submitFiltersState?.[props.filter.name].main.value.map(filter => `${filter.label},${filter.status}`) : "Choisir"}</label>
-    //             {open && 
-    //                 <CheckContainer darkMode={darkMode}>
-    //                     {filtersState.filtersState[props.filter.name]["main"]["value"].flatMap((radio,i) => {
-    //                         return(
-    //                             <div key={i}>
-    //                                 <label>{radio.label}</label>
-    //                                 <div style={{display: 'flex', paddingTop: 5}}>
-    //                                     <label className="radio-container">
-    //                                         <input type="radio" id={`radio_type_${radio.name}_YES`} name={`radio_type_${radio.name}_YES`} value="YES" checked={radio.status === "YES"} onChange={() => handleChange(i, "YES")}/>
-    //                                         <span>{translationsProps?.yes ?? translations.yes}</span>
-    //                                     </label>
-    //                                     <label className="radio-container">
-    //                                         <input type="radio" id={`radio_type_${radio.name}_NO`} name={`radio_type_${radio.name}_NO`} value="NO" checked={radio.status === "NO"} onChange={() => handleChange(i, "NO")}/>
-    //                                         <span>{translationsProps?.no ?? translations.no}</span>
-    //                                     </label>
-    //                                     <label className="radio-container">
-    //                                         <input type="radio" id={`radio_type_${radio.name}_NA`} name={`radio_type_${radio.name}_NA`} value="NA" checked={radio.status === "NA"} onChange={() => handleChange(i, "NA")}/>
-    //                                         <span>{translationsProps?.na ?? translations.na}</span>
-    //                                     </label>
-    //                                 </div>
-    //                             </div>
-    //                         )
-    //                     })}
-    //                 </CheckContainer>
-    //             }
-    //         </FieldContainer>
-    //     )
-    // } else {
         return(
             <FilterContainer>
                 <CheckContainer darkMode={darkMode}>
-                    {filtersState.filtersState[props.filter.name]["main"]["value"].flatMap((radio,i) => {
+                    {filter.optionsValues.flatMap((radio,i) => {
                         return(
                             <div key={i}>
                                 <label>{radio.label}</label>
                                 <div style={{display: 'flex', paddingTop: 5}}>
                                     <label className="radio-container">
-                                        <input type="radio" id={`radio_type_${radio.name}_YES`} name={`radio_type_${radio.name}_YES`} value="YES" checked={radio.status === "YES"} onChange={() => handleChange(i, "YES")}/>
+                                        <input type="radio" id={`radio_type_${filter.name}_YES`} name={`radio_type_${filter.name}_YES`} value="YES" checked={filter.value === "YES"} onChange={() => handleChange("YES")}/>
                                         <span>{translationsProps?.yes ?? translations.yes}</span>
                                     </label>
                                     <label className="radio-container">
-                                        <input type="radio" id={`radio_type_${radio.name}_NO`} name={`radio_type_${radio.name}_NO`} value="NO" checked={radio.status === "NO"} onChange={() => handleChange(i, "NO")}/>
+                                        <input type="radio" id={`radio_type_${filter.name}_NO`} name={`radio_type_${filter.name}_NO`} value="NO" checked={filter.value === "NO"} onChange={() => handleChange("NO")}/>
                                         <span>{translationsProps?.no ?? translations.no}</span>
                                     </label>
                                     <label className="radio-container">
-                                        <input type="radio" id={`radio_type_${radio.name}_NA`} name={`radio_type_${radio.name}_NA`} value="NA" checked={radio.status === "NA"} onChange={() => handleChange(i, "NA")}/>
+                                        <input type="radio" id={`radio_type_${filter.name}_NA`} name={`radio_type_${filter.name}_NA`} value="NA" checked={filter.value === "NA"} onChange={() => handleChange("NA")}/>
                                         <span>{translationsProps?.na ?? translations.na}</span>
                                     </label>
                                 </div>

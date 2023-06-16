@@ -1,7 +1,7 @@
 import { Translations } from '../types/props';
 
 export const translations: Translations = {
-    add: "+ Ajouter",
+    add: "Ajouter",
     sortBy: "Trier par...",
     appliedFilters:"Filtres appliqués",
     linePerPage:"Items par page",

@@ -27,49 +27,26 @@ const ListContainer = styled.div`
 `
 const CheckboxFilter = (props: CheckboxFilterProps) => {
     
-    const {darkMode} = props
+    const {darkMode, filter} = props
     const filtersState = useContext(FiltersContext)
 
     const handleChange = (check: string) => {
-        filtersState.changeMainFilter(props.filter.name, {
-            option: filtersState.filtersState[props.filter.name]["main"].option,
-            value: _.xor(filtersState.filtersState[props.filter.name]["main"].value, [check])
+        filtersState.changeFilter(props.filter.name, filter.id, {
+            option: filter.option,
+            value: _.xor(filter.value, [check])
         })
     }
-
-    // if(filtersPosition === "field"){
-    //     return(
-    //         <FieldContainer ref={node} onClick={() => {setOpen(true)}} darkMode={darkMode}>
-    //             <label>{(!!filtersState.submitFiltersState && !!filtersState.submitFiltersState?.[props.filter.name] && filtersState?.submitFiltersState[props.filter.name]?.main?.value.length > 0) ? filtersState?.submitFiltersState[props.filter.name]?.main?.value.join(',') : "Choisir"}</label>
-    //            {open &&
-    //                     <CheckContainer filtersPosition={filtersPosition} darkMode={darkMode}>
-    //                     {props?.filter?.checkboxValues.map((check,i) => (
-    //                         <div className="check-group" style={{paddingTop: 10}} key={i}>
-    //                             <input 
-    //                                 type="checkbox" 
-    //                                 name={check.value} 
-    //                                 id={check.value}  
-    //                                 onChange={() => handleChange(check.value)} 
-    //                                 checked={filtersState.filtersState[props.filter.name]["main"].value.includes(check.value)}/>
-    //                             <label htmlFor={check.value}>{check.label}</label>
-    //                         </div>
-    //                     ))}
-    //                 </CheckContainer> 
-    //            } 
-    //         </FieldContainer>
-    //     )
-    // } else {
 
     return(
             <ListContainer>
                 <CheckContainer darkMode={darkMode}>
-                    {props.filter.checkboxValues.map((check,i) => (
+                    {props.filter.optionsValues.map((check,i) => (
                         <Checkbox 
                             name={check.value} 
                             label={check.label}
                             id={check.value}  
                             onChange={() => handleChange(check.value)} 
-                            checked={filtersState.filtersState[props.filter.name]["main"].value.includes(check.value)} />
+                            checked={filter?.value?.includes(check.value)} />
                     ))}
                 </CheckContainer>
             </ListContainer>

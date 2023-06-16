@@ -1,26 +1,36 @@
 import React from 'react';
-import { SorterRecord } from '../types/entities';
+import { NewFilterItem, SorterRecord } from '../types/entities';
 
 type Context = {
     filtersState: any,
+    newFilterState: NewFilterItem[]
+    newSubmitFilterState: NewFilterItem[]
     submitFiltersState: any,
     sorterState: any,
-    changeMainFilter(name: string, content: {option:string, value:string | any}): void,
-    changeOptionalsFilters(name: string, content: {option:string, value:string}[]): void,
+    changeFilter(name: string, id: number, content: {option:string, value:string | any}): void,
+    onClearFilter(name: string, id: number, index?:number, clearRadio?:boolean): void,
     changeSort(e: SorterRecord): void,
     onClearAll(): void,
     onClickApply(): void,
+    onAddFilter(filter: string): void
+    syncNewStateFilters(filters: NewFilterItem[]): void
 }
 
 const FiltersContext = React.createContext<Context>({
     filtersState: {},
+    newFilterState: [],
+    newSubmitFilterState: [],
     submitFiltersState: null,
     sorterState: null,
-    changeMainFilter: (name: string, content: {option:string, value:string | any}) => {},
-    changeOptionalsFilters: (name: string, content: {option:string, value:string}[]) => {},
+    changeFilter: (name: string, id: number, content: {option:string, value:string | any}) => {},
+    onClearFilter: (name: string, id: number) => {},
     changeSort: (e: SorterRecord) => {},
     onClearAll:() => {},
     onClickApply:() => {},
+    onAddFilter: (filter: string) => {},
+    syncNewStateFilters: (filters: NewFilterItem[]) => {}
+
+
 })
 
 export default FiltersContext;

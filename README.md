@@ -37,9 +37,8 @@ Then you can call him in the renderer, here an example :
 | ref                        | Ref                                                                                | const SSTRef = useRef() ... ref={SSTRef}                                                                                                                                               | use to call reloadData() function                                     |
 | columns                    | {Header:string, accessor: string, sorterAttribut,...}[] => More informations below |                                                                                                                                                                                        |                                                                       |
 | onDataChange()             | function(requestParams: DataRequestParams): Promise<GPaginationObject<any>>        | ```` onDataChange={getData} ```                                                                                                                                                        |                                                                       |
-| filterParsedType           | "rsql" \| "fuzzy"                                                                  |                                                                                                                                                                                        | Change for RSQL Or Fuzzy parser after every actions                   |
 | isFilter?                  | boolean                                                                            |                                                                                                                                                                                        | default: false                                                        |
-| filtersList?               | FilterItem[] details below                                                         |                                                                                                                                                                                        |                                                                       |
+| newFiltersList?               | NewFilterItem[] details below                                                         |                                                                                                                                                                                        |                                                                       |
 | isSorter?                  | boolean                                                                            | const filtersList = [ {name: "firstname", label: "Prénom", type: "text"}, {name:"enabled", label: "Statut", type:"booleanRadio", radioValues: [{value: "enabled", label: "Actif"}}]} ] | default: false                                                        |
 | defaultSorter?             | string                                                                             |                                                                                                                                                                                        |                                                                       |
 | perPageItems?              | 5 \| 10 \| 20 \| 50                                                                |                                                                                                                                                                                        | default: 5 Default per page item in first call api                    |
@@ -61,11 +60,13 @@ Then you can call him in the renderer, here an example :
 | containerClassName?        | string                                                                             |                                                                                                                                                                                        |                                                                       |
 | filtersContainerClassName? | string                                                                             |                                                                                                                                                                                        |                                                                       |
 | selectableRows?            | boolean                                                                            |                                                                                                                                                                                        |                                                                       |
-| selectedRowsAction?        | JSX.Element[]                                                                      |                                                                                                                                                                                        |                                                                       |
+| selectedRowsAction?        | Object of SSTCustomActions                           |                                                                                                                                                                                        |                                                                       |
 | withoutTotalElements?  | boolean                                                                             | Enabled this to remove total text                                                                                                                                            |                                                                       |
 | showVerticalBorders?       | boolean                                                                            |                                                                                                                                                                                        |                                                                       |
-| defaultProps?              | FilterStateItem                                                                    | If you want to use default props (filters, sort, hidden columns), you need to use useSST hooks, see more below                                                                         |                                                                       |
+| defaultProps?              | DefaultProps                                                                    | If you want to use default props (filters, sort, hidden columns), you need to use useSST hooks, see more below                                                                         |                                                                       |
 | counterColumnToItemGoLeft  | number                                                                             | Add this if filters is on right of viewport                                                                                                                                            |                                                                       |
+| newDefaultFilters  | NewDefaultFilterItem[]                                                                             |                                                                                                                                         |                                                                       |
+| asDefaultFilters  | boolean                                                                             |                           Enabled default filters usage                                                                                                              |                                                                       |
 
 ##### GetData
 The getData function must call the api using the parameters returned by onDataChange, and returning a PaginationObject object (content & pageabe). 
@@ -112,16 +113,21 @@ sorterAttribut: 'name', //api field
 
 ---
 #### Filter
-Filters are defined via an object, it will be automatically parsed according to the filter type of the api, by defining "rsql" or "fuzzy" in FilterParsedType. 
-The Filter object is an array of FilterItem (see reference below)
+Since version 2.0, only the "rsql" type filter is accepted, making the package more flexible. 
+Simply define an array in `newFiltersList`. 
 
 Here example of filterItem : 
 ```javascript
-const fitlers: FilterItem[] = [
-    {name:'createdAt', label: "Date", type:"date", idAccessor:"createdAt"},
-    {name:"createdByService", label:"Service", type:"text", idAccessor:"createdByService"},
-    {name:"action", label:"Action", type:"text", idAccessor:"action"},
-    {name:"actor", label:"Actor", type:"text", idAccessor:"actor"},
+
+const professionsSelect = [
+    {value:"DOCTOR", label:translateProfession("DOCTOR")},
+    {value:"NURSE", label:translateProfession("NURSE")},
+]
+
+const fitlers: NewFilterItem[] = [
+    {name:"lastName", label:"Nom", type:"text", idAccessor:"lastName"},
+    {name:"profession", label:"Profession", type:"checkbox", idAccessor:"profession", optionsValues:professionsSelect},
+    {name:"active", label:"Statut", type:"booleanRadio", idAccessor:"active", optionsValues: [{value: "active", label: "Active"}]},
 ]
 ```
 
@@ -129,56 +135,40 @@ const fitlers: FilterItem[] = [
 
 You can enable filter saving by choosing a unique "tableId", usually the pattern is: `[project-name]-[entity]-table`
 
-You also have the possibility to create default filters, for that you have to do several things: 
-- Import useSST 
-- Create a filter variable
-- Transform this variable ready to use by SST
-- import this variable into SST. 
 
 Here is an example: 
 ```javascript
 import {ServerSideTable, useSST} from '@optalp/react-server-side-table';
+
 const TABLE_ID = "tv2-logger-table"
 
-const {createDefaultProps} = useSST()
-const [defaultsProps, setDefaultsProps] = useState<any>(null)
+const fitlers: NewFilterItem[] = [
+    {name:"lastName", label:"Nom", type:"text", idAccessor:"lastName"},
+]
+const [defaultFilterItems, setDefaultFilterItems] = useState<NewDefaultFilterItem[]>([])
+const [state, state] = useState<any>(null)
 
-const filters: FilterItem[] = [...]
-
-const defaultFilters: FilterStateItem  = {
-    createdAt: {
-        type: "date",
-        label: "Date",
-        parsedValue: "",
-        main: {option: "atDay", value: moment().format("YYYY-MM-DD")},
-        optionals: []
-    },
-}
 
 useEffect(() => {
-    createDefaultProps({
-        filtersList: filters,
-        defaultFilters: defaultFilters
-        tableId: TABLE_ID,
-        filtersParsedType: "rsql",
-        columns: columns
-    })
-    .then(setDefaultsProps)
-}, [])
+    if(!!state)
+        setDefaultFilterItems([
+            {name: "lastName", value: state, locked: true}
+        ])
+}, [state])
 
 return(
     <>
-      {!!defaultsProps && 
+      {!!defaultFilterItems.length &&
         <ServerSideTable
             ref={ServerSideTableRef}
             columns={columns}
             isFilter
-            filtersList={filterColumns}
-            filterParsedType="rsql"
+            newFiltersList={filterColumns}
             isSorter
             onDataChange={getData}
-            defaultProps={defaultsProps}
-            tableId={TABLE_ID}/>
+            tableId={TABLE_ID}
+            asDefaultFilters
+            newDefaultFilters={defaultFilterItems} />
     }
     </>
 )
@@ -197,21 +187,22 @@ return(
 ```
 
 ###### Locked Filters
-In addition to that, you can add locked Filters, useful to create a default filter untouchable by the user, just add the attribute `locked: true` in the defaultFilter object. 
+To lock a filter, simply add the `locked: true` attribute to a defaultFilter so that it is taken into account.
 
 ```javascript
-const defaultFilters: FilterStateItem = {
-    actionId: {
-        type: "text",
-        label: "ID",
-        parsedValue: "",
-        main: {option: "equal", value:"3496164921410732033"},
-        optionals: [],
-        locked: true
-    }
-}
-```
+<ServerSideTable
+    ref={ServerSideTableRef}
+    columns={columns}
+    darkMode={darkMode}
+    onDataChange={getData}
+    newFiltersList={filterColumns}
+    asDefaultFilters
+    newDefaultFilters={[
+        {name: "lastName", value: "lockedLastNameValue", locked: true}
+    ]} 
+/> 
 
+```
 ---
 
 ##### Sub component
@@ -238,10 +229,46 @@ const renderRowSubComponent = React.useCallback(
 
 ---
 
+##### Optional header content
+Useful for adding buttons to interact with the panel, redirecting to secondary actions, etc...
+This will create a series of grouped buttons, each customizable.
+
+Example : 
+```
+<ServerSideTable
+    ref={ServerSideTableRef}
+    columns={columns}
+    tableId={TABLE_ID}
+    filtersList={filterColumns}
+    optionnalsHeaderContent={{
+        addManager: {text: "Manager", icon: <i className='ri-add-line'/>, onClick: () => history.push(...), color: "orange"},
+        addAdmin: {text: "Administrateur", icon: <i className='ri-add-line'/>, onClick: () => history.push(...), color: "medium"}
+    }}
+/>
+```
+
 ##### Select Rows
 Just add the `selectableRows` attribute and a set of JSX.Element in a `selectedRowsAction` attribute which will be displayed only when at least one row is selected. 
 
 Then you just have to use the `getSelectedRows` function (accessible via the ref) to get the array of selected rows.
+
+Example : 
+```
+<ServerSideTable
+    ref={ServerSideTableRef}
+    columns={columns}
+    tableId={TABLE_ID}
+    filtersList={filterColumns}
+    selectableRows
+    selectedRowsAction={{
+         editSelected: {
+            text: "Modifier", 
+            icon: <i className='ri-edit-2-line'/>, 
+            onClick: () => console.log("Edit Selected Lines"), 
+            color: "medium"}
+    }}
+/>
+```
 
 ##### API Functions
 There are APIs to interact with the data in the array, which are accessible to it. 
@@ -270,10 +297,7 @@ interface DataRequestParam {
 ```
 
 ``` typescript
-type FilterType = "text" | "number" | "date" 
-type TextFilter = "contains" | "equal" | "startWith" | "finishWith"
-type NumberFilter = "equal" | "moreThan" | "lessThan" | "between"
-type DateFilter = "atDay" | "minDay" | "maxDay"
+export type FilterType = "text" | "number" | "date" | "checkbox" | "checkboxCtn" | "checkboxCtnIntegers"| "checkboxCtnStrings" | "booleanRadio" | "geoloc"
 
 type DefaultFiltersOptions = TextFilter | NumberFilter | DateFilter
 
@@ -282,21 +306,40 @@ type FilterStateItemValue = {
     value: string
 }
 
-interface FilterStateItem {
-    [key:string]: {
-        type?: FilterType,
-        label?: string,
-        parsedValue?: string,
-        main?: FilterStateItemValue              
-        optionals?: FilterStateItemValue[]
-        locked?: boolean
-    }
+type FilterItem = {
+    value: string
+    label:string
+    name: string
+    type: FilterType,
+    optionsValues?: {value: string, label:string}[],
+    idAccessor?:string
+    locked?:boolean
+    option: string
+    parsedValue?:string
+}
+
+type DefaultFilterItem = {
+    name: string
+    value: any
+    locked?:boolean
+    parsedValue?:string
 }
 
 type DefaultProps = {
-    filters: FilterStateItem,
-    sort: SorterRecord,
-    hideColumns: string[] 
+    sort?: SorterRecord,
+    hideColumns?: string[] 
+    showVerticalBorders?: boolean
+    lineSpacing?: LineSpacing
+    perPageItems?: number
+}
+
+export type Sorter = {
+    attribut: string,
+    value: "asc" | "desc"
+}
+
+export interface SorterRecord {
+    [key:string]: Sorter
 }
 ```
 
@@ -309,6 +352,14 @@ type Sorter = {
 interface SorterRecord {
     [key:string]: Sorter
 }
+
+type SSTCustomActions = {
+    text: string, 
+    onClick(): void
+    icon?: JSX.Element, 
+    color?: string,
+}
+
 ```
 
 ``` typescript

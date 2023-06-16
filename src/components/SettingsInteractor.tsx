@@ -106,9 +106,6 @@ const DropdownMenu = (props: PropsDropdown) => {
     const {translationsProps, enabledExport, handleExport, darkMode, tableId, lineSpacing, onLineSpacingChange, showVerticalBorders, onShowVerticalBorderChange, columns, hiddenColumns} = props
     const [activeMenu, setActiveMenu] = useState<string>('main')
     const [menuHeight, setMenuHeight] = useState<any>(null)
-    const [downloadedData, setDownloadedData] = useState<any>([])
-    const filtersState = useContext(FiltersContext)
-    const nodeBtn = useRef()
 
     const fetchData = (e: ExportType) => {
         props.handleExport(e)

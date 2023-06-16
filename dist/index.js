@@ -22,9 +22,9 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var React = require('react');
 var React__default = _interopDefault(React);
-var Select = _interopDefault(require('react-select'));
 var styled = _interopDefault(require('styled-components'));
 var polished = require('polished');
+var Select = _interopDefault(require('react-select'));
 var reactTransitionGroup = require('react-transition-group');
 var XLSX = _interopDefault(require('xlsx'));
 var moment = _interopDefault(require('moment'));
@@ -21870,17 +21870,57 @@ var lodash = createCommonjsModule(function (module, exports) {
 
 var FiltersContext = React__default.createContext({
     filtersState: {},
+    newFilterState: [],
+    newSubmitFilterState: [],
     submitFiltersState: null,
     sorterState: null,
-    changeMainFilter: function (name, content) { },
-    changeOptionalsFilters: function (name, content) { },
+    changeFilter: function (name, id, content) { },
+    onClearFilter: function (name, id) { },
     changeSort: function (e) { },
     onClearAll: function () { },
     onClickApply: function () { },
+    onAddFilter: function (filter) { },
+    syncNewStateFilters: function (filters) { }
 });
 
+var TableContainer = styled("div")(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    padding-top: 10px;\n    margin: 0 5px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .SST_HEADER{\n        padding: .4rem;\n        width: 100%;\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        margin-bottom: 6px;\n        .actions-headers-container{\n            display: flex;\n            justify-content: end;\n            align-items: center;\n        }\n    }\n    .SST_selected_rows_buttons{\n        padding: 0 4px;\n        display: flex;\n        align-items: center;\n        & > * {\n            margin: 0 5px;\n        }\n    }\n    @media only screen and (max-width: 540px){\n        .SST_HEADER{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"], ["\n    padding-top: 10px;\n    margin: 0 5px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .SST_HEADER{\n        padding: .4rem;\n        width: 100%;\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        margin-bottom: 6px;\n        .actions-headers-container{\n            display: flex;\n            justify-content: end;\n            align-items: center;\n        }\n    }\n    .SST_selected_rows_buttons{\n        padding: 0 4px;\n        display: flex;\n        align-items: center;\n        & > * {\n            margin: 0 5px;\n        }\n    }\n    @media only screen and (max-width: 540px){\n        .SST_HEADER{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"])), function (props) { return props.darkMode ? "#2a3c4e" : "#fff"; }, function (props) { return props.darkMode ? "#272d3a" : "#E0E0E0"; }, function (props) { return props.darkMode ? "#bccde0" : "#2a3c4e"; }, function (props) { return props.darkMode ? "#2a3c4e" : "#fff;"; }, function (props) { return props.darkMode ? "#bccde0" : "#435F71"; });
+var TableStyles = styled("div")(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n    border-left: 1px solid ", " !important;\n    border-right: 1px solid ", " !important;\n    thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    /* text-transform: uppercase; */\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                    &.SST_header_title_small{\n                        font-size: 12px;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"], ["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n    border-left: 1px solid ", " !important;\n    border-right: 1px solid ", " !important;\n    thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    /* text-transform: uppercase; */\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                    &.SST_header_title_small{\n                        font-size: 12px;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"])), function (props) { return props.darkMode ? "#141b24" : "#E7EAF3"; }, function (props) { return props.darkMode ? "#141b24" : "#E7EAF3"; }, function (props) { return props.darkMode ? "#141b24" : "#E7EAF3"; }, function (props) { return props.darkMode ? "#272d3a" : "#F8FAFD"; }, function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; }, polished.transparentize(.95, "#000"));
+var ListItem = styled('div')(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .SST_list_filter_item_popup{\n        width: ", ";\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"], ["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .SST_list_filter_item_popup{\n        width: ", ";\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"])), function (props) { return props.type === "top" && "1px solid #E1E1E1"; }, function (props) { return props.type === "left" && "rgba(33, 106, 154,.1)"; }, function (props) { return props.type === "top" && "1px solid #216A9A"; }, function (props) { return props.filterParsedType === "rsql" ? "max-content" : "300px"; }, function (props) { return props.type === "left" ? "0px" : "110%"; }, function (props) { return props.isOnRightOfViewport ? "-310px" : props.type === "left" ? "105%" : "0"; });
+var FieldItem = styled('div')(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    padding: 0px 5px;\n    @media (max-width: 1230px){\n        width: 33% !important;\n    }\n    @media (max-width: 1150px){\n        width: 50% !important;\n    }\n    @media (max-width: 820px){\n        width: 100% !important;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"], ["\n    padding: 0px 5px;\n    @media (max-width: 1230px){\n        width: 33% !important;\n    }\n    @media (max-width: 1150px){\n        width: 50% !important;\n    }\n    @media (max-width: 820px){\n        width: 100% !important;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"])));
+var FilterContainer = styled('div')(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: flex;\n        justify-content: space-between;\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            height: ", ";\n            line-height: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            width: 120px;\n            border: .09rem solid #dbdee7;\n            max-height: 35px;\n        }\n        .filterSelectChoice__value-container{\n            max-height: 35px;\n            overflow: hidden;\n            flex-wrap: nowrap;\n        }\n        .filterSelectChoice__input{\n            input{\n                max-height: 25px !important;\n                max-height: 25px !important;\n                color: ", ";\n                margin-bottom: 0;\n            }\n        }\n        .filterSelectChoice__control--is-focused{\n\n        }\n        .filterSelectChoice__indicator-separator{\n            display: none;\n        }\n        .filterSelectChoice__single-value{\n            color: ", ";\n            font-size: 13px;\n            font-weight: 500;\n        }\n        .filterSelectChoice__option{\n            font-weight: 400;\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: flex;\n        justify-content: space-between;\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            height: ", ";\n            line-height: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            width: 120px;\n            border: .09rem solid #dbdee7;\n            max-height: 35px;\n        }\n        .filterSelectChoice__value-container{\n            max-height: 35px;\n            overflow: hidden;\n            flex-wrap: nowrap;\n        }\n        .filterSelectChoice__input{\n            input{\n                max-height: 25px !important;\n                max-height: 25px !important;\n                color: ", ";\n                margin-bottom: 0;\n            }\n        }\n        .filterSelectChoice__control--is-focused{\n\n        }\n        .filterSelectChoice__indicator-separator{\n            display: none;\n        }\n        .filterSelectChoice__single-value{\n            color: ", ";\n            font-size: 13px;\n            font-weight: 500;\n        }\n        .filterSelectChoice__option{\n            font-weight: 400;\n        }\n    }\n"])), function (props) { return props.filterParsedType === "rsql" ? "38px" : "35px"; }, function (props) { return props.filterParsedType === "rsql" ? "38px" : "35px"; }, function (props) { return props.filterParsedType === "rsql" ? "200px" : "70%"; }, function (props) { return props.darkMode ? "#bccde0" : "initial"; }, function (props) { return props.darkMode ? "#bccde0" : "#initial"; });
+var CheckContainer = styled('div')(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    max-height: 200px;\n    overflow: auto;\n    position: relative;\n    z-index: 99;\n    label{\n        font-weight: 400;\n    }\n    .check-group{\n        label{\n            font-weight: 400;\n            color: #435F71 !important;\n            &:after{\n\n                top: 2px;\n            }\n        }\n    }\n"], ["\n    max-height: 200px;\n    overflow: auto;\n    position: relative;\n    z-index: 99;\n    label{\n        font-weight: 400;\n    }\n    .check-group{\n        label{\n            font-weight: 400;\n            color: #435F71 !important;\n            &:after{\n\n                top: 2px;\n            }\n        }\n    }\n"])));
+var FieldContainer = styled('div')(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    line-height: 38px;\n    height: 38px;\n    /* border: 1px solid #E0E0E0; */\n    background:", ";\n    border-radius: 3px;\n    label{\n        margin-left: 3px;\n    }\n    @media(max-width: 820px){\n        margin-bottom: 10px;\n    }\n"], ["\n    line-height: 38px;\n    height: 38px;\n    /* border: 1px solid #E0E0E0; */\n    background:", ";\n    border-radius: 3px;\n    label{\n        margin-left: 3px;\n    }\n    @media(max-width: 820px){\n        margin-bottom: 10px;\n    }\n"])), function (props) { return props.darkMode ? "#272d3a" : "#ECECEC"; });
+var PerPageContainer = styled.div(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    transform: translateY(3px);\n    padding-right: 10px;\n    white-space: nowrap;\n\tlabel{\n\t\tpadding-right: 10px;\n        color: var(--color-primary);\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n\t}\n"], ["\n    transform: translateY(3px);\n    padding-right: 10px;\n    white-space: nowrap;\n\tlabel{\n\t\tpadding-right: 10px;\n        color: var(--color-primary);\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n\t}\n"])));
+var FiltersContainer = styled('div')(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    padding: 0 10px;\n"], ["\n    padding: 0 10px;\n"])));
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9;
+
+var Checkbox = function (props) {
+    var id = props.id, containerStyle = props.containerStyle, containerClassName = props.containerClassName, label = props.label, value = props.value, onChange = props.onChange, checked = props.checked, rhfRegister = props.rhfRegister, isInderterminate = props.isInderterminate, disabled = props.disabled;
+    return (React__default.createElement("div", { className: "check-group ".concat(!!containerClassName ? containerClassName : "", " ").concat(isInderterminate ? "indeterminate" : "not-indeterminate", " ").concat(!!disabled ? "disabled" : ""), style: containerStyle },
+        React__default.createElement("input", __assign({ type: "checkbox", id: id, value: value, disabled: disabled, onChange: !disabled && onChange, checked: checked }, rhfRegister)),
+        React__default.createElement("label", { htmlFor: id }, label)));
+};
+
+var ListContainer = styled.div(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n            font-weight: 400;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n            font-weight: 400;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n"])));
+var CheckboxFilter = function (props) {
+    var darkMode = props.darkMode, filter = props.filter;
+    var filtersState = React.useContext(FiltersContext);
+    var handleChange = function (check) {
+        filtersState.changeFilter(props.filter.name, filter.id, {
+            option: filter.option,
+            value: lodash.xor(filter.value, [check])
+        });
+    };
+    return (React__default.createElement(ListContainer, null,
+        React__default.createElement(CheckContainer, { darkMode: darkMode }, props.filter.optionsValues.map(function (check, i) {
+            var _a;
+            return (React__default.createElement(Checkbox, { name: check.value, label: check.label, id: check.value, onChange: function () { return handleChange(check.value); }, checked: (_a = filter === null || filter === void 0 ? void 0 : filter.value) === null || _a === void 0 ? void 0 : _a.includes(check.value) }));
+        }))));
+};
+var templateObject_1$1;
+
 var translations = {
-    add: "+ Ajouter",
+    add: "Ajouter",
     sortBy: "Trier par...",
     appliedFilters: "Filtres appliqués",
     linePerPage: "Items par page",
@@ -21923,195 +21963,10 @@ var translations = {
     }
 };
 
-var TableContainer = styled("div")(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    padding-top: 10px;\n    margin: 0 5px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .SST_HEADER{\n        padding: .4rem;\n        width: 100%;\n        display: flex;\n        justify-content: space-between;\n        align-items: flex-start;\n        padding-right: 10px;\n        flex-direction: column;\n        .SST_actions_buttons{\n            display: flex;\n            align-items: center;\n            & > * {\n                margin: 0 5px;\n            }\n        }\n    }\n    .SST_selected_rows_buttons{\n        padding: .4rem;\n        display: flex;\n        align-items: center;\n        & > * {\n            margin: 0 5px;\n        }\n    }\n    @media only screen and (max-width: 540px){\n        .SST_HEADER{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"], ["\n    padding-top: 10px;\n    margin: 0 5px;\n    .extender{\n        position: absolute; \n        top: -25px;\n        left:0;\n        width: 40px;\n        height: 25px;\n        line-height: 25px;\n        font-size: 18px;\n        text-align: center; \n        background-color: #E0E0E0;\n        color: #606060;\n        border-radius: 5px 5px 0 0;\n        cursor: pointer;\n    }\n    .selectContainer{\n        display: inline-block !important;\n        width: 250px;\n        text-align: left;\n        padding-right: 20px;\n        .ServerSideTableFilterSelect__control{\n            background: ", ";\n            border:1px solid ", ";\n            .ServerSideTableFilterSelect__placeholder{\n                color: ", ";\n            }\n        }\n        .ServerSideTableFilterSelect__menu{\n            background: ", ";\n            color: ", ";\n        }\n        .ServerSideTableFilterSelect__input{\n            input{\n                height: 1rem !important;\n            }\n\n        }   \n    } \n    .SST_HEADER{\n        padding: .4rem;\n        width: 100%;\n        display: flex;\n        justify-content: space-between;\n        align-items: flex-start;\n        padding-right: 10px;\n        flex-direction: column;\n        .SST_actions_buttons{\n            display: flex;\n            align-items: center;\n            & > * {\n                margin: 0 5px;\n            }\n        }\n    }\n    .SST_selected_rows_buttons{\n        padding: .4rem;\n        display: flex;\n        align-items: center;\n        & > * {\n            margin: 0 5px;\n        }\n    }\n    @media only screen and (max-width: 540px){\n        .SST_HEADER{\n            display: contents;\n            button{\n                float: right;\n                margin-bottom: 10px;\n            }\n            .table-actions-container{\n                clear: both;\n                justify-content: space-between;\n                margin-bottom: 10px;\n            }\n        }\n    }\n"])), function (props) { return props.darkMode ? "#2a3c4e" : "#fff"; }, function (props) { return props.darkMode ? "#272d3a" : "#E0E0E0"; }, function (props) { return props.darkMode ? "#bccde0" : "#2a3c4e"; }, function (props) { return props.darkMode ? "#2a3c4e" : "#fff;"; }, function (props) { return props.darkMode ? "#bccde0" : "#435F71"; });
-var TableStyles = styled("div")(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                    &.SST_header_title_small{\n                        font-size: 12px;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"], ["\n    input[type=\"checkbox\"]{\n        position: relative !important;\n        left: initial !important;\n    }\n  table {\n    border-spacing: 0;\n    width:100%;\n      thead{\n        border-top: 1px solid ", " !important;\n        border-bottom: 1px solid #E7EAF3 !important;\n        height: 50px;\n        text-align:left;\n        padding:0 40px;\n        background: ", ";\n        color: #8497B1;\n        .SST_header_cell{\n            position: relative;\n            .SST_header_container{\n                display: flex;\n                align-items: center;\n                justify-content: left;\n                & > * {\n                    margin:0 2px;\n                }\n                .SST_header_title{\n                    text-transform: uppercase;\n                    display: flex;\n                    align-items: center;\n                    font-size: 13px;\n                    span{\n                        font-weight: 600;\n                    }\n                    &.SST_header_title_small{\n                        font-size: 12px;\n                    }\n                }\n                i{\n                    &.fitler_icon{\n                        cursor: pointer;\n                        margin-left: 3px;\n                        padding: 2px 5px;\n                        border-radius: 3px;\n                        transition: .2s;\n                        transform:translateY(-1px);\n                        &.SST_filter_active{\n                            color: #3498db;\n                            background: rgba(0,0,0,.05);\n                        }\n                    }\n                    &.sorter_icon{\n                        font-size: 20px;\n                    }\n                }\n            }\n            .SST_header_filter_modal{\n                position:absolute;\n                bottom:0;\n                left:0;\n                z-index: 999;\n            }\n        }\n      }\n    }\n    tbody{\n      color:#57606F;\n      tr{\n          height: ", ";\n          border-bottom: 1px solid #F0F0F0;\n          &:hover{\n            background: #F5F5F5 !important;\n          }\n          td{\n              border-right: 1px solid #F0F0F0;\n          }\n      }\n    }\n    .footerTable{\n      border-top: 1px solid rgba(22,125,255,0.15);\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      height: 55px;\n      color: #216A9A;\n      select{\n        background: none !important;\n        min-width: fit-content;\n      }\n    }\n  @media only screen and (max-width: 540px){\n    table {\n        th{\n          white-space: nowrap;\n        }\n        tbody{\n          td{\n            white-space: nowrap;\n          }\n        }\n    }\n    .footerTable{\n        flex-direction: column;\n    }\n  }\n  .table-settings-dropdown{\n    position: absolute;\n    top: 30px;\n    width: 300px;\n    transform: translateX(-90%);\n    color: #435F71;\n    background-color: #fff;\n    border: 1px solid #E7EAF3;\n    box-shadow: 0 4px 4px rgba(#E7EAF3, .25);\n    border-radius: 3px;\n    overflow: hidden;\n    z-index: 999;\n    transition: height 300ms ease;\n    &.dark{\n        background-color: #141b24;\n    }\n    .menu-item{\n        height: 35px;\n        display: flex;\n        align-items: center;\n        border-radius: 3px;\n        padding: 0.5rem;\n        color: #435F71;\n        width: 300px;\n        font-size: 14px;\n        cursor: pointer;\n        &:hover{\n            background-color: ", ";\n        }\n    }\n    .icon-button{\n        font-size: 16px;\n        padding-right: 10px;\n    }\n    .icon-right{\n        position: absolute;\n        right: 15px;\n    }\n\n    .menu-primary-enter{\n        position: absolute;\n        transform: translateX(-110%);\n    }\n    .menu-primary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-primary-exit{\n        position: absolute;\n\n    }\n    .menu-primary-exit-active{\n        transform: translateX(-110%);\n        transition: all 300ms ease;\n    }\n\n    .menu-secondary-enter{\n        position: absolute;\n        transform: translateX(110%);\n    }\n    .menu-secondary-enter-active{\n        transform: translateX(-0%);\n        transition: all 300ms ease;\n    }\n    .menu-secondary-exit-active{\n        transform: translateX(110%);\n        transition: all 300ms ease;\n    }\n  }\n\n    @keyframes rotate{to{ transform: rotate(360deg); } }\n    .spinner{ \n      display: inline-block;\n      animation: rotate 1.5s linear infinite; \n      font-size: 20px;\n    }\n"])), function (props) { return props.darkMode ? "#141b24" : "#E7EAF3"; }, function (props) { return props.darkMode ? "#272d3a" : "#F8FAFD"; }, function (props) { return props.lineSpacing === "high" ? "70px" : props.lineSpacing === "medium" ? "50px" : "30px"; }, polished.transparentize(.95, "#000"));
-var ListItem = styled('div')(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .SST_list_filter_item_popup{\n        width: ", ";\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"], ["\n    width: max-content;\n    padding: 5px 10px;\n    box-sizing: border-box;\n    font-size: 15px;\n    margin-bottom: 5px;\n    margin: 1px 10px;\n    border: ", ";\n    border-radius: 2px;\n    color: #798c97;\n    transition: all 200ms ease;\n    position: relative;\n    /* background:", "; */\n    &:after{\n        color: #798c97;\n        border-right: 1px solid currentcolor;\n        border-bottom: 1px solid currentcolor;\n        content: '';\n        position: absolute;\n        top: 10px;\n        right: -5px;\n        width: 6px;\n        height: 6px;\n        transform: rotate(45deg)\n    }\n    .filterName{\n        cursor: pointer;\n    }\n    &:hover{\n        background: ", ";\n        /* border: ", "; */\n        color: #216A9A;\n    }\n    .SST_list_filter_item_popup{\n        width: ", ";\n        background-color: #fff;\n        border-radius: 2px;\n        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n        position: absolute;\n        top: ", ";\n        left: ", ";\n        z-index: 9999;\n        padding: 10px;\n        h4{\n            font-weight: 400;\n            color: #435F71 !important;\n        }\n    }\n    .addFilter{\n        clear: both;\n        display: block;\n        width: 40px;\n        border: 1px solid #c8c8c8;\n        background: #fff;\n        color: #707070;\n        border-radius: 2px;\n        text-align: center;\n        margin: 10px auto;\n        position: relative;\n        cursor: pointer;\n        &:after{\n            content:\"\";\n            z-index: -1;\n            width: 300px;\n            height: 1px;\n            background: #c8c8c8;\n            position: absolute;\n            display: block;\n            top: 50%;\n            left: -130px;\n        }\n    }\n"])), function (props) { return props.type === "top" && "1px solid #E1E1E1"; }, function (props) { return props.type === "top" && "#FFF"; }, function (props) { return props.type === "left" && "rgba(33, 106, 154,.1)"; }, function (props) { return props.type === "top" && "1px solid #216A9A"; }, function (props) { return props.filterParsedType === "rsql" ? "400px" : "300px"; }, function (props) { return props.type === "left" ? "0px" : "110%"; }, function (props) { return props.isOnRightOfViewport ? "-310px" : props.type === "left" ? "105%" : "0"; });
-var FieldItem = styled('div')(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    padding: 0px 5px;\n    @media (max-width: 1230px){\n        width: 33% !important;\n    }\n    @media (max-width: 1150px){\n        width: 50% !important;\n    }\n    @media (max-width: 820px){\n        width: 100% !important;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"], ["\n    padding: 0px 5px;\n    @media (max-width: 1230px){\n        width: 33% !important;\n    }\n    @media (max-width: 1150px){\n        width: 50% !important;\n    }\n    @media (max-width: 820px){\n        width: 100% !important;\n    }\n    @media (max-width: 540px){\n        width: 100% !important;\n    } \n"])));
-var FilterContainer = styled('div')(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: flex;\n        justify-content: space-between;\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            height: ", ";\n            line-height: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            width: 150px;\n            border: .09rem solid #dbdee7;\n            max-height: 35px;\n        }\n        .filterSelectChoice__value-container{\n            max-height: 35px;\n            overflow: hidden;\n            flex-wrap: nowrap;\n        }\n        .filterSelectChoice__input{\n            input{\n                max-height: 25px !important;\n                max-height: 25px !important;\n                color: ", ";\n                margin-bottom: 0;\n            }\n        }\n        .filterSelectChoice__control--is-focused{\n\n        }\n        .filterSelectChoice__indicator-separator{\n            display: none;\n        }\n        .filterSelectChoice__single-value{\n            color: ", ";\n            font-size: 13px;\n            font-weight: 500;\n        }\n        .filterSelectChoice__option{\n            font-weight: 400;\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n    .inputs{\n        display: flex;\n        justify-content: space-between;\n        input[type='text'], input[type='date'], input[type=\"number\"]{\n            height: ", ";\n            line-height: ", ";\n            width: ", ";\n            padding-left: 5px;\n            float: right;\n            margin-bottom: 10px;\n            color: #435F71 !important;\n        }\n\n        .filterSelectChoice__control{\n            width: 150px;\n            border: .09rem solid #dbdee7;\n            max-height: 35px;\n        }\n        .filterSelectChoice__value-container{\n            max-height: 35px;\n            overflow: hidden;\n            flex-wrap: nowrap;\n        }\n        .filterSelectChoice__input{\n            input{\n                max-height: 25px !important;\n                max-height: 25px !important;\n                color: ", ";\n                margin-bottom: 0;\n            }\n        }\n        .filterSelectChoice__control--is-focused{\n\n        }\n        .filterSelectChoice__indicator-separator{\n            display: none;\n        }\n        .filterSelectChoice__single-value{\n            color: ", ";\n            font-size: 13px;\n            font-weight: 500;\n        }\n        .filterSelectChoice__option{\n            font-weight: 400;\n        }\n    }\n"])), function (props) { return props.filterParsedType === "rsql" ? "38px" : "35px"; }, function (props) { return props.filterParsedType === "rsql" ? "38px" : "35px"; }, function (props) { return props.filterParsedType === "rsql" ? "350px" : "70%"; }, function (props) { return props.darkMode ? "#bccde0" : "initial"; }, function (props) { return props.darkMode ? "#bccde0" : "#initial"; });
-var CheckContainer = styled('div')(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    max-height: 200px;\n    overflow: auto;\n    position: relative;\n    z-index: 99;\n    label{\n        font-weight: 400;\n    }\n    .check-group{\n        label{\n            font-weight: 400;\n            color: #435F71 !important;\n            &:after{\n\n                top: 2px;\n            }\n        }\n    }\n"], ["\n    max-height: 200px;\n    overflow: auto;\n    position: relative;\n    z-index: 99;\n    label{\n        font-weight: 400;\n    }\n    .check-group{\n        label{\n            font-weight: 400;\n            color: #435F71 !important;\n            &:after{\n\n                top: 2px;\n            }\n        }\n    }\n"])));
-var FieldContainer = styled('div')(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    line-height: 38px;\n    height: 38px;\n    /* border: 1px solid #E0E0E0; */\n    background:", ";\n    border-radius: 3px;\n    label{\n        margin-left: 3px;\n    }\n    @media(max-width: 820px){\n        margin-bottom: 10px;\n    }\n"], ["\n    line-height: 38px;\n    height: 38px;\n    /* border: 1px solid #E0E0E0; */\n    background:", ";\n    border-radius: 3px;\n    label{\n        margin-left: 3px;\n    }\n    @media(max-width: 820px){\n        margin-bottom: 10px;\n    }\n"])), function (props) { return props.darkMode ? "#272d3a" : "#ECECEC"; });
-var PerPageContainer = styled.div(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    transform: translateY(3px);\n    padding-right: 10px;\n    white-space: nowrap;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n\t}\n    .perPageSelect {\n        color: #A3A6C0;\n    }\n"], ["\n    transform: translateY(3px);\n    padding-right: 10px;\n    white-space: nowrap;\n\tlabel{\n\t\tpadding-right: 10px;\n\t}\n\tselect{\n\t\theight: 40px;\n\t\twidth: 20px;\n        padding-left: 0 !important;\n        padding-right: 0 !important;\n\t}\n    .perPageSelect {\n        color: #A3A6C0;\n    }\n"])));
-var FiltersContainer = styled('div')(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    padding: 0 10px;\n"], ["\n    padding: 0 10px;\n"])));
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9;
-
-var TextFilter = function (props) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-    var filter = props.filter, index = props.index, translationsProps = props.translationsProps, darkMode = props.darkMode;
-    var filtersState = React.useContext(FiltersContext);
-    var options = [
-        { value: "contains", label: (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.contain) !== null && _b !== void 0 ? _b : translations.filtersViewer.contain },
-        { value: "equal", label: (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _c === void 0 ? void 0 : _c.equal) !== null && _d !== void 0 ? _d : translations.filtersViewer.equal },
-        { value: "startWith", label: (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _e === void 0 ? void 0 : _e.startWith) !== null && _f !== void 0 ? _f : translations.filtersViewer.startWith },
-        { value: "finishWith", label: (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.finishWith) !== null && _h !== void 0 ? _h : translations.filtersViewer.finishWith },
-    ];
-    var handleChange = function (_a) {
-        var currentTarget = _a.currentTarget;
-        var value = currentTarget.value;
-        if (index === "main") {
-            filtersState.changeMainFilter(filter.name, {
-                option: filtersState.filtersState[filter.name]["main"].option,
-                value: value
-            });
-        }
-        else {
-            var _optionalsFilter = filtersState.filtersState[filter.name]["optionals"];
-            _optionalsFilter[index].value = value;
-            filtersState.changeOptionalsFilters(filter.name, _optionalsFilter);
-        }
-    };
-    var handleSelectChange = function (e) {
-        if (index === "main") {
-            filtersState.changeMainFilter(filter.name, {
-                value: filtersState.filtersState[filter.name]["main"].value,
-                option: e.value
-            });
-        }
-        else {
-            var _optionalsFilter = filtersState.filtersState[filter.name]["optionals"];
-            _optionalsFilter[index].option = e.value;
-            filtersState.changeOptionalsFilters(filter.name, _optionalsFilter);
-        }
-    };
-    return (React__default.createElement(FilterContainer, { darkMode: darkMode, filterParsedType: props.filterParsedType },
-        React__default.createElement("div", { className: "inputs" },
-            props.filterParsedType === "rsql" ?
-                React__default.createElement(Select, { options: options, value: index === "main"
-                        ? lodash.find(options, { value: filtersState.filtersState[filter.name]["main"].option })
-                        : lodash.find(options, { value: filtersState.filtersState[filter.name]["optionals"][index].option }), onChange: function (e) { return handleSelectChange(e); }, classNamePrefix: "filterSelectChoice" })
-                :
-                    React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _j === void 0 ? void 0 : _j.contain) !== null && _k !== void 0 ? _k : translations.filtersViewer.contain),
-            React__default.createElement("input", { autoFocus: true, name: filter.name, type: "text", value: index === "main"
-                    ? filtersState.filtersState[filter.name]["main"].value
-                    : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
-};
-
-var TextFilter$1 = function (props) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-    var filter = props.filter, index = props.index, translationsProps = props.translationsProps, darkMode = props.darkMode;
-    var filtersState = React.useContext(FiltersContext);
-    var options = [
-        { value: "equal", label: (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.equal) !== null && _b !== void 0 ? _b : translations.filtersViewer.equal },
-        { value: "moreThan", label: (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _c === void 0 ? void 0 : _c.moreThan) !== null && _d !== void 0 ? _d : translations.filtersViewer.moreThan },
-        { value: "lessThan", label: (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _e === void 0 ? void 0 : _e.lessThan) !== null && _f !== void 0 ? _f : translations.filtersViewer.lessThan },
-        { value: "between", label: (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.between) !== null && _h !== void 0 ? _h : translations.filtersViewer.between },
-    ];
-    var handleChange = function (_a) {
-        var currentTarget = _a.currentTarget;
-        var value = currentTarget.value;
-        if (index === "main") {
-            filtersState.changeMainFilter(filter.name, {
-                option: filtersState.filtersState[filter.name]["main"].option,
-                value: value
-            });
-        }
-        else {
-            var _optionalsFilter = filtersState.filtersState[filter.name]["optionals"];
-            _optionalsFilter[index].value = value;
-            filtersState.changeOptionalsFilters(filter.name, _optionalsFilter);
-        }
-    };
-    var handleSelectChange = function (e) {
-        if (index === "main") {
-            filtersState.changeMainFilter(filter.name, {
-                value: filtersState.filtersState[filter.name]["main"].value,
-                option: e.value
-            });
-        }
-        else {
-            var _optionalsFilter = filtersState.filtersState[filter.name]["optionals"];
-            _optionalsFilter[index].option = e.value;
-            filtersState.changeOptionalsFilters(filter.name, _optionalsFilter);
-        }
-    };
-    return (React__default.createElement(FilterContainer, { darkMode: darkMode, filterParsedType: props.filterParsedType },
-        React__default.createElement("div", { className: "inputs" },
-            props.filterParsedType === "rsql" ?
-                React__default.createElement(Select, { options: options, value: index === "main"
-                        ? lodash.find(options, { value: filtersState.filtersState[filter.name]["main"].option })
-                        : lodash.find(options, { value: filtersState.filtersState[filter.name]["optionals"][index].option }), onChange: function (e) { return handleSelectChange(e); }, classNamePrefix: "filterSelectChoice" })
-                :
-                    React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _j === void 0 ? void 0 : _j.equal) !== null && _k !== void 0 ? _k : translations.filtersViewer.equal),
-            React__default.createElement("input", { autoFocus: true, name: filter.name, type: "number", value: index === "main"
-                    ? filtersState.filtersState[filter.name]["main"].value
-                    : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
-};
-
-var Checkbox = function (props) {
-    var id = props.id, containerStyle = props.containerStyle, containerClassName = props.containerClassName, label = props.label, value = props.value, onChange = props.onChange, checked = props.checked, rhfRegister = props.rhfRegister, isInderterminate = props.isInderterminate, disabled = props.disabled;
-    return (React__default.createElement("div", { className: "check-group ".concat(!!containerClassName ? containerClassName : "", " ").concat(isInderterminate ? "indeterminate" : "not-indeterminate", " ").concat(!!disabled ? "disabled" : ""), style: containerStyle },
-        React__default.createElement("input", __assign({ type: "checkbox", id: id, value: value, disabled: disabled, onChange: !disabled && onChange, checked: checked }, rhfRegister)),
-        React__default.createElement("label", { htmlFor: id }, label)));
-};
-
-var ListContainer = styled.div(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject(["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n            font-weight: 400;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n"], ["\n    width: 100%;\n    box-sizing: border-box;\n    margin: 10px 0;\n    .title{\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        color: #888;\n        cursor: pointer;\n        label {\n            font-size: 14px;\n            font-weight: 400;\n        }\n        .chevron{\n            padding-right: 5px;\n        }\n    }\n"])));
-var CheckboxFilter = function (props) {
-    var darkMode = props.darkMode;
-    var filtersState = React.useContext(FiltersContext);
-    var handleChange = function (check) {
-        filtersState.changeMainFilter(props.filter.name, {
-            option: filtersState.filtersState[props.filter.name]["main"].option,
-            value: lodash.xor(filtersState.filtersState[props.filter.name]["main"].value, [check])
-        });
-    };
-    return (React__default.createElement(ListContainer, null,
-        React__default.createElement(CheckContainer, { darkMode: darkMode }, props.filter.checkboxValues.map(function (check, i) { return (React__default.createElement(Checkbox, { name: check.value, label: check.label, id: check.value, onChange: function () { return handleChange(check.value); }, checked: filtersState.filtersState[props.filter.name]["main"].value.includes(check.value) })); }))));
-};
-var templateObject_1$1;
-
-var DateFilter = function (props) {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
-    var filter = props.filter, index = props.index, translationsProps = props.translationsProps, darkMode = props.darkMode;
-    var filtersState = React.useContext(FiltersContext);
-    var options = [
-        { value: "atDay", label: (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.atDay) !== null && _b !== void 0 ? _b : translations.filtersViewer.atDay },
-        { value: "minDay", label: (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _c === void 0 ? void 0 : _c.minDay) !== null && _d !== void 0 ? _d : translations.filtersViewer.minDay },
-        { value: "maxDay", label: (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _e === void 0 ? void 0 : _e.maxDay) !== null && _f !== void 0 ? _f : translations.filtersViewer.maxDay },
-    ];
-    var handleChange = function (_a) {
-        var currentTarget = _a.currentTarget;
-        var value = currentTarget.value;
-        if (index === "main") {
-            filtersState.changeMainFilter(filter.name, {
-                option: filtersState.filtersState[filter.name]["main"].option,
-                value: value
-            });
-        }
-        else {
-            var _optionalsFilter = filtersState.filtersState[filter.name]["optionals"];
-            _optionalsFilter[index].value = value;
-            filtersState.changeOptionalsFilters(filter.name, _optionalsFilter);
-        }
-    };
-    var handleSelectChange = function (e) {
-        if (index === "main") {
-            filtersState.changeMainFilter(filter.name, {
-                value: filtersState.filtersState[filter.name]["main"].value,
-                option: e.value
-            });
-        }
-        else {
-            var _optionalsFilter = filtersState.filtersState[filter.name]["optionals"];
-            _optionalsFilter[index].option = e.value;
-            filtersState.changeOptionalsFilters(filter.name, _optionalsFilter);
-        }
-    };
-    return (React__default.createElement(FilterContainer, { darkMode: darkMode, filterParsedType: props.filterParsedType },
-        React__default.createElement("div", { className: "inputs" },
-            props.filterParsedType === "rsql" ?
-                React__default.createElement(Select, { options: options, value: index === "main"
-                        ? lodash.find(options, { value: filtersState.filtersState[filter.name]["main"].option })
-                        : lodash.find(options, { value: filtersState.filtersState[filter.name]["optionals"][index].option }), onChange: function (e) { return handleSelectChange(e); }, classNamePrefix: "filterSelectChoice" })
-                :
-                    React__default.createElement("span", { style: { lineHeight: "2.4rem", color: "#435F71" } }, (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.atDay) !== null && _h !== void 0 ? _h : translations.filtersViewer.atDay),
-            React__default.createElement("input", { autoFocus: true, name: filter.name, type: "date", value: index === "main"
-                    ? filtersState.filtersState[filter.name]["main"].value
-                    : filtersState.filtersState[filter.name]["optionals"][index].value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
-};
-
 var FilterContainer$1 = styled.div(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject(["\nwidth: 100%;\nbox-sizing: border-box;\nmargin: 10px 0;\n.title{\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    color: #888;\n    cursor: pointer;\n    label {\n        font-size: 14px;\n    }\n    .chevron{\n        padding-right: 5px;\n    }\n}\n.checksContainer{\n    max-height: 300px;\n    overflow: auto;\n    .check-group{\n        label{\n            &:after{\n                top: 2px;\n            }\n        }\n    }\n}\n"], ["\nwidth: 100%;\nbox-sizing: border-box;\nmargin: 10px 0;\n.title{\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    color: #888;\n    cursor: pointer;\n    label {\n        font-size: 14px;\n    }\n    .chevron{\n        padding-right: 5px;\n    }\n}\n.checksContainer{\n    max-height: 300px;\n    overflow: auto;\n    .check-group{\n        label{\n            &:after{\n                top: 2px;\n            }\n        }\n    }\n}\n"])));
 var BooleanRadioFilter = function (props) {
+    var translationsProps = props.translationsProps, darkMode = props.darkMode, filter = props.filter;
     var filtersState = React.useContext(FiltersContext);
-    var translationsProps = props.translationsProps, darkMode = props.darkMode;
     var node = React.useRef();
     var _a = React.useState(false), open = _a[0], setOpen = _a[1];
     var handleClick = function (e) {
@@ -22124,123 +21979,154 @@ var BooleanRadioFilter = function (props) {
         document.addEventListener("mousedown", handleClick);
         return function () { return document.removeEventListener("mousedown", handleClick); };
     }, []);
-    var handleChange = function (index, status) {
-        var _preventArray = filtersState.filtersState[props.filter.name]["main"];
-        _preventArray["value"][index].status = status;
-        filtersState.changeMainFilter(props.filter.name, _preventArray);
+    var handleChange = function (status) {
+        filtersState.changeFilter(props.filter.name, filter.id, {
+            option: filter.option,
+            value: status
+        });
     };
     return (React__default.createElement(FilterContainer$1, null,
-        React__default.createElement(CheckContainer, { darkMode: darkMode }, filtersState.filtersState[props.filter.name]["main"]["value"].flatMap(function (radio, i) {
+        React__default.createElement(CheckContainer, { darkMode: darkMode }, filter.optionsValues.flatMap(function (radio, i) {
             var _a, _b, _c;
             return (React__default.createElement("div", { key: i },
                 React__default.createElement("label", null, radio.label),
                 React__default.createElement("div", { style: { display: 'flex', paddingTop: 5 } },
                     React__default.createElement("label", { className: "radio-container" },
-                        React__default.createElement("input", { type: "radio", id: "radio_type_".concat(radio.name, "_YES"), name: "radio_type_".concat(radio.name, "_YES"), value: "YES", checked: radio.status === "YES", onChange: function () { return handleChange(i, "YES"); } }),
+                        React__default.createElement("input", { type: "radio", id: "radio_type_".concat(filter.name, "_YES"), name: "radio_type_".concat(filter.name, "_YES"), value: "YES", checked: filter.value === "YES", onChange: function () { return handleChange("YES"); } }),
                         React__default.createElement("span", null, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.yes) !== null && _a !== void 0 ? _a : translations.yes)),
                     React__default.createElement("label", { className: "radio-container" },
-                        React__default.createElement("input", { type: "radio", id: "radio_type_".concat(radio.name, "_NO"), name: "radio_type_".concat(radio.name, "_NO"), value: "NO", checked: radio.status === "NO", onChange: function () { return handleChange(i, "NO"); } }),
+                        React__default.createElement("input", { type: "radio", id: "radio_type_".concat(filter.name, "_NO"), name: "radio_type_".concat(filter.name, "_NO"), value: "NO", checked: filter.value === "NO", onChange: function () { return handleChange("NO"); } }),
                         React__default.createElement("span", null, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.no) !== null && _b !== void 0 ? _b : translations.no)),
                     React__default.createElement("label", { className: "radio-container" },
-                        React__default.createElement("input", { type: "radio", id: "radio_type_".concat(radio.name, "_NA"), name: "radio_type_".concat(radio.name, "_NA"), value: "NA", checked: radio.status === "NA", onChange: function () { return handleChange(i, "NA"); } }),
+                        React__default.createElement("input", { type: "radio", id: "radio_type_".concat(filter.name, "_NA"), name: "radio_type_".concat(filter.name, "_NA"), value: "NA", checked: filter.value === "NA", onChange: function () { return handleChange("NA"); } }),
                         React__default.createElement("span", null, (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.na) !== null && _c !== void 0 ? _c : translations.na)))));
         }))));
 };
 var templateObject_1$2;
 
-function getOptionsByType(type) {
-    switch (type) {
-        case 'text':
-            return 'contains';
-        case 'number':
-            return 'equal';
-        case 'date':
-            return 'atDay';
+var CommonInputsFilter = function (props) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+    var filter = props.filter, translationsProps = props.translationsProps, darkMode = props.darkMode, type = props.type;
+    var filtersState = React.useContext(FiltersContext);
+    var _y = React.useState(filter.value), value = _y[0], setValue = _y[1];
+    var optionsText = [
+        { value: "contains", label: (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.contain) !== null && _b !== void 0 ? _b : translations.filtersViewer.contain },
+        { value: "equal", label: (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _c === void 0 ? void 0 : _c.equal) !== null && _d !== void 0 ? _d : translations.filtersViewer.equal },
+        { value: "startWith", label: (_f = (_e = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _e === void 0 ? void 0 : _e.startWith) !== null && _f !== void 0 ? _f : translations.filtersViewer.startWith },
+        { value: "finishWith", label: (_h = (_g = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _g === void 0 ? void 0 : _g.finishWith) !== null && _h !== void 0 ? _h : translations.filtersViewer.finishWith },
+    ];
+    var optionsDate = [
+        { value: "atDay", label: (_k = (_j = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _j === void 0 ? void 0 : _j.atDay) !== null && _k !== void 0 ? _k : translations.filtersViewer.atDay },
+        { value: "minDay", label: (_m = (_l = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _l === void 0 ? void 0 : _l.minDay) !== null && _m !== void 0 ? _m : translations.filtersViewer.minDay },
+        { value: "maxDay", label: (_p = (_o = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _o === void 0 ? void 0 : _o.maxDay) !== null && _p !== void 0 ? _p : translations.filtersViewer.maxDay },
+    ];
+    var optionsNumber = [
+        { value: "equal", label: (_r = (_q = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _q === void 0 ? void 0 : _q.equal) !== null && _r !== void 0 ? _r : translations.filtersViewer.equal },
+        { value: "moreThan", label: (_t = (_s = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _s === void 0 ? void 0 : _s.moreThan) !== null && _t !== void 0 ? _t : translations.filtersViewer.moreThan },
+        { value: "lessThan", label: (_v = (_u = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _u === void 0 ? void 0 : _u.lessThan) !== null && _v !== void 0 ? _v : translations.filtersViewer.lessThan },
+        { value: "between", label: (_x = (_w = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _w === void 0 ? void 0 : _w.between) !== null && _x !== void 0 ? _x : translations.filtersViewer.between },
+    ];
+    React.useLayoutEffect(function () {
+        setValue(filter.value);
+    }, [filter]);
+    function getOptionsArrayByType(type) {
+        return type === "text" ? optionsText : type === "date" ? optionsDate : optionsNumber;
     }
-}
+    var handleChange = function (_a) {
+        var currentTarget = _a.currentTarget;
+        var value = currentTarget.value;
+        filtersState.changeFilter(filter.name, filter.id, {
+            option: filter.option,
+            value: value
+        });
+    };
+    var handleSelectChange = function (e) {
+        filtersState.changeFilter(filter.name, filter.id, {
+            value: filter.value,
+            option: e.value
+        });
+    };
+    return (React__default.createElement(FilterContainer, { darkMode: darkMode, filterParsedType: props.filterParsedType },
+        React__default.createElement("div", { className: "inputs" },
+            React__default.createElement(Select, { options: getOptionsArrayByType(type), value: lodash.find(getOptionsArrayByType(type), { value: filter.option }), onChange: handleSelectChange, classNamePrefix: "filterSelectChoice" }),
+            React__default.createElement("input", { autoFocus: true, name: filter.name, type: type, value: value, onChange: handleChange, onKeyPress: function (e) { return e.key === "Enter" && props.onEnterPress(); } }))));
+};
+
 var ItemFilter = function (props) {
     var _a, _b;
+    var filterName = props.filterName, filterType = props.filterType, translationsProps = props.translationsProps, darkMode = props.darkMode, isOnRightOfViewport = props.isOnRightOfViewport, onClose = props.onClose;
     var node = React.useRef();
     var filtersState = React.useContext(FiltersContext);
-    var translationsProps = props.translationsProps, darkMode = props.darkMode, isOnRightOfViewport = props.isOnRightOfViewport, onClose = props.onClose;
-    var handleClear = function () {
-        filtersState.changeMainFilter(props.filter.name, { option: getOptionsByType(props.filter.type), value: "" });
-        filtersState.changeOptionalsFilters(props.filter.name, []);
-        filtersState.onClickApply();
+    var _c = React.useState(filtersState.newFilterState.filter(function (f) { return f.name === filterName; })), filters = _c[0], setFilters = _c[1];
+    React.useLayoutEffect(function () {
+        setFilters(filtersState.newFilterState.filter(function (f) { return f.name === filterName; }));
+    }, [filtersState]);
+    var handleClear = function (filterId) {
+        filtersState.onClearFilter(filterName, filterId);
+        onClose();
     };
     var handleAddFilters = function () {
-        filtersState.changeOptionalsFilters(props.filter.name, __spreadArray(__spreadArray([], filtersState.filtersState[props.filter.name]["optionals"]), [
-            { option: getOptionsByType(props.filter.type), value: "" }
-        ]));
+        filtersState.onAddFilter(filterName);
     };
-    var handleRemoveOptionalFilter = function (index) {
-        if (filtersState.filtersState[props.filter.name]["optionals"].length === 1) {
-            filtersState.changeOptionalsFilters(props.filter.name, []);
-            return;
-        }
-        var _filtersArray = filtersState.filtersState[props.filter.name]["optionals"];
-        _filtersArray.splice(index, 1);
-        filtersState.changeOptionalsFilters(props.filter.name, _filtersArray);
+    var handleRemoveFilter = function (filter) {
+        var _currentFilters = __spreadArray([], filtersState.newFilterState);
+        lodash.remove(_currentFilters, { id: filter.id, name: filter.name });
+        filtersState.syncNewStateFilters(_currentFilters);
     };
     var handleClearCheckboxFilter = function () {
-        filtersState.changeMainFilter(props.filter.name, { option: getOptionsByType(props.filter.type), value: "" });
-        filtersState.onClickApply();
+        filtersState.onClearFilter(filterName, filters[0].id);
+        onClose();
     };
     var handleClearRadioFilter = function () {
-        filtersState.changeMainFilter(props.filter.name, { option: "", value: props.filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) });
-        filtersState.onClickApply();
+        filtersState.onClearFilter(filterName, filters[0].id, null, true);
+        onClose();
     };
     var handleClearGeolocFilter = function () {
-        filtersState.changeMainFilter(props.filter.name, { option: "1", value: { lat: 0, lng: 0, display: "" } });
         filtersState.onClickApply();
     };
-    function FilterRender(filter, index) {
+    function FilterRender(filter) {
         switch (filter.type) {
             case 'text':
-                return (React__default.createElement(TextFilter, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { filtersState.onClickApply(); onClose(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, darkMode: darkMode }));
             case 'number':
-                return (React__default.createElement(TextFilter$1, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { filtersState.onClickApply(); onClose(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, darkMode: darkMode }));
             case 'date':
-                return (React__default.createElement(DateFilter, { filter: filter, index: index === "main" ? "main" : index, onEnterPress: function () { filtersState.onClickApply(); onClose(); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, darkMode: darkMode }));
+                return (React__default.createElement(CommonInputsFilter, { filter: filter, id: filter.id, onEnterPress: function () { filtersState.onClickApply(); onClose(); }, filterParsedType: "rsql", type: filter.type, translationsProps: translationsProps, darkMode: darkMode }));
             case 'checkbox':
             case 'checkboxCtn':
+            case 'checkboxCtnIntegers':
+            case 'checkboxCtnStrings':
                 return (React__default.createElement(CheckboxFilter, { filter: filter, darkMode: darkMode }));
             case 'booleanRadio':
                 return (React__default.createElement(BooleanRadioFilter, { filter: filter, translationsProps: translationsProps, darkMode: darkMode }));
         }
     }
-    if (!!props.isField) {
-        return (React__default.createElement(React__default.Fragment, null,
-            React__default.createElement(FieldItem, { className: "SST_field_filter_item" },
-                React__default.createElement("label", null,
-                    props.filter.label,
-                    " ",
-                    props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && React__default.createElement("span", { className: "addFilter", style: { cursor: "pointer" }, onClick: handleAddFilters }, "+")),
-                FilterRender(props.filter, "main")),
-            filtersState.filtersState[props.filter.name].optionals.map(function (optional, i) { return (React__default.createElement(FieldItem, { key: i, className: "SST_field_filter_item SST_field_filter_optional_item" },
-                React__default.createElement("label", null,
-                    props.filter.label,
-                    " ",
-                    React__default.createElement("span", { style: { cursor: "pointer" }, onClick: function () { return handleRemoveOptionalFilter(i); } }, "-")),
-                FilterRender(props.filter, i))); })));
-    }
-    else {
-        return (React__default.createElement(ListItem, { ref: node, className: "SST_list_filter_item", filterParsedType: props.filterParsedType, isOnRightOfViewport: isOnRightOfViewport },
-            React__default.createElement("div", { className: "filterPopup SST_list_filter_item_popup" },
-                FilterRender(props.filter, "main"),
-                filtersState.filtersState[props.filter.name].optionals.map(function (optional, i) {
-                    var _a;
-                    return (React__default.createElement(React__default.Fragment, { key: i },
-                        React__default.createElement("span", { className: "addFilter" }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.and) !== null && _a !== void 0 ? _a : translations.and,
-                            " ",
-                            React__default.createElement("span", { onClick: function () { return handleRemoveOptionalFilter(i); } }, "-")),
-                        FilterRender(props.filter, i)));
-                }),
-                props.filter.type !== "checkbox" && props.filter.type !== "booleanRadio" && props.filterParsedType === "rsql" && React__default.createElement("span", { className: "addFilter", onClick: handleAddFilters }, "+"),
-                React__default.createElement("div", { style: { display: "flex", justifyContent: 'right', alignItems: 'center', margin: "auto", paddingTop: 5, fontSize: 14 } },
-                    React__default.createElement("span", { className: "primary", onClick: function () { return props.filter.type === "checkbox" ? handleClearCheckboxFilter() : props.filter.type === "booleanRadio" ? handleClearRadioFilter() : props.filter.type === "geoloc" ? handleClearGeolocFilter() : handleClear(); }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer' } }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.clear) !== null && _a !== void 0 ? _a : translations.clear),
-                    React__default.createElement("button", { className: "btn align bg-primary light validBtn", onClick: function () { filtersState.onClickApply(); onClose(); } }, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.apply) !== null && _b !== void 0 ? _b : translations.apply)))));
-    }
+    return (React__default.createElement(ListItem, { ref: node, className: "SST_list_filter_item", filterParsedType: "rsql", isOnRightOfViewport: isOnRightOfViewport },
+        React__default.createElement("div", { className: "filterPopup SST_list_filter_item_popup" },
+            filters.map(function (filter, i) {
+                var _a;
+                return (React__default.createElement(React__default.Fragment, null,
+                    (i !== 0 && ["text", "date", "number"].includes(filterType)) && React__default.createElement("span", { className: "addFilter" }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.and) !== null && _a !== void 0 ? _a : translations.and,
+                        " ",
+                        React__default.createElement("span", { onClick: function () { return handleRemoveFilter(filter); } }, "-")),
+                    FilterRender(filter),
+                    ["text", "date", "number"].includes(filterType) && React__default.createElement("span", { className: "addFilter", onClick: handleAddFilters }, "+")));
+            }),
+            React__default.createElement("div", { style: { display: "flex", justifyContent: 'right', alignItems: 'center', margin: "auto", paddingTop: 5, fontSize: 14 } },
+                React__default.createElement("span", { className: "primary", onClick: function () {
+                        if (["checkbox", "checkboxCtn", "checkboxCtnIntegers", "checkboxCtnStrings"].includes(filterType)) {
+                            handleClearCheckboxFilter();
+                            return;
+                        }
+                        if (filterType === "booleanRadio") {
+                            handleClearRadioFilter();
+                            return;
+                        }
+                        if (filterType === "geoloc") {
+                            handleClearGeolocFilter();
+                            return;
+                        }
+                        handleClear(filters === null || filters === void 0 ? void 0 : filters[0].id);
+                    }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer' } }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.clear) !== null && _a !== void 0 ? _a : translations.clear),
+                React__default.createElement("button", { className: "btn align bg-primary light validBtn", onClick: function () { filtersState.onClickApply(); onClose(); } }, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.apply) !== null && _b !== void 0 ? _b : translations.apply)))));
 };
 
 var IndeterminateCheckbox = React__default.forwardRef(function (_a, ref) {
@@ -22253,10 +22139,11 @@ var IndeterminateCheckbox = React__default.forwardRef(function (_a, ref) {
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement("input", __assign({ type: "checkbox", ref: resolvedRef }, rest))));
 });
+
 var Table = React.forwardRef(function (props, ref) {
     var _a;
-    var columns = props.columns, data = props.data, renderRowSubComponent = props.renderRowSubComponent, hiddenColumns = props.hiddenColumns, filters = props.filters, filterParsedType = props.filterParsedType, translationsProps = props.translationsProps, selectableRows = props.selectableRows, smallTextsHeader = props.smallTextsHeader, asyncLoading = props.asyncLoading, _b = props.counterColumnToItemGoLeft, counterColumnToItemGoLeft = _b === void 0 ? 2 : _b;
-    var _c = React.useState(null), openedFilter = _c[0], setOpenedFilter = _c[1];
+    var columns = props.columns, data = props.data, renderRowSubComponent = props.renderRowSubComponent, hiddenColumns = props.hiddenColumns, newFilters = props.newFilters, translationsProps = props.translationsProps, selectableRows = props.selectableRows, smallTextsHeader = props.smallTextsHeader, asyncLoading = props.asyncLoading;
+    var _b = React.useState(null), openedFilter = _b[0], setOpenedFilter = _b[1];
     var node = React.useRef();
     var SstState = React.useContext(FiltersContext);
     function toggleSorterValue(columnId, sorter) {
@@ -22283,7 +22170,7 @@ var Table = React.forwardRef(function (props, ref) {
             return selectedFlatRows;
         }
     }); });
-    var _d = reactTable_1({
+    var _c = reactTable_1({
         columns: columns,
         data: data,
         initialState: {
@@ -22305,7 +22192,7 @@ var Table = React.forwardRef(function (props, ref) {
                 },
             }
         ], columns); });
-    }), getTableProps = _d.getTableProps, getTableBodyProps = _d.getTableBodyProps, headerGroups = _d.headerGroups, prepareRow = _d.prepareRow, rows = _d.rows, visibleColumns = _d.visibleColumns, setHiddenColumns = _d.setHiddenColumns, selectedFlatRows = _d.selectedFlatRows, selectedRowIds = _d.state.selectedRowIds;
+    }), getTableProps = _c.getTableProps, getTableBodyProps = _c.getTableBodyProps, headerGroups = _c.headerGroups, prepareRow = _c.prepareRow, rows = _c.rows, visibleColumns = _c.visibleColumns, setHiddenColumns = _c.setHiddenColumns, selectedFlatRows = _c.selectedFlatRows, selectedRowIds = _c.state.selectedRowIds;
     React.useEffect(function () {
         setHiddenColumns(hiddenColumns);
     }, [hiddenColumns]);
@@ -22332,25 +22219,25 @@ var Table = React.forwardRef(function (props, ref) {
     return (React__default.createElement(React__default.Fragment, null,
         React__default.createElement("table", __assign({}, getTableProps(), { className: "table no-border" }),
             React__default.createElement("thead", { className: props.showVerticalBorders ? "" : "no-border" }, headerGroups.map(function (headerGroup, i) { return (React__default.createElement("tr", __assign({}, headerGroup.getHeaderGroupProps(), { ref: node, key: i }), headerGroup.headers.map(function (column, j) {
-                var _a, _b, _c, _d, _e, _f;
-                var filter = filters === null || filters === void 0 ? void 0 : filters.filter(function (f) { return f.idAccessor === column.id; })[0];
+                var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+                var filterName = (_d = (_c = (_b = (_a = SstState === null || SstState === void 0 ? void 0 : SstState.newFilterState) === null || _a === void 0 ? void 0 : _a.filter(function (f) { return f.idAccessor === column.id; })) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : null, filterAccessor = (_h = (_g = (_f = (_e = SstState === null || SstState === void 0 ? void 0 : SstState.newFilterState) === null || _e === void 0 ? void 0 : _e.filter(function (f) { return f.idAccessor === column.id; })) === null || _f === void 0 ? void 0 : _f[0]) === null || _g === void 0 ? void 0 : _g.idAccessor) !== null && _h !== void 0 ? _h : null, filterType = (_m = (_l = (_k = (_j = SstState === null || SstState === void 0 ? void 0 : SstState.newFilterState) === null || _j === void 0 ? void 0 : _j.filter(function (f) { return f.idAccessor === column.id; })) === null || _k === void 0 ? void 0 : _k[0]) === null || _l === void 0 ? void 0 : _l.type) !== null && _m !== void 0 ? _m : null;
                 return (React__default.createElement("th", __assign({}, column.getHeaderProps(), { className: "SST_header_cell", key: j }),
                     React__default.createElement("div", { className: "SST_header_container noselect", style: { justifyContent: !!column.alignment ? column.alignment : "left" } },
-                        React__default.createElement("span", __assign({ className: "SST_header_title ".concat(!!((_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]) ? "pointer" : "", " ").concat(smallTextsHeader ? "SST_header_title_small" : "") }, column.getHeaderProps(), { onClick: function () {
+                        React__default.createElement("span", __assign({ className: "SST_header_title ".concat(!!((_o = SstState.sorterState) === null || _o === void 0 ? void 0 : _o[column.id]) ? "pointer" : "", " ").concat(smallTextsHeader ? "SST_header_title_small" : "") }, column.getHeaderProps(), { onClick: function () {
                                 var _a;
                                 if (!!SstState.sorterState[column.id])
                                     toggleSorterValue(column.id, (_a = SstState.sorterState) === null || _a === void 0 ? void 0 : _a[column.id]);
                             } }), column.render('Header')),
-                        React__default.createElement("span", null, !!column.id && !!((_b = SstState.sorterState) === null || _b === void 0 ? void 0 : _b[column.id]) && !!((_c = SstState.sorterState) === null || _c === void 0 ? void 0 : _c[column.id]["value"])
-                            ? ((_d = SstState.sorterState) === null || _d === void 0 ? void 0 : _d[column.id]["value"]) === "desc"
+                        React__default.createElement("span", null, !!column.id && !!((_p = SstState.sorterState) === null || _p === void 0 ? void 0 : _p[column.id]) && !!((_q = SstState.sorterState) === null || _q === void 0 ? void 0 : _q[column.id]["value"])
+                            ? ((_r = SstState.sorterState) === null || _r === void 0 ? void 0 : _r[column.id]["value"]) === "desc"
                                 ? React__default.createElement("i", { className: "ri-arrow-down-s-fill sorter_icon" })
                                 : React__default.createElement("i", { className: "ri-arrow-up-s-fill sorter_icon" })
                             : ''),
-                        !!filter &&
-                            React__default.createElement("i", { onClick: function () { return setOpenedFilter(openedFilter === column.id ? null : column.id); }, className: "ri-filter-line fitler_icon ".concat(filter.idAccessor === openedFilter ? "SST_filter_active" : "") })),
-                    !!filter && filter.idAccessor === openedFilter &&
+                        !!filterName &&
+                            React__default.createElement("i", { onClick: function () { return setOpenedFilter(openedFilter === column.id ? null : column.id); }, className: "ri-filter-line fitler_icon ".concat(filterAccessor === openedFilter ? "SST_filter_active" : "") })),
+                    !!(filterAccessor === null || filterAccessor === void 0 ? void 0 : filterAccessor[0]) && filterAccessor === openedFilter &&
                         React__default.createElement("div", { className: "SST_header_filter_modal" },
-                            React__default.createElement(ItemFilter, { key: (_e = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) === null || _e === void 0 ? void 0 : _e.name, filter: (_f = filters.filter(function (f) { return f.idAccessor === column.id; })[0]) !== null && _f !== void 0 ? _f : null, filterParsedType: filterParsedType, translationsProps: translationsProps, isOnRightOfViewport: !counterColumnToItemGoLeft ? false : j >= (headerGroup.headers.length - counterColumnToItemGoLeft), darkMode: false, onClose: function () { return setOpenedFilter(null); } }))));
+                            React__default.createElement(ItemFilter, { key: i, filterName: filterName, filterType: filterType, translationsProps: translationsProps, darkMode: false, onClose: function () { return setOpenedFilter(null); } }))));
             }))); })),
             asyncLoading ?
                 React__default.createElement("tbody", { style: { textAlign: "center", display: 'flex', alignItems: "center" } },
@@ -22378,45 +22265,20 @@ var reactPaginate = createCommonjsModule(function (module, exports) {
 var ReactPaginate = unwrapExports(reactPaginate);
 var reactPaginate_1 = reactPaginate.ReactPaginate;
 
-var ListContainer$1 = styled.div(templateObject_1$3 || (templateObject_1$3 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n"], ["\n    display: flex;\n    align-items: center;\n    height: 60px;\n    h3{\n        font-weight: 400;\n        color: #afafaf;\n        padding-left: 5px;\n        padding-top: 5px;\n    }\n    .validBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n    }\n    .clearBtn{\n        border-radius: 3px;\n        padding: 6px 12px;\n        background-color: #eeeeee;\n    }\n    .popup{\n        width: 200px;\n        height: 200px;\n        background: red;\n    }\n"])));
-var SectionFilters = styled('div')(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    margin-bottom: 10px;\n    p{\n        width: 100%;\n        text-align: center;\n        display: flex;\n        align-items: center;\n        justify-content: center;\n    }\n    @media (max-width: 540px){\n        flex-direction: column;\n    }\n"], ["\n    display: flex;\n    align-items: center;\n    margin-bottom: 10px;\n    p{\n        width: 100%;\n        text-align: center;\n        display: flex;\n        align-items: center;\n        justify-content: center;\n    }\n    @media (max-width: 540px){\n        flex-direction: column;\n    }\n"])));
-var FieldContainer$1 = styled('div')(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject(["\n    display: flex;\n    flex-wrap: wrap;\n    width: 90%;\n    padding: 10px 0;\n    @media (max-width: 540px){\n        flex-direction: column;\n        width: 100%;\n    }\n"], ["\n    display: flex;\n    flex-wrap: wrap;\n    width: 90%;\n    padding: 10px 0;\n    @media (max-width: 540px){\n        flex-direction: column;\n        width: 100%;\n    }\n"])));
-var SearchContainer = styled('div')(templateObject_4$1 || (templateObject_4$1 = __makeTemplateObject(["\n    width: 10%;\n    display: flex;\n    justify-content: space-evenly;\n    align-items: center;\n    label{\n        display: none;\n    }\n    span{\n        width: 30px;\n        height: 30px;\n        display: flex;\n        cursor: pointer;\n        background: ", ";\n        border-radius: 20px;\n        align-items: center;\n        justify-content: center;\n        svg{\n            font-size: 20px;\n        }\n    }\n    @media (max-width: 540px){\n        width: 100%;\n        padding: 10px 0; \n        span{\n            width: fit-content;\n            border-radius: 3px;\n        }\n        label{\n            display: block;\n            padding: 0 10px;\n        }\n    }\n"], ["\n    width: 10%;\n    display: flex;\n    justify-content: space-evenly;\n    align-items: center;\n    label{\n        display: none;\n    }\n    span{\n        width: 30px;\n        height: 30px;\n        display: flex;\n        cursor: pointer;\n        background: ", ";\n        border-radius: 20px;\n        align-items: center;\n        justify-content: center;\n        svg{\n            font-size: 20px;\n        }\n    }\n    @media (max-width: 540px){\n        width: 100%;\n        padding: 10px 0; \n        span{\n            width: fit-content;\n            border-radius: 3px;\n        }\n        label{\n            display: block;\n            padding: 0 10px;\n        }\n    }\n"])), function (props) { return props.darkMode ? "#141b24" : "#ececec"; });
-var FiltersInteract = function (props) {
-    var filters = props.filters, translationsProps = props.translationsProps, darkMode = props.darkMode, isMobile = props.isMobile;
-    var _a = React.useState(false), isFilterOpen = _a[0], setIsFilterOpen = _a[1];
-    return (React__default.createElement(FiltersContext.Consumer, null, function (filterContext) { return (React__default.createElement(SectionFilters, { className: "SST_field_filters_container" },
-        isMobile && React__default.createElement("p", { onClick: function () { return setIsFilterOpen(!isFilterOpen); } },
-            "Filtres ",
-            isFilterOpen ? React__default.createElement("i", { className: "ri-arrow-up-s-line" }) : React__default.createElement("i", { className: "ri-arrow-down-s-line" })),
-        isFilterOpen &&
-            React__default.createElement(React__default.Fragment, null,
-                React__default.createElement(FieldContainer$1, { className: "SST_field_filters" }, filters.map(function (filter) { return (React__default.createElement(ItemFilter, { key: filter.name, filter: filter, filterParsedType: props.filterParsedType, translationsProps: translationsProps, isField: true, darkMode: darkMode })); })),
-                React__default.createElement(SearchContainer, { darkMode: darkMode, className: "SST_submit_filters_btn" },
-                    React__default.createElement("span", { onClick: function () { return filterContext.onClickApply(); } },
-                        " ",
-                        React__default.createElement("i", { className: "ri-search-2-line" }),
-                        " ",
-                        React__default.createElement("label", null, "Rechercher")))))); }));
-};
-var templateObject_1$3, templateObject_2$1, templateObject_3$1, templateObject_4$1;
-
 function getTableData(tableId) {
     return !!tableId && !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId)) : {};
 }
-function getTableFilters(tableId) {
-    return !!tableId && !!localStorage.getItem(tableId) ? JSON.parse(localStorage.getItem(tableId))["filters"] : {};
-}
 function registerTableFilters(data, tableName) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
     if (!!data && !lodash.isEmpty(data)) {
         var table = getTableData(tableName);
         localStorage.setItem(tableName, JSON.stringify({
-            filters: !!data.filters ? data.filters : !!(table === null || table === void 0 ? void 0 : table.filters) ? table.filters : null,
-            sort: !!data.sort ? data.sort : !!(table === null || table === void 0 ? void 0 : table.sort) ? table.sort : null,
-            hideColumns: !!data.hideColumns ? data.hideColumns : !!(table === null || table === void 0 ? void 0 : table.hideColumns) ? table.hideColumns : [],
-            showVerticalBorders: data.showVerticalBorders !== undefined ? data.showVerticalBorders : (table === null || table === void 0 ? void 0 : table.showVerticalBorders) !== undefined ? table.showVerticalBorders : false,
-            lineSpacing: !!data.lineSpacing ? data.lineSpacing : !!(table === null || table === void 0 ? void 0 : table.lineSpacing) ? table.lineSpacing : "medium",
-            perPageItems: !!data.perPageItems ? data.perPageItems : !!(table === null || table === void 0 ? void 0 : table.perPageItems) ? table.perPageItems : null
+            filters: (_b = (_a = data === null || data === void 0 ? void 0 : data.filters) !== null && _a !== void 0 ? _a : table === null || table === void 0 ? void 0 : table.filters) !== null && _b !== void 0 ? _b : [],
+            sort: (_d = (_c = data === null || data === void 0 ? void 0 : data.sort) !== null && _c !== void 0 ? _c : table === null || table === void 0 ? void 0 : table.sort) !== null && _d !== void 0 ? _d : null,
+            hideColumns: (_f = (_e = data === null || data === void 0 ? void 0 : data.hideColumns) !== null && _e !== void 0 ? _e : table === null || table === void 0 ? void 0 : table.hideColumns) !== null && _f !== void 0 ? _f : [],
+            showVerticalBorders: (_h = (_g = data === null || data === void 0 ? void 0 : data.showVerticalBorders) !== null && _g !== void 0 ? _g : table === null || table === void 0 ? void 0 : table.showVerticalBorders) !== null && _h !== void 0 ? _h : false,
+            lineSpacing: (_k = (_j = data === null || data === void 0 ? void 0 : data.lineSpacing) !== null && _j !== void 0 ? _j : table === null || table === void 0 ? void 0 : table.lineSpacing) !== null && _k !== void 0 ? _k : "medium",
+            perPageItems: (_m = (_l = data === null || data === void 0 ? void 0 : data.perPageItems) !== null && _l !== void 0 ? _l : table === null || table === void 0 ? void 0 : table.perPageItems) !== null && _m !== void 0 ? _m : null
         }));
     }
 }
@@ -22443,7 +22305,7 @@ var ColumnsSelector = function (props) {
     })));
 };
 
-var Container = styled.div(templateObject_1$4 || (templateObject_1$4 = __makeTemplateObject(["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"], ["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"])));
+var Container = styled.div(templateObject_1$3 || (templateObject_1$3 = __makeTemplateObject(["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"], ["\n    position: relative;\n    -webkit-touch-callout: none; \n    -webkit-user-select: none; \n     -khtml-user-select: none; \n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    i{\n        border-radius: 3px;\n        padding: 6px;\n        transform: translateY(2px);\n        transition: background 200ms;\n        &:hover{\n            background: rgba(0,0,0,.1);\n            color: #3498db !important;\n        }\n    }\n"])));
 var SettingsInteractor = function (props) {
     var node = React__default.useRef();
     var translationsProps = props.translationsProps, enabledExport = props.enabledExport, handleExport = props.handleExport, darkMode = props.darkMode, tableId = props.tableId, lineSpacing = props.lineSpacing, showVerticalBorders = props.showVerticalBorders, onShowVerticalBorderChange = props.onShowVerticalBorderChange;
@@ -22467,9 +22329,6 @@ var DropdownMenu = function (props) {
     var translationsProps = props.translationsProps, enabledExport = props.enabledExport, handleExport = props.handleExport, darkMode = props.darkMode, tableId = props.tableId, lineSpacing = props.lineSpacing, onLineSpacingChange = props.onLineSpacingChange, showVerticalBorders = props.showVerticalBorders, onShowVerticalBorderChange = props.onShowVerticalBorderChange, columns = props.columns, hiddenColumns = props.hiddenColumns;
     var _0 = React.useState('main'), activeMenu = _0[0], setActiveMenu = _0[1];
     var _1 = React.useState(null), menuHeight = _1[0], setMenuHeight = _1[1];
-    var _2 = React.useState([]), downloadedData = _2[0], setDownloadedData = _2[1];
-    var filtersState = React.useContext(FiltersContext);
-    var nodeBtn = React.useRef();
     var fetchData = function (e) {
         props.handleExport(e)
             .then(function (data) {
@@ -22561,7 +22420,7 @@ var DropdownMenu = function (props) {
                 React__default.createElement(DropdownItem, { leftIcon: React__default.createElement("i", { className: "" }) },
                     React__default.createElement("span", { onClick: function () { return fetchData("all"); } }, (_z = (_y = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.settings) === null || _y === void 0 ? void 0 : _y.exportAll) !== null && _z !== void 0 ? _z : translations.settings.exportAll))))));
 };
-var templateObject_1$4;
+var templateObject_1$3;
 
 function translateOptionsToOperator(opt, val) {
     switch (opt) {
@@ -22589,96 +22448,54 @@ function translateOptionsToOperator(opt, val) {
             return opt;
     }
 }
-function parseCommons(name, filter) {
+function parseCommons(filter) {
+    var _a;
     var parse = '';
-    if (filter["main"].value.length > 0)
-        parse += "".concat(name).concat(translateOptionsToOperator(filter["main"].option, filter["main"].value), ";");
-    filter["optionals"].map(function (optional) {
-        if (optional.value.length > 0) {
-            parse += "".concat(name).concat(translateOptionsToOperator(optional.option, optional.value), ";");
-        }
-    });
+    if (!!((_a = filter === null || filter === void 0 ? void 0 : filter.value) === null || _a === void 0 ? void 0 : _a.length)) {
+        parse += "".concat(filter.name).concat(translateOptionsToOperator(filter.option, filter.value), ";");
+    }
     return parse;
 }
-function parseCheckbox(name, filter, isContain) {
-    var parse = '';
-    if (filter["main"].value.length > 0) {
-        parse += "".concat(name, "=").concat(isContain ? "in" : "ct", "=(").concat(filter["main"].value.join(','), ");");
+function parseCheckbox(filter) {
+    var _a;
+    var parse = '', _parsedType = filter.type === "checkbox" ? "in" : filter.type === "checkboxCtn" ? "ct" : filter.type === "checkboxCtnIntegers" ? "cti" : "cts";
+    if (!!((_a = filter === null || filter === void 0 ? void 0 : filter.value) === null || _a === void 0 ? void 0 : _a.length)) {
+        parse += "".concat(filter.name, "=").concat(_parsedType, "=(").concat(filter.value.join(','), ");");
     }
     return parse;
 }
 function parseBooleanRadios(filter) {
     var parse = '';
-    filter["main"].value.map(function (boolean) {
-        if (boolean.status !== "NA") {
-            parse += "".concat(boolean.name, "==").concat(boolean.status === "YES" ? "true" : "false", ";");
-        }
-    });
-    return parse;
-}
-function parseGeoloc(name, filter) {
-    var parse = '';
-    if (filter["main"].value.lat !== 0 && filter["main"].value.lng !== 0) {
-        parse += "".concat(name, "=gin=(").concat(filter["main"].value.lng, ",").concat(filter["main"].value.lat, ", ").concat(filter["main"].option, ");");
+    if (filter.value !== "NA") {
+        parse += "".concat(filter.name, "==").concat(filter.value === "YES" ? "true" : "false", ";");
     }
     return parse;
 }
-function parseFilterRSQL(filters) {
+function newParseFilterRSQL(filters) {
     var parsedString = '';
-    !lodash.isEmpty(filters) && Object.entries(filters).flatMap(function (_a) {
-        var key = _a[0], value = _a[1];
-        switch (value["type"]) {
+    filters.flatMap(function (filter) {
+        switch (filter.type) {
             case 'text':
             case 'number':
             case 'date':
-                parsedString += parseCommons(key, value);
+                parsedString += parseCommons(filter);
                 break;
             case 'checkbox':
             case 'checkboxCtn':
-                parsedString += parseCheckbox(key, value);
-                break;
-            case 'checkboxCtn':
-                parsedString += parseCheckbox(key, value, true);
+            case 'checkboxCtnIntegers':
+            case 'checkboxCtnStrings':
+                parsedString += parseCheckbox(filter);
                 break;
             case 'booleanRadio':
-                parsedString += parseBooleanRadios(value);
-                break;
-            case 'geoloc':
-                parsedString += parseGeoloc(key, value);
+                parsedString += parseBooleanRadios(filter);
                 break;
         }
     });
     return parsedString.slice(0, -1);
 }
 
-function parseFilterFuzzy(filters) {
-    var _resultFilter = {};
-    !lodash.isEmpty(filters) && Object.entries(filters).flatMap(function (_a) {
-        var key = _a[0], value = _a[1];
-        if (!!value["main"]["value"] && value["main"]["value"].length > 0) {
-            switch (value["type"]) {
-                case 'text':
-                case 'number':
-                case 'date':
-                    _resultFilter[key] = value["main"]["value"];
-                    break;
-                case 'checkbox':
-                    _resultFilter[key] = value["main"]["value"].join(',');
-                    break;
-                case 'booleanRadio':
-                    value["main"]["value"].forEach(function (boolean) {
-                        if (boolean.status !== "NA")
-                            _resultFilter[boolean.name] = boolean.status === "YES" ? "true" : "false";
-                    });
-            }
-        }
-    });
-    return _resultFilter;
-}
-
-var Container$1 = styled('div')(templateObject_1$5 || (templateObject_1$5 = __makeTemplateObject(["\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    padding: 0 10px;\n    box-sizing: border-box;\n    span{\n        line-height: 40px;\n        color: ", ";\n    }\n    .filters-label{\n        background: ", ";\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 5px;\n        height: 25px;\n        font-size: 12px;\n        display: flex;\n        align-items: center;\n        span{\n            line-height: 25px;\n            color: #2F80ED;\n            &:nth-of-type(1){ padding-right: 3px;}\n            &:nth-of-type(2){padding-right: 6px; }\n        }\n        i{\n            font-size: 14px;\n            color: #2F80ED;\n        }\n        &.locked-label{\n            background: ", ";\n            span{\n                color: #435F71;\n            }\n        }\n    }\n    @media (max-width: 540px){\n        display: none !important;\n    }\n"], ["\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    padding: 0 10px;\n    box-sizing: border-box;\n    span{\n        line-height: 40px;\n        color: ", ";\n    }\n    .filters-label{\n        background: ", ";\n        padding: 0px 8px;\n        margin: auto 5px;\n        border-radius: 5px;\n        height: 25px;\n        font-size: 12px;\n        display: flex;\n        align-items: center;\n        span{\n            line-height: 25px;\n            color: #2F80ED;\n            &:nth-of-type(1){ padding-right: 3px;}\n            &:nth-of-type(2){padding-right: 6px; }\n        }\n        i{\n            font-size: 14px;\n            color: #2F80ED;\n        }\n        &.locked-label{\n            background: ", ";\n            span{\n                color: #435F71;\n            }\n        }\n    }\n    @media (max-width: 540px){\n        display: none !important;\n    }\n"])), function (props) { return props.darkMode ? "#e6e6e6" : "#435F71"; }, polished.transparentize(.8, "#2F80ED"), polished.transparentize(.8, "#435F71"));
+var Container$1 = styled('div')(templateObject_1$4 || (templateObject_1$4 = __makeTemplateObject(["\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    /* padding: 0 10px;  */\n    box-sizing: border-box;\n    span{\n        line-height: 40px;\n        color: ", ";\n    }\n    .filters-label{\n        background: ", ";\n        padding: 4px 6px;\n        margin: auto 5px;\n        border-radius: 5px;\n        height: 33px;\n        font-size: 12px;\n        display: flex;\n        align-items: center;\n        span{\n            line-height: 33px;\n            color: #2F80ED;\n            &:nth-of-type(1){ padding-right: 3px;}\n            &:nth-of-type(2){padding-right: 6px; }\n        }\n        i{\n            font-size: 14px;\n            color: #2F80ED;\n        }\n        &.locked-label{\n            background: ", ";\n            span{\n                color: #435F71;\n            }\n        }\n    }\n    @media (max-width: 540px){\n        display: none !important;\n    }\n"], ["\n    width: 100%;\n    border-radius: 3px 3px 0 0;\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    /* padding: 0 10px;  */\n    box-sizing: border-box;\n    span{\n        line-height: 40px;\n        color: ", ";\n    }\n    .filters-label{\n        background: ", ";\n        padding: 4px 6px;\n        margin: auto 5px;\n        border-radius: 5px;\n        height: 33px;\n        font-size: 12px;\n        display: flex;\n        align-items: center;\n        span{\n            line-height: 33px;\n            color: #2F80ED;\n            &:nth-of-type(1){ padding-right: 3px;}\n            &:nth-of-type(2){padding-right: 6px; }\n        }\n        i{\n            font-size: 14px;\n            color: #2F80ED;\n        }\n        &.locked-label{\n            background: ", ";\n            span{\n                color: #435F71;\n            }\n        }\n    }\n    @media (max-width: 540px){\n        display: none !important;\n    }\n"])), function (props) { return props.darkMode ? "#e6e6e6" : "#435F71"; }, polished.transparentize(.8, "#2F80ED"), polished.transparentize(.8, "#435F71"));
 var FiltersViewers = function (props) {
-    var _a, _b;
     var translationsProps = props.translationsProps, darkMode = props.darkMode, lockedFilters = props.lockedFilters;
     function translateOption(opt) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
@@ -22708,132 +22525,84 @@ var FiltersViewers = function (props) {
         }
     }
     var filtersState = React.useContext(FiltersContext);
-    var clearMain = function (name) {
-        var _filter = filtersState.filtersState[name];
-        _filter["main"].value = "";
-        filtersState.changeMainFilter(name, { option: filtersState.filtersState[name]["main"].option, value: "" });
+    var clearFilter = function (filter, index, clearRadio) {
+        filtersState.onClearFilter(filter.name, filter.id, index, clearRadio);
+    };
+    var clearGeoloc = function (filter) {
         filtersState.onClickApply();
     };
-    var clearOptional = function (name, index) {
-        if (filtersState.filtersState[name]["optionals"].length === 1) {
-            filtersState.changeOptionalsFilters(name, []);
-            return;
-        }
-        var _filtersArray = filtersState.filtersState[name]["optionals"];
-        _filtersArray.splice(index, 1);
-        filtersState.changeOptionalsFilters(name, _filtersArray);
-        filtersState.onClickApply();
-    };
-    var clearRadio = function (name, index) {
-        var _preventArray = filtersState.filtersState[name]["main"];
-        _preventArray["value"][index].status = "NA";
-        filtersState.changeMainFilter(name, _preventArray);
-        filtersState.onClickApply();
-    };
-    var clearGeoloc = function (name) {
-        var _preventArray = filtersState.filtersState[name]["main"];
-        _preventArray["option"] = "";
-        _preventArray["value"] = { lat: 0, lng: 0, display: "" };
-        filtersState.changeMainFilter(name, _preventArray);
-        filtersState.onClickApply();
-    };
-    return (React__default.createElement(React__default.Fragment, null, parseFilterRSQL(filtersState.submitFiltersState).length > 0 && !lodash.isEmpty(parseFilterFuzzy(filtersState.submitFiltersState)) ?
+    return (React__default.createElement(React__default.Fragment, null, newParseFilterRSQL(filtersState.newSubmitFilterState).length > 0 ?
         React__default.createElement(Container$1, { darkMode: darkMode },
-            React__default.createElement("span", { className: "main font-italic font-light" }, (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.appliedFilters) !== null && _a !== void 0 ? _a : translations.appliedFilters),
-            !!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).sort(function (_a, _b) {
-                var k1 = _a[0], v1 = _a[1];
-                var k2 = _b[0], v2 = _b[1];
-                return v1.hasOwnProperty("locked") ? -1 : v2.hasOwnProperty("locked") ? 1 : 0;
-            }).flatMap(function (_a, i) {
-                var _b, _c, _d;
-                var key = _a[0], value = _a[1];
-                var _array = [];
-                if (["text", "number", "date"].includes(value["type"])) {
-                    if (!!value["main"].value && value["main"].value !== "") {
-                        var _isLocked = lockedFilters === null || lockedFilters === void 0 ? void 0 : lockedFilters.includes(key);
-                        _array.push(React__default.createElement("div", { className: "filters-label ".concat(_isLocked ? "locked-label" : ""), key: i },
-                            React__default.createElement("span", null,
-                                value["label"],
-                                ":"),
-                            React__default.createElement("span", { className: "font-italic font-light" },
-                                " ",
-                                translateOption(value["main"]["option"]),
-                                " "),
-                            React__default.createElement("span", { className: "font-heavy" },
-                                " ",
-                                Array.isArray(value["main"]["value"]) ? value["main"]["value"].join(",") : !!value["parsedValue"] ? value["parsedValue"] : value["main"]["value"]),
-                            !_isLocked && React__default.createElement("i", { className: "ri-close-line", style: { marginLeft: 5, cursor: "pointer", transform: "translateY(1px)" }, onClick: function () { return clearMain(key); } })));
-                    }
-                    Object.entries(value["optionals"]).map(function (_a, i) {
-                        var keyOption = _a[0];
-                        if (!!value["optionals"][keyOption]["value"] && value["optionals"][keyOption]["value"] !== "") {
-                            _array.push(React__default.createElement("div", { className: "filters-label", key: i },
+            !!filtersState.newSubmitFilterState.length &&
+                filtersState.newSubmitFilterState
+                    .sort(function (f1, f2) { return f1.hasOwnProperty("locked") ? -1 : f2.hasOwnProperty("locked") ? 1 : 0; })
+                    .flatMap(function (filter, i) {
+                    var _a, _b;
+                    var _array = [];
+                    if (["text", "number", "date"].includes(filter.type)) {
+                        if (!!filter.value && !!filter.value.length) {
+                            var _isLocked = filter === null || filter === void 0 ? void 0 : filter.locked;
+                            _array.push(React__default.createElement("div", { className: "filters-label ".concat(_isLocked ? "locked-label" : ""), key: i },
                                 React__default.createElement("span", null,
-                                    value["label"],
+                                    filter.label,
                                     ":"),
                                 React__default.createElement("span", { className: "font-italic font-light" },
                                     " ",
-                                    translateOption(value["optionals"][keyOption]["option"])),
-                                React__default.createElement("span", { className: "font-heavy" },
-                                    " ",
-                                    value["optionals"][keyOption]["value"]),
-                                React__default.createElement("i", { className: "ri-close-line", style: { marginLeft: 5, cursor: "pointer", transform: "translateY(1px)" }, onClick: function () { return clearOptional(key, i); } })));
+                                    translateOption(filter.option),
+                                    " "),
+                                React__default.createElement("span", { className: "font-heavy" }, Array.isArray(filter === null || filter === void 0 ? void 0 : filter.value) ? filter.value.join(",") : !!(filter === null || filter === void 0 ? void 0 : filter.parsedValue) ? filter.parsedValue : filter.value),
+                                !_isLocked && React__default.createElement("i", { className: "ri-close-line", style: { marginLeft: 5, cursor: "pointer", transform: "translateY(1px)" }, onClick: function () { return clearFilter(filter, i); } })));
                         }
-                    });
-                }
-                else if (value["type"] === "checkbox") {
-                    if (!!value["main"]["value"] && value["main"]["value"].length > 0)
-                        _array.push(React__default.createElement("div", { className: "filters-label", key: i },
-                            React__default.createElement("span", null,
-                                value["label"],
-                                ":"),
-                            React__default.createElement("span", { className: "font-heavy" },
-                                " ", (_b = value["main"]["value"]) === null || _b === void 0 ? void 0 :
-                                _b.map(function (e) { return !!value["parsedValue"][e] ? value["parsedValue"][e] : e; }).join(",")),
-                            React__default.createElement("i", { className: "ri-close-line", style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearMain(key); } })));
-                }
-                else if (value["type"] === "booleanRadio") {
-                    value["main"]["value"].map(function (radio, i) {
-                        if (radio.status !== "NA") {
+                    }
+                    else if (["checkbox", "checkboxCtn", "checkboxCtnIntegers", "checkboxCtnStrings"].includes(filter.type)) {
+                        if (!!filter.value && filter.value.length > 0)
                             _array.push(React__default.createElement("div", { className: "filters-label", key: i },
                                 React__default.createElement("span", null,
-                                    value["label"],
+                                    filter.label,
+                                    ":"),
+                                React__default.createElement("span", { className: "font-heavy" }, filter.value.map(function (v) { var _a, _b; return (_b = (_a = filter.optionsValues.filter(function (ov) { return ov.value === v; })) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.label; }).join()),
+                                React__default.createElement("i", { className: "ri-close-line", style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearFilter(filter); } })));
+                    }
+                    else if (filter.type === "booleanRadio") {
+                        if (filter.value !== "NA") {
+                            _array.push(React__default.createElement("div", { className: "filters-label", key: i },
+                                React__default.createElement("span", null,
+                                    filter.label,
                                     ":"),
                                 React__default.createElement("span", { className: "font-italic font-light" },
-                                    radio.label,
+                                    filter.optionsValues[0].label,
                                     " "),
                                 React__default.createElement("span", { className: "font-heavy" },
                                     " ",
-                                    radio.status === "NO" ? "Non" : "Oui"),
-                                React__default.createElement("i", { className: "ri-close-line", style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearRadio(key, i); } })));
+                                    filter.value === "NO" ? "Non" : "Oui"),
+                                React__default.createElement("i", { className: "ri-close-line", style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearFilter(filter, null, true); } })));
                         }
-                    });
-                }
-                else {
-                    if (value["main"]["value"]["lat"] !== 0 && value["main"]["value"]["lng"] !== 0) {
-                        _array.push(React__default.createElement("div", { className: "filters-label", key: "geoloc_filter" },
-                            React__default.createElement("span", null,
-                                value["label"],
-                                ":"),
-                            React__default.createElement("span", { className: "font-italic font-light" },
-                                " ",
-                                value["main"]["option"], (_d = (_c = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _c === void 0 ? void 0 : _c.kmAroundOf) !== null && _d !== void 0 ? _d : translations.filtersViewer.kmAroundOf),
-                            React__default.createElement("span", { className: "font-heavy" },
-                                " ",
-                                value["main"]["value"]["display"],
-                                " "),
-                            React__default.createElement("i", { className: "ri-close-line", style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearGeoloc(key); } })));
                     }
-                }
-                return _array;
-            }),
-            React__default.createElement("div", { style: { display: "flex", justifyContent: 'center', alignItems: 'center' } },
-                React__default.createElement("span", { className: "primary", onClick: function () { return filtersState.onClearAll(); }, style: { padding: '0px 10px', margin: '0px 10px', cursor: 'pointer' } }, (_b = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.clearAll) !== null && _b !== void 0 ? _b : translations.clearAll)))
+                    else {
+                        if (filter.value["lat"] !== 0 && filter.value["lng"] !== 0) {
+                            _array.push(React__default.createElement("div", { className: "filters-label", key: "geoloc_filter" },
+                                React__default.createElement("span", null,
+                                    filter.label,
+                                    ":"),
+                                React__default.createElement("span", { className: "font-italic font-light" },
+                                    " ",
+                                    filter.option, (_b = (_a = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.filtersViewer) === null || _a === void 0 ? void 0 : _a.kmAroundOf) !== null && _b !== void 0 ? _b : translations.filtersViewer.kmAroundOf),
+                                React__default.createElement("span", { className: "font-heavy" },
+                                    " ",
+                                    filter.value["display"],
+                                    " "),
+                                React__default.createElement("i", { className: "ri-close-line", style: { marginLeft: 5, cursor: "pointer" }, onClick: function () { return clearGeoloc(); } })));
+                        }
+                    }
+                    return _array;
+                }),
+            React__default.createElement("button", { className: "btn btn-outline-medium btn-sm", onClick: function () { return filtersState.onClearAll(); }, style: { margin: '0px 10px', cursor: 'pointer' } },
+                React__default.createElement("i", { className: 'ri-delete-bin-2-line' })))
         : React__default.createElement(React__default.Fragment, null)));
 };
-var templateObject_1$5;
+var templateObject_1$4;
 
-function getOptionsByType$1(type) {
+function getOptionsByType(type) {
     switch (type) {
         case 'text':
             return 'contains';
@@ -22847,153 +22616,63 @@ function getOptionsByType$1(type) {
             return '';
     }
 }
-function createDefaultFilter(filtersList, defaultFilters, tableId, filtersParsedType) {
-    var savedFilters = getTableFilters(tableId);
-    var concatFilters = {};
-    var filters = filtersParsedType === "rsql"
-        ? parseFilterRSQL(savedFilters)
-        : parseFilterFuzzy(savedFilters);
-    if ((filtersParsedType === "fuzzy" && !(!tableId || (!filters && lodash.isEmpty(filters)))) || (filtersParsedType === "rsql" && (!tableId || (!filters && lodash.isEmpty(filters))))) {
-        var _initialFilters_1 = {};
-        filtersList.forEach(function (filter) {
-            _initialFilters_1[filter.name] = {
-                type: filter.type,
-                label: filter.label,
-                parsedValue: filter.parsedValue,
-                main: {
-                    option: getOptionsByType$1(filter.type),
-                    value: filter.type === "booleanRadio" ?
-                        filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) :
-                        filter.type === "geoloc" ? { lat: 0, lng: 0, display: "" } : ""
-                },
-                optionals: [],
-            };
-        });
-        concatFilters = __assign(__assign({}, _initialFilters_1), defaultFilters);
-    }
-    else {
-        if (!!defaultFilters)
-            concatFilters = defaultFilters;
-        if (!!tableId && !lodash.isEmpty(savedFilters)) {
-            concatFilters = __assign(__assign({}, savedFilters), defaultFilters);
-        }
-    }
-    return concatFilters;
-}
-function cleanFilterOnlyWithLocked(filtersList, defaultFilters, lockedFilters) {
-    var concatFilters = {};
-    var _initialFilters = {};
-    filtersList
-        .filter(function (f) { return !(lockedFilters === null || lockedFilters === void 0 ? void 0 : lockedFilters.includes(f.name)); })
-        .forEach(function (filter) {
-        _initialFilters[filter.name] = {
-            type: filter.type,
-            label: filter.label,
-            parsedValue: filter.parsedValue,
-            main: {
-                option: getOptionsByType$1(filter.type),
-                value: filter.type === "booleanRadio" ?
-                    filter.radioValues.map(function (value) { return ({ name: value.value, status: "NA", label: value.label }); }) :
-                    filter.type === "geoloc" ? { lat: 0, lng: 0, display: "" } : ""
-            },
-            optionals: [],
-        };
-    });
-    if (!!lockedFilters) {
-        var clonedDefaultsWithProperties_1 = defaultFilters;
-        Object.keys(defaultFilters).forEach(function (p) {
-            if (!lockedFilters.includes(p))
-                delete clonedDefaultsWithProperties_1[p];
-        });
-        return __assign(__assign({}, _initialFilters), clonedDefaultsWithProperties_1);
-    }
-    return concatFilters = _initialFilters;
-}
-function createDefaultSorter(tableId, columns) {
-    var _data = getTableData(tableId);
-    if (_data.sort) {
-        return _data.sort;
-    }
-    else {
-        var _initialSorter_1 = {};
-        columns.forEach(function (column) {
-            if (!!(column === null || column === void 0 ? void 0 : column.sorterAttribut)) {
-                _initialSorter_1[column.accessor] = {
-                    attribut: column.sorterAttribut,
-                    value: undefined
-                };
-            }
-        });
-        return _initialSorter_1;
-    }
-}
-function getHiddenColumnsAndStyles(tableId) {
-    var _data = getTableData(tableId);
-    return ({
-        hideColumns: _data.hideColumns,
-        showVerticalBorders: _data.showVerticalBorders,
-        lineSpacing: _data.lineSpacing,
-        perPageItems: _data.perPageItems
+function newCreateDefaultFilter(filtersList, defaultFilters, loadFromLocalStorage) {
+    return filtersList.map(function (filter) {
+        var _a, _b, _c, _d;
+        var _df = (_b = (_a = defaultFilters === null || defaultFilters === void 0 ? void 0 : defaultFilters.filter(function (df) { return df.name === filter.name; })) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : null;
+        if (loadFromLocalStorage)
+            return __assign(__assign({}, filter), { id: 0, option: getOptionsByType(filter.type), value: (_d = (_c = _df === null || _df === void 0 ? void 0 : _df.value) !== null && _c !== void 0 ? _c : filter === null || filter === void 0 ? void 0 : filter.value) !== null && _d !== void 0 ? _d : null });
+        return __assign(__assign(__assign({}, filter), { id: 0, value: filter.type === "booleanRadio" ? "NA" : null, option: getOptionsByType(filter.type) }), _df);
     });
 }
-function createDefaultProps(props) {
-    var _filters = createDefaultFilter(props.filtersList, props.defaultFilters, props.tableId, props.filtersParsedType);
-    var _sorts = createDefaultSorter(props.tableId, props.columns);
-    var _columnsAndStyles = getHiddenColumnsAndStyles(props.tableId);
-    return {
-        filters: _filters,
-        sort: _sorts,
-        hideColumns: _columnsAndStyles.hideColumns,
-        showVerticalBorders: _columnsAndStyles.showVerticalBorders,
-        lineSpacing: _columnsAndStyles.lineSpacing,
-        perPageItems: !!_columnsAndStyles.perPageItems ? _columnsAndStyles.perPageItems : !!props.defaultPerPageItems ? props.defaultPerPageItems : 10
-    };
-}
+
+var useDidMountEffect = function (func, deps) {
+    var didMount = React.useRef(false);
+    React.useEffect(function () {
+        if (didMount.current)
+            func();
+        else
+            didMount.current = true;
+    }, deps);
+};
 
 FiltersContext.displayName = "ServerSideTableContext";
 var ServerSideTable = React.forwardRef(function (props, ref) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
-    var translationsProps = props.translationsProps, _o = props.marginPagesDisplayed, marginPagesDisplayed = _o === void 0 ? 2 : _o, _p = props.pageRangeDisplayed, pageRangeDisplayed = _p === void 0 ? 2 : _p;
-    var _q = React.useState(!!props.tableId && !!((_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters) ? lodash.cloneDeep(props.defaultProps.filters) :
-        !!props.tableId ? getTableFilters(props.tableId) :
-            !!((_b = props.defaultProps) === null || _b === void 0 ? void 0 : _b.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), filtersState = _q[0], setFiltersState = _q[1];
-    var _r = React.useState(!!props.tableId && !!props.defaultProps ? lodash.cloneDeep(props.defaultProps.filters) :
-        !!props.tableId ? getTableFilters(props.tableId) :
-            !!((_c = props.defaultProps) === null || _c === void 0 ? void 0 : _c.filters) ? lodash.cloneDeep(props.defaultProps.filters) : {}), submitFiltersState = _r[0], setSubmitFilterState = _r[1];
-    var _s = React.useState(!!((_d = props.defaultProps) === null || _d === void 0 ? void 0 : _d.sort) ? props.defaultProps.sort : null), sorterState = _s[0], setSorterState = _s[1];
-    var _t = React.useState(!!((_e = props.defaultProps) === null || _e === void 0 ? void 0 : _e.sort) ? Object.values(props.defaultProps.sort)
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+    var translationsProps = props.translationsProps, _q = props.marginPagesDisplayed, marginPagesDisplayed = _q === void 0 ? 2 : _q, _r = props.pageRangeDisplayed, pageRangeDisplayed = _r === void 0 ? 2 : _r, _s = props.columns, columns = _s === void 0 ? [] : _s, containerClassName = props.containerClassName, counterColumnToItemGoLeft = props.counterColumnToItemGoLeft, _t = props.isFilter, isFilter = _t === void 0 ? true : _t, isRenderSubComponent = props.isRenderSubComponent, selectableRows = props.selectableRows, selectedRowsAction = props.selectedRowsAction, showAddBtn = props.showAddBtn, smallTextsHeader = props.smallTextsHeader, filtersContainerClassName = props.filtersContainerClassName, defaultProps = props.defaultProps, darkMode = props.darkMode, renderSubComponent = props.renderSubComponent, mobileColumns = props.mobileColumns, tableId = props.tableId, withoutHeader = props.withoutHeader, withoutTotalElements = props.withoutTotalElements, enabledExport = props.enabledExport, onDataChange = props.onDataChange, onAddClick = props.onAddClick, onRowClick = props.onRowClick, optionnalsHeaderContent = props.optionnalsHeaderContent, showVerticalBorders = props.showVerticalBorders, newFiltersList = props.newFiltersList, newDefaultFilters = props.newDefaultFilters, _u = props.asDefaultFilters, asDefaultFilters = _u === void 0 ? false : _u;
+    var _v = React.useState([]), newFilterState = _v[0], setNewFilterState = _v[1];
+    var _w = React.useState([]), newAppliedFilterState = _w[0], setNewAppliedFilterState = _w[1];
+    var _x = React.useState((defaultProps === null || defaultProps === void 0 ? void 0 : defaultProps.sort) ? defaultProps.sort : null), sorterState = _x[0], setSorterState = _x[1];
+    var _y = React.useState((defaultProps === null || defaultProps === void 0 ? void 0 : defaultProps.sort) ? Object.values(defaultProps.sort)
         .filter(function (sorter) { return !!sorter.value; })
-        .map(function (sorter) { return sorter.attribut + ',' + sorter.value; }) : []), submitSorter = _t[0], setSubmitSorter = _t[1];
-    var _u = React.useState(0), offset = _u[0], setOffset = _u[1];
-    var _v = React.useState(null), totalElements = _v[0], setTotalElements = _v[1];
-    var _w = React.useState(!!((_f = props.defaultProps) === null || _f === void 0 ? void 0 : _f.perPageItems) ? props.defaultProps.perPageItems : !!props.perPageItems ? props.perPageItems : 999), perPage = _w[0], setPerPage = _w[1];
-    var _x = React.useState(null), parsedFilters = _x[0], setParsedFilters = _x[1];
+        .map(function (sorter) { return sorter.attribut + ',' + sorter.value; }) : []), submitSorter = _y[0], setSubmitSorter = _y[1];
+    var _z = React.useState(0), offset = _z[0], setOffset = _z[1];
+    var _0 = React.useState(null), totalElements = _0[0], setTotalElements = _0[1];
     var tableRef = React.useRef(null);
-    var _y = React.useState(null), data = _y[0], setData = _y[1];
-    var lockedFilters = (!!props.defaultProps ? Object.keys(props === null || props === void 0 ? void 0 : props.defaultProps.filters).filter(function (f) { return props === null || props === void 0 ? void 0 : props.defaultProps.filters[f]["locked"]; }) : []);
-    var _z = React.useState(false), loading = _z[0], setLoading = _z[1];
-    var _0 = React.useState(false), haveSelectedRows = _0[0], setHaveSelectedRows = _0[1];
-    var _1 = React.useState(!!((_g = props.defaultProps) === null || _g === void 0 ? void 0 : _g.hideColumns) ? props.defaultProps.hideColumns : []), hiddenColumns = _1[0], setHiddenColumns = _1[1];
-    var _2 = React.useState(!!((_h = props.defaultProps) === null || _h === void 0 ? void 0 : _h.lineSpacing) ? props.defaultProps.lineSpacing : "medium"), lineSpacing = _2[0], setLineSpacing = _2[1];
-    var _3 = React.useState(!!props.showVerticalBorders ? true : !!((_j = props.defaultProps) === null || _j === void 0 ? void 0 : _j.showVerticalBorders) ? props.defaultProps.showVerticalBorders : false), showVerticalBorders = _3[0], setShowVerticalBorders = _3[1];
+    var _1 = React.useState(null), data = _1[0], setData = _1[1];
+    var _2 = React.useState(false), loading = _2[0], setLoading = _2[1];
+    var _3 = React.useState(false), haveSelectedRows = _3[0], setHaveSelectedRows = _3[1];
+    var _4 = React.useState((_c = (_b = (_a = getTableData(tableId)) === null || _a === void 0 ? void 0 : _a.perPageItems) !== null && _b !== void 0 ? _b : defaultProps === null || defaultProps === void 0 ? void 0 : defaultProps.perPageItems) !== null && _c !== void 0 ? _c : 20), perPage = _4[0], setPerPage = _4[1];
+    var _5 = React.useState((_f = (_e = (_d = getTableData(tableId)) === null || _d === void 0 ? void 0 : _d.hideColumns) !== null && _e !== void 0 ? _e : defaultProps === null || defaultProps === void 0 ? void 0 : defaultProps.hideColumns) !== null && _f !== void 0 ? _f : []), hiddenColumns = _5[0], setHiddenColumns = _5[1];
+    var _6 = React.useState((_j = (_h = (_g = getTableData(tableId)) === null || _g === void 0 ? void 0 : _g.lineSpacing) !== null && _h !== void 0 ? _h : defaultProps === null || defaultProps === void 0 ? void 0 : defaultProps.lineSpacing) !== null && _j !== void 0 ? _j : "medium"), lineSpacing = _6[0], setLineSpacing = _6[1];
+    var _7 = React.useState((_m = (_l = (_k = getTableData(tableId)) === null || _k === void 0 ? void 0 : _k.showVerticalBorders) !== null && _l !== void 0 ? _l : defaultProps === null || defaultProps === void 0 ? void 0 : defaultProps.showVerticalBorders) !== null && _m !== void 0 ? _m : false), isShowVerticalBorders = _7[0], setShowVerticalBorders = _7[1];
     var isInitialMount = React.useRef(true);
-    React.useEffect(function () {
-        var _a;
-        if (!props.defaultProps && !!props.isFilter && !!props.filtersList && props.filtersList.length > 0) {
-            setFiltersState(createDefaultFilter(props.filtersList, (_a = props.defaultProps) === null || _a === void 0 ? void 0 : _a.filters, props.tableId, props.filterParsedType));
+    React.useLayoutEffect(function () {
+        var _a, _b;
+        if (!!newFiltersList && !!newFiltersList.length && (!asDefaultFilters || (asDefaultFilters && !!newDefaultFilters && !!newDefaultFilters.length))) {
+            if (!!((_b = (_a = getTableData(tableId)) === null || _a === void 0 ? void 0 : _a.filters) === null || _b === void 0 ? void 0 : _b.length)) {
+                setNewFilterState(newCreateDefaultFilter(getTableData(tableId).filters, newDefaultFilters, true));
+                setNewAppliedFilterState(newCreateDefaultFilter(getTableData(tableId).filters, newDefaultFilters, true));
+            }
+            else {
+                setNewFilterState(newCreateDefaultFilter(newFiltersList, newDefaultFilters));
+                setNewAppliedFilterState(newCreateDefaultFilter(newFiltersList, newDefaultFilters));
+            }
         }
-    }, [props.filtersList]);
-    React.useEffect(function () {
-        if (isInitialMount.current)
-            return;
-        else if (!!props.defaultProps) {
-            setFiltersState(lodash.cloneDeep(props.defaultProps.filters));
-            setSubmitFilterState(lodash.cloneDeep(props.defaultProps.filters));
-        }
-    }, [props.defaultProps]);
-    var updateDataOnChange = function (requestParam) {
+    }, [newDefaultFilters, newFiltersList, asDefaultFilters]);
+    var updateDataOnChange = function (requestParam, caller) {
         setLoading(true);
-        props.onDataChange(requestParam)
+        onDataChange(requestParam)
             .then(function (data) {
             var _a;
             if (!!data && !!(data === null || data === void 0 ? void 0 : data.content)) {
@@ -23007,69 +22686,61 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
         var selectedPage = e.selected;
         setOffset(selectedPage);
     };
-    React.useEffect(function () {
+    React.useLayoutEffect(function () {
         if (isInitialMount.current)
             isInitialMount.current = false;
         else {
-            updateDataOnChange({ offset: offset, perPage: perPage, filters: parsedFilters, sorter: submitSorter });
+            updateDataOnChange({ offset: offset, perPage: perPage, query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter });
         }
     }, [offset, perPage]);
     React.useImperativeHandle(ref, function () { return ({
         reloadData: function () {
-            updateDataOnChange({ offset: offset, perPage: perPage, filters: parsedFilters, sorter: submitSorter });
+            updateDataOnChange({ offset: offset, perPage: perPage, query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter });
         },
         getSelectedRows: function () {
             return tableRef.current.getSelectedRows();
         }
     }); });
-    React.useEffect(function () {
-        if (isInitialMount.current)
-            isInitialMount.current = false;
-        else if (!!submitFiltersState) {
-            if (!!submitFiltersState && !lodash.isEmpty(submitFiltersState))
-                registerTableFilters({ filters: submitFiltersState, perPageItems: perPage }, props.tableId);
-            var filters = props.filterParsedType === "rsql"
-                ? parseFilterRSQL(submitFiltersState)
-                : parseFilterFuzzy(submitFiltersState);
-            if (props.filterParsedType === "rsql" || props.filterParsedType === "fuzzy") {
-                setParsedFilters(filters);
-                setOffset(0);
-                updateDataOnChange({ offset: offset, perPage: perPage, filters: filters, sorter: submitSorter });
-            }
-            else {
-                setOffset(0);
-                updateDataOnChange({ offset: offset, perPage: perPage, filters: null, sorter: submitSorter });
-            }
+    useDidMountEffect(function () {
+        updateDataOnChange({
+            offset: offset,
+            perPage: perPage,
+            sorter: submitSorter,
+            query: newParseFilterRSQL(newAppliedFilterState)
+        });
+    }, [newAppliedFilterState]);
+    var changeFilter = function (name, id, content) {
+        var _filter = newFilterState.filter(function (f) { return f.id === id && f.name === name; })[0];
+        _filter = __assign(__assign({}, _filter), { option: content.option, value: content.value });
+        setNewFilterState(lodash.cloneDeep(newFilterState.map(function (f) { return (f.id === _filter.id && f.name === _filter.name) ? _filter : f; })));
+    };
+    var onClearFilter = function (name, id, index, clearRadio) {
+        var _filtersForName = __spreadArray([], newFilterState).filter(function (f) { return f.name === name; }), _filter = __spreadArray([], _filtersForName).filter(function (f) { return f.id === id; })[0];
+        if (_filtersForName.length === 1) {
+            _filter = __assign(__assign({}, _filter), { value: clearRadio ? "NA" : null });
+            setNewFilterState(lodash.cloneDeep(__spreadArray([], newFilterState).map(function (f) { return (f.id === _filter.id && f.name === _filter.name) ? _filter : f; })));
+            setNewAppliedFilterState(lodash.cloneDeep(__spreadArray([], newFilterState).map(function (f) { return (f.id === _filter.id && f.name === _filter.name) ? _filter : f; })));
         }
-    }, [submitFiltersState]);
-    var handleFilterSubmit = function (filters) {
-        setOffset(0);
-        setParsedFilters(filters);
-        updateDataOnChange({ offset: offset, perPage: perPage, filters: filters, sorter: submitSorter });
-    };
-    var changeMainFilter = function (name, content) {
-        var _a;
-        var _filter = filtersState[name];
-        _filter["main"] = { option: content.option, value: content.value };
-        setFiltersState(__assign(__assign({}, filtersState), (_a = {}, _a[name] = _filter, _a)));
-    };
-    var changeOptionalsFilters = function (name, content) {
-        var _a;
-        var _filter = filtersState[name];
-        _filter["optionals"] = content;
-        setFiltersState(__assign(__assign({}, filtersState), (_a = {}, _a[name] = _filter, _a)));
+        else {
+            var _currentArray = __spreadArray([], newFilterState);
+            _currentArray.splice(index, 1);
+            setNewFilterState(_currentArray);
+            setNewAppliedFilterState(_currentArray);
+        }
     };
     var onClickApply = function () {
-        var _object = lodash.cloneDeep(filtersState);
-        setSubmitFilterState(_object);
-        return;
+        var _array = lodash.cloneDeep(newFilterState);
+        setNewFilterState(_array);
+        setNewAppliedFilterState(_array);
+        if (!!tableId) {
+            registerTableFilters({ filters: _array }, tableId);
+        }
     };
     var onClearAll = function () {
-        var _initialFilters = cleanFilterOnlyWithLocked(props.filtersList, props.defaultProps.filters, lockedFilters);
-        setFiltersState(lodash.cloneDeep(_initialFilters));
-        setSubmitFilterState(!!lockedFilters ? lodash.cloneDeep(_initialFilters) : {});
-        destroyTableFiltersStorage(props.tableId);
-        return;
+        var _initialFilters = newCreateDefaultFilter(newFiltersList, newDefaultFilters);
+        setNewFilterState(lodash.cloneDeep(_initialFilters));
+        setNewAppliedFilterState(lodash.cloneDeep(_initialFilters));
+        destroyTableFiltersStorage(tableId);
     };
     var onSortChange = function (e) {
         var _test = Object.values(e)
@@ -23077,22 +22748,22 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             .map(function (sorter) { return sorter.attribut + ',' + sorter.value; });
         setSorterState(e);
         setSubmitSorter(_test);
-        registerTableFilters({ sort: e }, props.tableId);
-        updateDataOnChange({ offset: offset, perPage: perPage, filters: parsedFilters, sorter: _test });
+        registerTableFilters({ sort: e }, tableId);
+        updateDataOnChange({ offset: offset, perPage: perPage, query: newParseFilterRSQL(newAppliedFilterState), sorter: _test });
     };
     var onHeaderClick = function (e) {
     };
     var onLineSpacingChange = function (e) {
         setLineSpacing(e);
-        registerTableFilters({ lineSpacing: e }, props.tableId);
+        registerTableFilters({ lineSpacing: e }, tableId);
     };
     var onShowVerticalBorderChange = function (e) {
         setShowVerticalBorders(e);
-        registerTableFilters({ showVerticalBorders: e }, props.tableId);
+        registerTableFilters({ showVerticalBorders: e }, tableId);
     };
     function exportData(e) {
         if (e === "one") {
-            return props.onDataChange({ offset: offset, perPage: perPage, filters: parsedFilters, sorter: submitSorter })
+            return onDataChange({ offset: offset, perPage: perPage, query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter })
                 .then(function (data) {
                 if (!!data && !!(data === null || data === void 0 ? void 0 : data.content)) {
                     return data;
@@ -23103,12 +22774,12 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             });
         }
         else {
-            return props.onDataChange({ offset: 0, perPage: 999, filters: parsedFilters, sorter: submitSorter })
+            return onDataChange({ offset: 0, perPage: 999, query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter })
                 .then(function (firstData) {
                 if (firstData.totalElements > 999) {
                     var _apiCalls = [];
                     for (var i = 1; i < firstData.totalPages; i++)
-                        _apiCalls.push(props.onDataChange({ offset: i, perPage: 999, filters: parsedFilters, sorter: submitSorter }));
+                        _apiCalls.push(onDataChange({ offset: i, perPage: 999, query: newParseFilterRSQL(newAppliedFilterState), sorter: submitSorter }));
                     return Promise.all(_apiCalls)
                         .then(function (datas) {
                         var _a;
@@ -23123,49 +22794,75 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
             });
         }
     }
+    function renderSelectedRowsActions() {
+        return (React__default.createElement("div", { className: "multi-button ".concat(!!haveSelectedRows ? '' : 'disabled') }, Object.values(selectedRowsAction).map(function (action) { return (React__default.createElement("button", { className: "btn-sm ".concat(!!action.color ? "btn-".concat(action.color) : ''), onClick: action.onClick },
+            !!(action === null || action === void 0 ? void 0 : action.icon) && React__default.createElement("div", { className: "btn__icon" }, action.icon),
+            React__default.createElement("div", { className: "btn__text" }, action.text))); })));
+    }
+    function renderOptionsHeaderActions() {
+        return (React__default.createElement("div", { className: 'multi-button' }, Object.values(optionnalsHeaderContent).map(function (action) { return (React__default.createElement("button", { className: "btn-sm ".concat(!!action.color ? "btn-".concat(action.color) : ''), onClick: action.onClick },
+            !!(action === null || action === void 0 ? void 0 : action.icon) && React__default.createElement("div", { className: "btn__icon" }, action.icon),
+            React__default.createElement("div", { className: "btn__text" }, action.text))); })));
+    }
+    function onAddFilter(filterName) {
+        var _currentLastFilter = newFilterState
+            .filter(function (f) { return f.name === filterName; })
+            .sort(function (a, b) { return a.id - b.id; })
+            .slice(-1)[0];
+        setNewFilterState(__spreadArray(__spreadArray([], lodash.cloneDeep(newFilterState)), [
+            __assign(__assign({}, _currentLastFilter), { id: _currentLastFilter.id + 1, value: null })
+        ]));
+    }
+    var syncNewStateFilters = function (filters) {
+        setNewFilterState(filters);
+    };
     return (React__default.createElement(FiltersContext.Provider, { value: {
-            filtersState: filtersState,
-            submitFiltersState: submitFiltersState,
+            filtersState: null,
+            submitFiltersState: null,
+            newFilterState: newFilterState,
+            newSubmitFilterState: newAppliedFilterState,
             sorterState: sorterState,
             changeSort: onSortChange,
-            changeMainFilter: changeMainFilter,
-            changeOptionalsFilters: changeOptionalsFilters,
+            changeFilter: changeFilter,
+            onClearFilter: onClearFilter,
             onClearAll: onClearAll,
             onClickApply: onClickApply,
+            onAddFilter: onAddFilter,
+            syncNewStateFilters: syncNewStateFilters
         } },
-        React__default.createElement(TableContainer, { darkMode: props.darkMode, className: "SST_container" },
-            React__default.createElement(TableStyles, { lineSpacing: lineSpacing, className: props.containerClassName, darkMode: props.darkMode },
-                !props.withoutHeader &&
+        React__default.createElement(TableContainer, { darkMode: darkMode, className: "SST_container" },
+            React__default.createElement(TableStyles, { lineSpacing: lineSpacing, className: containerClassName, darkMode: darkMode },
+                !withoutHeader &&
                     React__default.createElement("div", { className: "SST_HEADER" },
-                        React__default.createElement("div", { className: "SST_actions_buttons" },
-                            props.showAddBtn &&
-                                React__default.createElement("button", { className: "btn bg-plain-primary sst_main_button", onClick: function () { return props.onAddClick(); } }, (_k = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.add) !== null && _k !== void 0 ? _k : translations.add),
-                            !!props.optionnalsHeaderContent && props.optionnalsHeaderContent),
-                        React__default.createElement("div", { style: { display: 'flex', alignItems: 'center', width: "100%", justifyContent: "space-between", flexDirection: "row-reverse" }, className: "table-actions-container" },
-                            React__default.createElement("div", { className: "icons" }, !reactDeviceDetect.isMobile &&
-                                React__default.createElement(SettingsInteractor, { columns: props.columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: onLineSpacingChange, translationsProps: translationsProps, enabledExport: props.enabledExport, handleExport: exportData, darkMode: props.darkMode, tableId: props.tableId, lineSpacing: lineSpacing, showVerticalBorders: showVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange })),
-                            props.isFilter && !!props.filtersList && props.filtersList.length > 0 &&
-                                React__default.createElement(React__default.Fragment, null,
-                                    React__default.createElement(FiltersContainer, { darkMode: props.darkMode, className: "".concat((_l = props.filtersContainerClassName) !== null && _l !== void 0 ? _l : "", " SST_filters_container") },
-                                        React__default.createElement(FiltersViewers, { translationsProps: translationsProps, darkMode: props.darkMode, lockedFilters: lockedFilters }),
-                                        reactDeviceDetect.isMobile &&
-                                            React__default.createElement(FiltersInteract, { filters: props.filtersList, onSubmit: function (e) { return handleFilterSubmit(e); }, filterParsedType: props.filterParsedType, translationsProps: translationsProps, darkMode: props.darkMode, isMobile: reactDeviceDetect.isMobile }))))),
+                        isFilter &&
+                            React__default.createElement(FiltersContainer, { darkMode: darkMode, className: "".concat(filtersContainerClassName !== null && filtersContainerClassName !== void 0 ? filtersContainerClassName : "", " SST_filters_container") },
+                                React__default.createElement(FiltersViewers, { translationsProps: translationsProps, darkMode: darkMode })),
+                        React__default.createElement("div", { className: "actions-headers-container" },
+                            selectableRows && selectedRowsAction &&
+                                React__default.createElement("div", { className: "SST_selected_rows_buttons" }, renderSelectedRowsActions()),
+                            optionnalsHeaderContent && renderOptionsHeaderActions(),
+                            React__default.createElement("div", { className: "multi-button" }, showAddBtn &&
+                                React__default.createElement("button", { className: "btn-primary", style: { margin: "0 10px" }, onClick: function () { return onAddClick(); } },
+                                    React__default.createElement("div", { className: "btn__icon" },
+                                        React__default.createElement("i", { className: 'ri-add-line' })),
+                                    React__default.createElement("div", { className: "btn__text" }, (_o = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.add) !== null && _o !== void 0 ? _o : translations.add))),
+                            React__default.createElement("div", { className: "table-actions-container" },
+                                React__default.createElement("div", { className: "icons" }, !reactDeviceDetect.isMobile &&
+                                    React__default.createElement(SettingsInteractor, { columns: columns, hiddenColumns: hiddenColumns, onHiddenColumnsChange: function (e) { return setHiddenColumns(e); }, onLineSpacingChange: onLineSpacingChange, translationsProps: translationsProps, enabledExport: enabledExport, handleExport: exportData, darkMode: darkMode, tableId: tableId, lineSpacing: lineSpacing, showVerticalBorders: isShowVerticalBorders, onShowVerticalBorderChange: onShowVerticalBorderChange }))))),
                 React__default.createElement(React__default.Fragment, null,
-                    !!props.selectableRows && !!props.selectedRowsAction && haveSelectedRows &&
-                        React__default.createElement("div", { className: "SST_selected_rows_buttons" }, props.selectedRowsAction),
-                    React__default.createElement(Table, { ref: tableRef, data: !data ? [] : data.content, clickableHeader: onHeaderClick, columns: reactDeviceDetect.isMobile && !!props.mobileColumns ? props.mobileColumns : props.columns, renderRowSubComponent: props.isRenderSubComponent ? props.renderSubComponent : "", hiddenColumns: hiddenColumns, filters: props.filtersList, filterParsedType: props.filterParsedType, translationsProps: translationsProps, selectableRows: props.selectableRows, setHaveSelectedRows: setHaveSelectedRows, showVerticalBorders: showVerticalBorders, asyncLoading: loading, smallTextsHeader: props.smallTextsHeader, onRowClick: props.onRowClick, counterColumnToItemGoLeft: props.counterColumnToItemGoLeft })),
+                    React__default.createElement(Table, { ref: tableRef, data: !data ? [] : data.content, clickableHeader: onHeaderClick, columns: reactDeviceDetect.isMobile && mobileColumns ? mobileColumns : columns, renderRowSubComponent: isRenderSubComponent ? renderSubComponent : "", hiddenColumns: hiddenColumns, newFilters: newFilterState, translationsProps: translationsProps, selectableRows: selectableRows, setHaveSelectedRows: setHaveSelectedRows, showVerticalBorders: showVerticalBorders, asyncLoading: loading, smallTextsHeader: smallTextsHeader, onRowClick: onRowClick, counterColumnToItemGoLeft: counterColumnToItemGoLeft })),
                 React__default.createElement("div", { className: "footerTable" },
                     React__default.createElement(ReactPaginate, { previousLabel: React__default.createElement("i", { className: "ri-arrow-left-s-line", style: { transform: "translateY(2px)" } }), nextLabel: React__default.createElement("i", { className: "ri-arrow-right-s-line", style: { transform: "translateY(2px)" } }), breakLabel: "...", breakClassName: "break-me", pageCount: data === null || data === void 0 ? void 0 : data.totalPages, marginPagesDisplayed: marginPagesDisplayed, pageRangeDisplayed: pageRangeDisplayed, onPageChange: handlePageClick, containerClassName: "paginationTable", subContainerClassName: "pages paginationTable", activeClassName: "active" }),
-                    !!totalElements && !props.withoutTotalElements && React__default.createElement("span", { className: 'font-italic medium' },
+                    !!totalElements && !withoutTotalElements && React__default.createElement("span", { className: 'font-italic medium' },
                         "Total : ",
                         totalElements,
                         " \u00E9lement",
                         totalElements > 1 && "s"),
                     React__default.createElement(PerPageContainer, null,
-                        React__default.createElement("label", { htmlFor: "perPageSelect" }, (_m = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.linePerPage) !== null && _m !== void 0 ? _m : translations.linePerPage),
+                        React__default.createElement("label", { htmlFor: "perPageSelect" }, (_p = translationsProps === null || translationsProps === void 0 ? void 0 : translationsProps.linePerPage) !== null && _p !== void 0 ? _p : translations.linePerPage),
                         React__default.createElement("select", { name: "perPageSelect", value: perPage, onChange: function (e) {
                                 setPerPage(parseInt(e.target.value));
-                                registerTableFilters({ perPageItems: parseInt(e.target.value) }, props.tableId);
+                                registerTableFilters({ perPageItems: parseInt(e.target.value) }, tableId);
                             }, style: { background: "#fff", width: 30 } },
                             React__default.createElement("option", { value: "5" }, "5"),
                             React__default.createElement("option", { value: "10" }, "10"),
@@ -23174,17 +22871,5 @@ var ServerSideTable = React.forwardRef(function (props, ref) {
                 React__default.createElement("div", { style: { clear: "both" } })))));
 });
 
-var useSST = function () {
-    var filtersState = React.useContext(FiltersContext);
-    if (!filtersState) {
-        throw Error('The `useSST` hook must be called from a descendent of the `SSTProvider`.');
-    }
-    return {
-        createFilters: createDefaultFilter,
-        createDefaultProps: createDefaultProps
-    };
-};
-
 exports.ServerSideTable = ServerSideTable;
-exports.useSST = useSST;
 //# sourceMappingURL=index.js.map

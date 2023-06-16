@@ -4,10 +4,10 @@ import FiltersContext from "../context/filterscontext"
 import styled from 'styled-components';
 import {translations} from "../assets/translations"
 import { Translations } from '../types/props';
-import { parseFilterRSQL } from '../parserRSQL';
-import { parseFilterFuzzy } from '../parserFuzzy';
 import { transparentize } from 'polished';
 import { FiltersViewersProps } from '../types/components-props';
+import { NewFilterItem } from '../types/entities';
+import { newParseFilterRSQL } from '../newParserRSQL';
 
 const Container = styled('div')<{darkMode: boolean}>`
     width: 100%;
@@ -15,7 +15,7 @@ const Container = styled('div')<{darkMode: boolean}>`
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    padding: 0 10px;
+    /* padding: 0 10px;  */
     box-sizing: border-box;
     span{
         line-height: 40px;
@@ -23,15 +23,15 @@ const Container = styled('div')<{darkMode: boolean}>`
     }
     .filters-label{
         background: ${transparentize(.8, "#2F80ED")};
-        padding: 0px 8px;
+        padding: 4px 6px;
         margin: auto 5px;
         border-radius: 5px;
-        height: 25px;
+        height: 33px;
         font-size: 12px;
         display: flex;
         align-items: center;
         span{
-            line-height: 25px;
+            line-height: 33px;
             color: #2F80ED;
             &:nth-of-type(1){ padding-right: 3px;}
             &:nth-of-type(2){padding-right: 6px; }
@@ -85,111 +85,78 @@ const FiltersViewers: React.FC<FiltersViewersProps> = (props) => {
 
     const filtersState = useContext(FiltersContext)
 
-    const clearMain = (name:string) => {
-        let _filter = filtersState.filtersState[name]
-        _filter["main"].value = ""
-        filtersState.changeMainFilter(name, {option: filtersState.filtersState[name]["main"].option, value:""})
-        filtersState.onClickApply()
+    const clearFilter = (filter: NewFilterItem, index?:number, clearRadio?:boolean) => {
+        filtersState.onClearFilter(filter.name, filter.id, index, clearRadio)
     }
 
-    const clearOptional = (name:string, index:any) => {
-        if(filtersState.filtersState[name]["optionals"].length === 1){
-            filtersState.changeOptionalsFilters(name, [])
-            return;
-        }
-        let _filtersArray = filtersState.filtersState[name]["optionals"]
-        _filtersArray.splice(index, 1)
-        filtersState.changeOptionalsFilters(name, _filtersArray)
-        filtersState.onClickApply()
-    }
-    
-    const clearRadio = (name:string, index: number) => {
-        let _preventArray = filtersState.filtersState[name]["main"]
-        _preventArray["value"][index].status = "NA"
-        filtersState.changeMainFilter(name, _preventArray)
-        filtersState.onClickApply()
-    }
-
-    const clearGeoloc = (name:string) => {
-        let _preventArray = filtersState.filtersState[name]["main"]
-        _preventArray["option"] = ""
-        _preventArray["value"] = {lat: 0, lng: 0, display:""}
-        filtersState.changeMainFilter(name, _preventArray)
+    const clearGeoloc = (filter: NewFilterItem) => {
+  
         filtersState.onClickApply()
     }
 
     return(
         <>
-            {parseFilterRSQL(filtersState.submitFiltersState).length > 0 &&  !_.isEmpty(parseFilterFuzzy(filtersState.submitFiltersState)) ?
+            {newParseFilterRSQL(filtersState.newSubmitFilterState).length > 0 ?
                 <Container darkMode={darkMode}>
-                    <span className="main font-italic font-light">{translationsProps?.appliedFilters ?? translations.appliedFilters}</span>
-                    {!!filtersState.submitFiltersState && Object.entries(filtersState.submitFiltersState).sort(([k1,v1],[k2,v2]) =>{return v1.hasOwnProperty("locked") ? -1 : v2.hasOwnProperty("locked") ? 1 : 0}).flatMap(([key, value], i) => {
-                        let _array = []
-                        if(["text", "number", "date"].includes(value["type"])){
-                            if(!!value["main"].value && value["main"].value !== ""){
-                                let _isLocked = lockedFilters?.includes(key)
-                                _array.push(
-                                    <div className={`filters-label ${_isLocked ? "locked-label" : ""}`} key={i}>
-                                        <span>{value["label"]}:</span> 
-                                        <span className="font-italic font-light"> {translateOption(value["main"]["option"])} </span> 
-                                        <span className="font-heavy"> {Array.isArray(value["main"]["value"]) ? value["main"]["value"].join(",") : !!value["parsedValue"] ? value["parsedValue"] : value["main"]["value"]}</span>
-                                        {!_isLocked && <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearMain(key)}/>}
-                                    </div>
-                                )
-                            }
-                            Object.entries(value["optionals"]).map(([keyOption], i) => {
-                                if(!!value["optionals"][keyOption]["value"] && value["optionals"][keyOption]["value"] !==""){
+                    {!!filtersState.newSubmitFilterState.length &&
+                        filtersState.newSubmitFilterState
+                        .sort((f1, f2) => f1.hasOwnProperty("locked") ? -1 : f2.hasOwnProperty("locked") ? 1 : 0)
+                        .flatMap((filter, i) => {
+                            let _array = []
+                            if(["text", "number", "date"].includes(filter.type)){
+                                if(!!filter.value && !!filter.value.length){
+                                    let _isLocked = filter?.locked
                                     _array.push(
-                                        <div className="filters-label" key={i}>
-                                            <span>{value["label"]}:</span>
-                                            <span className="font-italic font-light"> {translateOption(value["optionals"][keyOption]["option"])}</span> 
-                                            <span className="font-heavy"> {value["optionals"][keyOption]["value"]}</span>
-                                            <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearOptional(key, i)}/>
+                                        <div className={`filters-label ${_isLocked ? "locked-label" : ""}`} key={i}>
+                                            <span>{filter.label}:</span> 
+                                            <span className="font-italic font-light"> {translateOption(filter.option)} </span> 
+                                            <span className="font-heavy">{Array.isArray(filter?.value) ? filter.value.join(",") : !!filter?.parsedValue ? filter.parsedValue : filter.value}</span>
+                                            {!_isLocked && <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearFilter(filter, i)}/>}
                                         </div>
                                     )
                                 }
-                            })
-                        } else if (value["type"] === "checkbox") {
-                            if(!!value["main"]["value"] && value["main"]["value"].length > 0)
-                                _array.push(
-                                    <div className="filters-label" key={i}>
-                                        <span>{value["label"]}:</span> 
-                                        <span className="font-heavy"> {value["main"]["value"]?.map(e => !!value["parsedValue"][e] ? value["parsedValue"][e] : e).join(",")}</span>
-                                        <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearMain(key)}/>
-                                    </div>
-                                )
-                        } else if(value["type"] === "booleanRadio") { //Render of booleanRadio
-                            value["main"]["value"].map((radio,i) => {
-                                if(radio.status !== "NA"){
+                            } else if (["checkbox", "checkboxCtn","checkboxCtnIntegers", "checkboxCtnStrings"].includes(filter.type)) {
+                                if(!!filter.value && filter.value.length > 0)
                                     _array.push(
                                         <div className="filters-label" key={i}>
-                                            <span>{value["label"]}:</span> 
-                                            <span className="font-italic font-light">{radio.label} </span>
-                                            <span className="font-heavy"> {radio.status === "NO" ? "Non" : "Oui"}</span>
-                                            <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearRadio(key, i)}/>
+                                            <span>{filter.label}:</span> 
+                                            <span className="font-heavy">
+                                                {/* @ts-ignore */}
+                                                {filter.value.map(v => filter.optionsValues.filter(ov => ov.value === v)?.[0]?.label).join()}
+                                            </span>
+                                            <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearFilter(filter)}/>
+                                        </div>
+                                    )
+                                } else if(filter.type === "booleanRadio") { //Render of booleanRadio
+                                {/* @ts-ignore */}
+                                if(filter.value !== "NA"){
+                                    _array.push(
+                                        <div className="filters-label" key={i}>
+                                            <span>{filter.label}:</span> 
+                                            <span className="font-italic font-light">{filter.optionsValues[0].label} </span>
+                                            <span className="font-heavy"> {filter.value === "NO" ? "Non" : "Oui"}</span>
+                                            <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearFilter(filter, null, true)}/>
                                         </div>
                                     )
                                 }
-                            }) 
-                        } else { //Render of GeolocFilter
-                            if(value["main"]["value"]["lat"] !== 0 && value["main"]["value"]["lng"] !== 0){
-                                _array.push(
-                                    <div className="filters-label" key={"geoloc_filter"}>
-                                        <span>{value["label"]}:</span> 
-                                        <span className="font-italic font-light"> {value["main"]["option"]}{translationsProps?.filtersViewer?.kmAroundOf ?? translations.filtersViewer.kmAroundOf}</span>
-                                        <span className="font-heavy"> {value["main"]["value"]["display"]} </span>
-                                        <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearGeoloc(key)}/>
-                                    </div>
-                                )
+                            } else { //Render of GeolocFilter
+                                if(filter.value["lat"] !== 0 && filter.value["lng"] !== 0){
+                                    _array.push(
+                                        <div className="filters-label" key={"geoloc_filter"}>
+                                            <span>{filter.label}:</span> 
+                                            <span className="font-italic font-light"> {filter.option}{translationsProps?.filtersViewer?.kmAroundOf ?? translations.filtersViewer.kmAroundOf}</span>
+                                            <span className="font-heavy"> {filter.value["display"]} </span>
+                                            <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer"}} onClick={() => clearGeoloc(filter)}/>
+                                        </div>
+                                    )
+                                }
                             }
-                        }
-                        return _array
-                    })}
-                    <div style={{display: "flex", justifyContent: 'center', alignItems: 'center'}}>
-                        <span className="primary" onClick={() => filtersState.onClearAll()} style={{padding: '0px 10px', margin:'0px 10px', cursor: 'pointer'}}>
-                            {translationsProps?.clearAll ?? translations.clearAll}
-                        </span>
-                    </div>
+                            return _array
+                        })
+                    }
+                    <button className="btn btn-outline-medium btn-sm" onClick={() => filtersState.onClearAll()} style={{margin:'0px 10px', cursor: 'pointer'}}>
+                        <i className='ri-delete-bin-2-line'/>
+                    </button>
                 </Container>
                 :  <></>
             }
