@@ -1,4 +1,4 @@
-import ServerSideTable from './ServerSideTable';
+import ServerSideTable from "./ServerSideTable";
 
 export {
     ServerSideTable, 

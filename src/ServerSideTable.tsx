@@ -53,8 +53,15 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         asDefaultFilters = false
     } = props     
 
-    const [newFilterState, setNewFilterState] = useState<NewFilterItem[]>([])
-    const [newAppliedFilterState, setNewAppliedFilterState] = useState<NewFilterItem[]>([])
+    const [newFilterState, setNewFilterState] = useState<NewFilterItem[]>(!!getTableData(tableId)?.filters?.length 
+                                                                                ? newCreateDefaultFilter(getTableData(tableId).filters, newDefaultFilters, true) 
+                                                                                : newCreateDefaultFilter(newFiltersList, newDefaultFilters))
+                                                                                
+    const [newAppliedFilterState, setNewAppliedFilterState] = useState<NewFilterItem[]>(!!getTableData(tableId)?.filters?.length 
+                                                                                ? newCreateDefaultFilter(getTableData(tableId).filters, newDefaultFilters, true) 
+                                                                                : newCreateDefaultFilter(newFiltersList, newDefaultFilters))
+
+    // const [newAppliedFilterState, setNewAppliedFilterState] = useState<NewFilterItem[]>([])
 
                                                                     
     const [sorterState, setSorterState] = useState<SorterRecord>(defaultProps?.sort ? defaultProps.sort : null )
@@ -75,17 +82,11 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
     const [isShowVerticalBorders, setShowVerticalBorders] = useState<boolean>(getTableData(tableId)?.showVerticalBorders ?? defaultProps?.showVerticalBorders ?? false)
     const isInitialMount = useRef(true);
 
-    useLayoutEffect(() => {
-        if(!!newFiltersList && !!newFiltersList.length && (!asDefaultFilters || (asDefaultFilters && !!newDefaultFilters && !!newDefaultFilters.length))){
-            if(!!getTableData(tableId)?.filters?.length){
-                setNewFilterState(newCreateDefaultFilter(getTableData(tableId).filters, newDefaultFilters, true))
-                setNewAppliedFilterState(newCreateDefaultFilter(getTableData(tableId).filters, newDefaultFilters, true))
-            } else {
-                setNewFilterState(newCreateDefaultFilter(newFiltersList, newDefaultFilters))
-                setNewAppliedFilterState(newCreateDefaultFilter(newFiltersList, newDefaultFilters))
-            }
-        }
-    }, [newDefaultFilters, newFiltersList, asDefaultFilters])
+    useDidMountEffect(() => {
+        setNewAppliedFilterState(!!getTableData(tableId)?.filters?.length 
+        ? newCreateDefaultFilter(getTableData(tableId).filters, newDefaultFilters, true) 
+        : newCreateDefaultFilter(newFiltersList, newDefaultFilters))
+    }, [newDefaultFilters])
 
     const updateDataOnChange = (requestParam: DataRequestParam, caller: string) => {
         setLoading(true)
@@ -98,7 +99,6 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                 }
             })
     }
-
 
     const handlePageClick = (e) => {
         const selectedPage = e.selected;
@@ -122,7 +122,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
         }
     }))
 
-    useDidMountEffect(() => {
+    useLayoutEffect(() => {
         updateDataOnChange({
             offset,
             perPage,
@@ -138,7 +138,7 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
     }
 
     const onClearFilter = (name: string, id: number, index?:number, clearRadio?:boolean) => {
-
+        
         let _filtersForName =  [...newFilterState].filter(f => f.name === name),
             _filter = [..._filtersForName].filter(f => f.id === id)[0]
         

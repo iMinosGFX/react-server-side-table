@@ -34,7 +34,7 @@ function translateOptionsToOperator(opt: string, val:string): string{
  */
 function parseCommons(filter: NewFilterItem): string{
     let parse = '';
-    if(!!filter?.value?.length){
+    if(!!filter?.value){
         parse += `${filter.name}${translateOptionsToOperator(filter.option, filter.value)};`
     }
     return parse

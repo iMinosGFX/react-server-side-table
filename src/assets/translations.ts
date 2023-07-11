@@ -1,4 +1,4 @@
-import { Translations } from '../types/props';
+import { Translations } from "../types/props";
 
 export const translations: Translations = {
     add: "Ajouter",

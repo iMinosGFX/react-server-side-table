@@ -48,7 +48,8 @@ export function getHiddenColumnsAndStyles(tableId: string): {hideColumns: string
 }
 
 export function newCreateDefaultFilter(filtersList: NewFilterItem[], defaultFilters?: NewDefaultFilterItem[], loadFromLocalStorage?: boolean): NewFilterItem[] {
-    return filtersList.map(filter => {
+    
+    return filtersList?.map(filter => {
         let _df = defaultFilters?.filter(df => df.name === filter.name)?.[0] ?? null
         if(loadFromLocalStorage) 
             return {
@@ -65,7 +66,7 @@ export function newCreateDefaultFilter(filtersList: NewFilterItem[], defaultFilt
             option: getOptionsByType(filter.type),
             ..._df
         }
-    })
+    }) ?? []
 }
 
 type Props = {

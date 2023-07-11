@@ -104,13 +104,13 @@ const FiltersViewers: React.FC<FiltersViewersProps> = (props) => {
                         .flatMap((filter, i) => {
                             let _array = []
                             if(["text", "number", "date"].includes(filter.type)){
-                                if(!!filter.value && !!filter.value.length){
+                                if(!!filter.value){
                                     let _isLocked = filter?.locked
                                     _array.push(
                                         <div className={`filters-label ${_isLocked ? "locked-label" : ""}`} key={i}>
                                             <span>{filter.label}:</span> 
                                             <span className="font-italic font-light"> {translateOption(filter.option)} </span> 
-                                            <span className="font-heavy">{Array.isArray(filter?.value) ? filter.value.join(",") : !!filter?.parsedValue ? filter.parsedValue : filter.value}</span>
+                                            <span className="font-heavy">{Array.isArray(filter?.value) ? filter.value.join(",") : filter?.parsedValue ?? filter.value}</span>
                                             {!_isLocked && <i className="ri-close-line" style={{marginLeft: 5, cursor: "pointer", transform: "translateY(1px)"}} onClick={() => clearFilter(filter, i)}/>}
                                         </div>
                                     )
