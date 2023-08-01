@@ -146,30 +146,31 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
             _filter = {..._filter, value: clearRadio ? "NA" : null}
             setNewFilterState(_.cloneDeep([...newFilterState].map(f => (f.id === _filter.id && f.name === _filter.name ) ? _filter : f)))
             setNewAppliedFilterState(_.cloneDeep([...newFilterState].map(f => (f.id === _filter.id && f.name === _filter.name ) ? _filter : f)))
+            !!tableId && registerTableFilters({filters: _.cloneDeep([...newFilterState].map(f => (f.id === _filter.id && f.name === _filter.name ) ? _filter : f))}, tableId)
         
         } else { //If more one than filter for this name, delete by index
             let _currentArray = [...newFilterState]
             _currentArray.splice(index, 1)
             setNewFilterState(_currentArray)
             setNewAppliedFilterState(_currentArray)
+            !!tableId && registerTableFilters({filters: _currentArray}, tableId)
         }
         
-    }
-
-    const onClickApply = () => {
-        let _array = _.cloneDeep(newFilterState)
-        setNewFilterState(_array)
-        setNewAppliedFilterState(_array)
-        if(!!tableId){
-            registerTableFilters({filters: _array}, tableId)
-        }
     }
 
     const onClearAll = () => {
         let _initialFilters = newCreateDefaultFilter(newFiltersList, newDefaultFilters)
         setNewFilterState(_.cloneDeep(_initialFilters))
         setNewAppliedFilterState(_.cloneDeep(_initialFilters))
-        destroyTableFiltersStorage(tableId)
+        registerTableFilters({filters: []}, tableId)
+        // destroyTableFiltersStorage(tableId)
+    }
+
+    const onClickApply = () => {
+        let _array = _.cloneDeep(newFilterState)
+        setNewFilterState(_array)
+        setNewAppliedFilterState(_array)
+        !!tableId && registerTableFilters({filters: _array}, tableId)
     }
 
     const onSortChange = (e: SorterRecord) => {

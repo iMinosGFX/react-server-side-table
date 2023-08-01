@@ -90,7 +90,6 @@ const FiltersViewers: React.FC<FiltersViewersProps> = (props) => {
     }
 
     const clearGeoloc = (filter: NewFilterItem) => {
-  
         filtersState.onClickApply()
     }
 
