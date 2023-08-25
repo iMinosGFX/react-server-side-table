@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import _ from "lodash";
+import React, { useContext, useEffect } from 'react'
+import _, { filter } from "lodash";
 import FiltersContext from "../context/filterscontext"
 import styled from 'styled-components';
 import {translations} from "../assets/translations"
@@ -97,9 +97,10 @@ const FiltersViewers: React.FC<FiltersViewersProps> = (props) => {
         <>
             {newParseFilterRSQL(filtersState.newSubmitFilterState).length > 0 ?
                 <Container darkMode={darkMode}>
-                    {!!filtersState.newSubmitFilterState.length &&
-                        filtersState.newSubmitFilterState
+                    {filtersState.newSubmitFilterState
+                        .filter(f => !f.hidden)
                         .sort((f1, f2) => f1.hasOwnProperty("locked") ? -1 : f2.hasOwnProperty("locked") ? 1 : 0)
+                        // .sort((f1, f2) => f1.name.localeCompare(f1.name))
                         .flatMap((filter, i) => {
                             let _array = []
                             if(["text", "number", "date"].includes(filter.type)){
@@ -153,9 +154,11 @@ const FiltersViewers: React.FC<FiltersViewersProps> = (props) => {
                             return _array
                         })
                     }
-                    <button className="btn btn-outline-medium btn-sm" onClick={() => filtersState.onClearAll()} style={{margin:'0px 10px', cursor: 'pointer'}}>
-                        <i className='ri-delete-bin-2-line'/>
-                    </button>
+                    {filtersState.newSubmitFilterState.filter(f => !f.hidden && f.value !== null).length > 0 && 
+                        <button className="btn btn-outline-medium btn-sm" onClick={() => filtersState.onClearAll()} style={{margin:'0px 10px', cursor: 'pointer'}}>
+                            <i className='ri-delete-bin-2-line'/>
+                        </button>
+                    }
                 </Container>
                 :  <></>
             }

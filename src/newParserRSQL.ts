@@ -5,13 +5,13 @@ import { NewFilterItem } from './types/entities';
 function translateOptionsToOperator(opt: string, val:string): string{
     switch(opt){
         case 'contains':
-            return `=like="*${val}*"`
+            return `=like="*${val.trim()}*"`
         case 'startWith' :
-            return `=like="${val}*"`
+            return `=like="${val.trim()}*"`
         case 'finishWith' :
-            return `=like="*${val}"`
+            return `=like="*${val.trim()}"`
         case 'equal' :
-            return `==${val}`
+            return `==${val.trim()}`
         case 'moreThan' :
             return `>=${val}`
         case 'lessThan' :

@@ -20,17 +20,6 @@ type Props = {
     onClose?():void
 }
 
-function getOptionsByType(type: string): string{
-    switch(type){
-        case 'text':
-            return 'contains'
-        case 'number':
-            return 'equal'
-        case 'date':
-            return 'atDay'
-    }
-}
-
 const ItemFilter = (props: Props) => {
 
     const {

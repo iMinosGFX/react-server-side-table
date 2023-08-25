@@ -292,7 +292,9 @@ const ServerSideTable = forwardRef<SSTHandler, SSTProps>((props, ref) => {
                         <div className="SST_HEADER">
                             {isFilter && 
                                 <FiltersContainer darkMode={darkMode} className={`${filtersContainerClassName ?? ""} SST_filters_container`}>
-                                    <FiltersViewers translationsProps={translationsProps} darkMode={darkMode}/>
+                                    <FiltersViewers 
+                                        translationsProps={translationsProps} 
+                                        darkMode={darkMode}/>
                                     {/* {isMobile && 
                                         <FiltersInteract 
                                             filters={filtersList} 

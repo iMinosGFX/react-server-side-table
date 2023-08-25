@@ -77,6 +77,7 @@ const CommonInputsFilter = (props: CommonInputFilterProps) => {
                     name={filter.name} 
                     type={type}
                     value={value}
+                    disabled={filter.locked}
                     onChange={handleChange}
                     onKeyPress={(e) => e.key === "Enter" && props.onEnterPress()}/>
             </div>

@@ -107,6 +107,7 @@ export type NewFilterItem = {
     option: string
     id?:number
     parsedValue?:string
+    hidden?:true
 }
 
 export type NewDefaultFilterItem = {
